@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Block Accessibility Checks
+ * Plugin Name:       Validation API
  * Description:       Add plugin that add errors and warnings to core blocks to meet WCAG (Web Content Accessibility Guidelines) requirements.
  * Requires at least: 6.7
  * Requires PHP:      7.0
