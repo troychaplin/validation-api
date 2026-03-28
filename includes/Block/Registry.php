@@ -149,7 +149,6 @@ class Registry {
 			// Action hook for developers to know when a check is registered.
 			\do_action( 'validation_api_check_registered', $block_type, $check_name, $check_args );
 
-			$this->log_debug( "Successfully registered check: {$block_type}/{$check_name}" );
 			return true;
 
 		} catch ( \Exception $e ) {
