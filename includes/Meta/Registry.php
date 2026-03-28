@@ -231,7 +231,7 @@ class Registry {
 			array(
 				'scope'      => 'meta',
 				'post_type'  => $post_type,
-				'meta_key'   => $meta_key,
+				'meta_key'   => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'check_name' => $check_name,
 			)
 		);
