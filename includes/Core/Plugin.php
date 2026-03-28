@@ -66,8 +66,6 @@ class Plugin {
 	 */
 	public function init(): void {
 		try {
-			$this->log_debug( 'Starting plugin initialization.' );
-
 			// Initialize services in the correct order.
 			$this->init_translations();
 			$this->init_scripts_styles();
@@ -85,8 +83,6 @@ class Plugin {
 
 			// Allow developers to register editor checks.
 			\do_action( 'validation_api_editor_checks_ready', $this->get_service( 'editor_checks_registry' ), $this );
-
-			$this->log_debug( 'Plugin initialization completed successfully.' );
 
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize plugin: ' . $e->getMessage() );
@@ -107,7 +103,6 @@ class Plugin {
 			$translations = new I18n( $this->plugin_file, $this->text_domain );
 			$translations->load_text_domain();
 			$this->services['translations'] = $translations;
-			$this->log_debug( 'Translations service initialized.' );
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize translations: ' . $e->getMessage() );
 			throw $e;
@@ -125,7 +120,6 @@ class Plugin {
 			$translations                     = $this->get_service( 'translations' );
 			$scripts_styles                   = new Assets( $this->plugin_file, $translations );
 			$this->services['scripts_styles'] = $scripts_styles;
-			$this->log_debug( 'Scripts and styles service initialized.' );
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize scripts and styles: ' . $e->getMessage() );
 			throw $e;
@@ -142,7 +136,6 @@ class Plugin {
 		try {
 			$block_checks_registry                   = BlockChecksRegistry::get_instance();
 			$this->services['block_checks_registry'] = $block_checks_registry;
-			$this->log_debug( 'Block checks registry service initialized.' );
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize block checks registry: ' . $e->getMessage() );
 			throw $e;
@@ -159,7 +152,6 @@ class Plugin {
 		try {
 			$editor_checks_registry                   = EditorChecksRegistry::get_instance();
 			$this->services['editor_checks_registry'] = $editor_checks_registry;
-			$this->log_debug( 'Editor checks registry service initialized.' );
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize editor checks registry: ' . $e->getMessage() );
 			throw $e;
@@ -185,7 +177,6 @@ class Plugin {
 				// The is_admin() check inside the method prevents loading on frontend.
 				\add_action( 'enqueue_block_assets', array( $scripts_styles, 'enqueue_block_assets' ) );
 
-				$this->log_debug( 'WordPress hooks setup completed.' );
 			} else {
 				$this->log_error( 'Scripts styles service not available for hook setup.' );
 			}

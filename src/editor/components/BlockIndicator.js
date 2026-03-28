@@ -46,20 +46,6 @@ export function BlockIndicator({ issues }) {
 	const openModal = () => setIsModalOpen(true);
 	const closeModal = () => setIsModalOpen(false);
 
-	// Helper to format message with category
-	const getMessageWithCategory = (text, category) => {
-		const categoryLabel =
-			category === 'validation'
-				? __('(Validation)', 'validation-api')
-				: __('(Accessibility)', 'validation-api');
-
-		return (
-			<>
-				{text} <span className="ba11y-indicator-category-label">{categoryLabel}</span>
-			</>
-		);
-	};
-
 	return (
 		<>
 			<div className={className}>
@@ -88,12 +74,7 @@ export function BlockIndicator({ issues }) {
 								</p>
 								<ul>
 									{errors.map((issue, index) => (
-										<li key={`error-${index}`}>
-											{getMessageWithCategory(
-												issue.error_msg,
-												issue.category
-											)}
-										</li>
+										<li key={`error-${index}`}>{issue.error_msg}</li>
 									))}
 								</ul>
 							</div>
@@ -111,10 +92,7 @@ export function BlockIndicator({ issues }) {
 								<ul>
 									{warnings.map((warning, index) => (
 										<li key={`warning-${index}`}>
-											{getMessageWithCategory(
-												warning.warning_msg || warning.error_msg,
-												warning.category
-											)}
+											{warning.warning_msg || warning.error_msg}
 										</li>
 									))}
 								</ul>

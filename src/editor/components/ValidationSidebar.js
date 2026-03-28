@@ -308,7 +308,7 @@ export function ValidationSidebar() {
 	return (
 		<PluginSidebar
 			name="validation-sidebar"
-			title={__('Accessibility & Validation', 'validation-api')}
+			title={__('Validation', 'validation-api')}
 			icon={ba11yIcon}
 			className="ba11y-validation-sidebar"
 		>
