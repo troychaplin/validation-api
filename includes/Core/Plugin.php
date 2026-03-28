@@ -12,9 +12,7 @@ namespace BlockAccessibility\Core;
 
 use BlockAccessibility\Core\Traits\Logger;
 use BlockAccessibility\Block\Registry as BlockChecksRegistry;
-use BlockAccessibility\Block\HeadingLevels;
 use BlockAccessibility\Editor\Registry as EditorChecksRegistry;
-use BlockAccessibility\Editor\CoreChecks as EditorCoreChecks;
 
 /**
  * Plugin Initializer Class
@@ -55,33 +53,6 @@ class Plugin {
 	public function __construct( string $plugin_file, string $text_domain ) {
 		$this->plugin_file = $plugin_file;
 		$this->text_domain = $text_domain;
-
-		// Initialize heading levels immediately - must run before 'init' hook.
-		// This service registers the 'register_block_type_args' filter which must
-		// be active before blocks are registered during the 'init' hook.
-		$this->init_heading_levels();
-	}
-
-	/**
-	 * Initialize heading levels service early
-	 *
-	 * This service must be initialized before the WordPress 'init' hook because it
-	 * registers a filter on 'register_block_type_args' which needs to be active when
-	 * blocks are registered. Block registration happens during the 'init' hook, so
-	 * this filter must be in place earlier.
-	 *
-	 * @return void
-	 * @throws \Exception If heading levels service initialization fails.
-	 */
-	private function init_heading_levels(): void {
-		try {
-			$heading_levels                   = new HeadingLevels();
-			$this->services['heading_levels'] = $heading_levels;
-			$this->log_debug( 'Heading levels service initialized early.' );
-		} catch ( \Exception $e ) {
-			$this->log_error( 'Failed to initialize heading levels: ' . $e->getMessage() );
-			throw $e;
-		}
 	}
 
 	/**
@@ -100,7 +71,6 @@ class Plugin {
 			// Initialize services in the correct order.
 			$this->init_translations();
 			$this->init_scripts_styles();
-			$this->init_settings_page();
 			$this->init_block_checks_registry();
 			$this->init_editor_checks_registry();
 
@@ -163,28 +133,6 @@ class Plugin {
 	}
 
 	/**
-	 * Initialize settings page
-	 *
-	 * @return void
-	 * @throws \Exception If settings page service initialization fails.
-	 */
-	private function init_settings_page(): void {
-		try {
-			$settings_page                   = new Settings();
-			$this->services['settings_page'] = $settings_page;
-			$this->log_debug( 'Settings page service initialized.' );
-
-			// Initialize Settings REST API.
-			$settings_api                   = new SettingsAPI();
-			$this->services['settings_api'] = $settings_api;
-			$this->log_debug( 'Settings API service initialized.' );
-		} catch ( \Exception $e ) {
-			$this->log_error( 'Failed to initialize settings page: ' . $e->getMessage() );
-			throw $e;
-		}
-	}
-
-	/**
 	 * Initialize block checks registry
 	 *
 	 * @return void
@@ -212,12 +160,6 @@ class Plugin {
 			$editor_checks_registry                   = EditorChecksRegistry::get_instance();
 			$this->services['editor_checks_registry'] = $editor_checks_registry;
 			$this->log_debug( 'Editor checks registry service initialized.' );
-
-			// Register core editor checks.
-			$editor_core_checks = new EditorCoreChecks( $editor_checks_registry );
-			$editor_core_checks->register_default_checks();
-			$this->services['editor_core_checks'] = $editor_core_checks;
-			$this->log_debug( 'Core editor checks registered.' );
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize editor checks registry: ' . $e->getMessage() );
 			throw $e;
@@ -243,7 +185,6 @@ class Plugin {
 				// The is_admin() check inside the method prevents loading on frontend.
 				\add_action( 'enqueue_block_assets', array( $scripts_styles, 'enqueue_block_assets' ) );
 
-				\add_action( 'admin_enqueue_scripts', array( $scripts_styles, 'enqueue_admin_assets' ) );
 				$this->log_debug( 'WordPress hooks setup completed.' );
 			} else {
 				$this->log_error( 'Scripts styles service not available for hook setup.' );
@@ -302,15 +243,6 @@ class Plugin {
 	 */
 	public function get_editor_checks_registry(): ?EditorChecksRegistry {
 		return $this->get_service( 'editor_checks_registry' );
-	}
-
-	/**
-	 * Get the heading levels service
-	 *
-	 * @return HeadingLevels|null The heading levels instance or null if not initialized.
-	 */
-	public function get_heading_levels(): ?HeadingLevels {
-		return $this->get_service( 'heading_levels' );
 	}
 
 	/**

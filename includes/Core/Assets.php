@@ -50,13 +50,6 @@ class Assets {
 	private const BLOCK_STYLE_PATH = 'build/block-checks.css';
 
 	/**
-	 * Path to the admin stylesheet.
-	 *
-	 * @var string
-	 */
-	private const ADMIN_STYLE_PATH = 'build/block-admin.css';
-
-	/**
 	 * The path to the plugin file.
 	 *
 	 * @var string
@@ -108,20 +101,6 @@ class Assets {
 	}
 
 	/**
-	 * Enqueues the admin assets.
-	 *
-	 * This method is responsible for enqueueing the necessary scripts and styles for the admin area.
-	 * It sets up script translations and enqueues admin styles.
-	 *
-	 * @return void
-	 */
-	public function enqueue_admin_assets() {
-		$this->translations->setup_script_translations( self::SCRIPT_HANDLE );
-
-		$this->enqueue_admin_styles();
-	}
-
-	/**
 	 * Enqueues the block scripts for the plugin.
 	 *
 	 * This function is responsible for enqueueing the necessary JavaScript scripts for the plugin's blocks.
@@ -139,10 +118,6 @@ class Assets {
 			true
 		);
 
-		// Get block checks options for JavaScript.
-		$block_checks_options = get_option( 'block_checks_options', array() );
-		$site_editor_options  = get_option( 'block_checks_site_editor_options', array( 'enabled' => true ) );
-
 		// Get the block checks registry to expose validation rules to JavaScript.
 		$registry                = BlockChecksRegistry::get_instance();
 		$meta_registry           = MetaChecksRegistry::get_instance();
@@ -157,8 +132,6 @@ class Assets {
 			'BlockAccessibilityChecks',
 			array(
 				'editorContext'         => $this->get_editor_context(),
-				'blockChecksOptions'    => $block_checks_options,
-				'siteEditorOptions'     => $site_editor_options,
 				'validationRules'       => $validation_rules,
 				'metaValidationRules'   => $meta_validation_rules,
 				'editorValidationRules' => $editor_validation_rules,
@@ -208,23 +181,6 @@ class Assets {
 		);
 
 		wp_add_inline_style( 'block-checks-style', $inline_css );
-	}
-
-	/**
-	 * Enqueues the admin styles for the block accessibility checks.
-	 *
-	 * This function is responsible for enqueueing the admin styles for the block accessibility checks.
-	 * It uses the `wp_enqueue_style` function to enqueue the 'block-checks-admin' style.
-	 *
-	 * @access private
-	 */
-	private function enqueue_admin_styles() {
-		wp_enqueue_style(
-			'block-checks-admin',
-			plugins_url( self::ADMIN_STYLE_PATH, $this->plugin_file ),
-			array(),
-			BA11YC_VERSION
-		);
 	}
 
 	/**

@@ -98,19 +98,16 @@ Strip this plugin down to a pure **Validation API framework** that provides the 
 2. Update `package.json` - name, description
 
 ### Phase 4: Rebrand
-1. Update `validation-api.php` - Plugin header, version → `1.0.0`, text domain → `validation-api`, constants
-2. Update all PHP namespaces from `BlockAccessibility\*` → `ValidationAPI\*`
-3. Update all hook prefixes from `ba11yc_` → `validation_api_`
-4. Update `wp_localize_script` object name → `window.ValidationAPI`
-5. Update `composer.json` PSR-4 autoload map
-6. Update text domain in all `__()`, `_e()`, `esc_html__()` calls
+1. Update `validation-api.php` - Plugin header, constants, text domain
+2. Update namespace from `BlockAccessibility` to `ValidationAPI` (or keep for BC?)
+3. Update hook prefixes from `ba11yc_` to `validation_api_` (or keep for BC?)
+4. Update `wp_localize_script` object name
+5. Update `composer.json` autoload
 
 ### Phase 5: Clean up registries
-1. `Block\Registry` - Remove `detect_plugin_info()` / `find_main_plugin_file()` (plugin detection gone)
-2. `Block\Registry` - Replace `get_effective_check_level()` `get_option()` lookup with `validation_api_check_level` filter
-3. `Meta\Registry` - Same: replace settings lookup with `validation_api_check_level` filter
-4. `Editor\Registry` - Same: replace settings lookup with `validation_api_check_level` filter
-5. All registries - Remove `type: 'settings'` handling; treat omitted `level` as `'error'` default passed to filter
+1. `Block\Registry` - Remove plugin detection/external plugin logic (belongs in settings layer)
+2. `Meta\Registry` - Clean up settings lookup (simplify `get_effective_*` methods)
+3. `Editor\Registry` - Same cleanup
 
 ## Decisions
 

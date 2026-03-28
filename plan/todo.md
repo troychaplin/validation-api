@@ -7,45 +7,45 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ## Phase 1: Clean PHP
 
 ### Tasks
-- [ ] Delete `includes/Block/CoreChecks.php`
-- [ ] Delete `includes/Block/HeadingLevels.php`
-- [ ] Delete `includes/Editor/CoreChecks.php`
-- [ ] Delete `includes/Core/Settings.php`
-- [ ] Delete `includes/Core/SettingsAPI.php`
-- [ ] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Block\HeadingLevels`
-- [ ] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Editor\CoreChecks as EditorCoreChecks`
-- [ ] `includes/Core/Plugin.php` — Remove `init_heading_levels()` method and its constructor call
-- [ ] `includes/Core/Plugin.php` — Remove `init_settings_page()` method and its call in `init()`
-- [ ] `includes/Core/Plugin.php` — Remove `use Settings` and `use SettingsAPI` from `init_settings_page()`
-- [ ] `includes/Core/Plugin.php` — Remove `$editor_core_checks` instantiation from `init_editor_checks_registry()`
-- [ ] `includes/Core/Plugin.php` — Remove `get_heading_levels()` accessor method
+- [x] Delete `includes/Block/CoreChecks.php`
+- [x] Delete `includes/Block/HeadingLevels.php`
+- [x] Delete `includes/Editor/CoreChecks.php`
+- [x] Delete `includes/Core/Settings.php`
+- [x] Delete `includes/Core/SettingsAPI.php`
+- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Block\HeadingLevels`
+- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Editor\CoreChecks as EditorCoreChecks`
+- [x] `includes/Core/Plugin.php` — Remove `init_heading_levels()` method and its constructor call
+- [x] `includes/Core/Plugin.php` — Remove `init_settings_page()` method and its call in `init()`
+- [x] `includes/Core/Plugin.php` — Remove `use Settings` and `use SettingsAPI` from `init_settings_page()`
+- [x] `includes/Core/Plugin.php` — Remove `$editor_core_checks` instantiation from `init_editor_checks_registry()`
+- [x] `includes/Core/Plugin.php` — Remove `get_heading_levels()` accessor method
 - [ ] `includes/Core/Plugin.php` — Update `display_initialization_error()` text domain (Phase 4, but flag now)
-- [ ] `includes/Core/Assets.php` — Remove `private const ADMIN_STYLE_PATH`
-- [ ] `includes/Core/Assets.php` — Remove `enqueue_admin_assets()` method
-- [ ] `includes/Core/Assets.php` — Remove `enqueue_admin_styles()` method (enqueues `block-admin.css`)
-- [ ] `includes/Core/Assets.php` — Remove `get_option('block_checks_options')` call in `enqueue_block_scripts()`
-- [ ] `includes/Core/Assets.php` — Remove `get_option('block_checks_site_editor_options')` call
-- [ ] `includes/Core/Assets.php` — Remove `blockChecksOptions` and `siteEditorOptions` from `wp_localize_script` array
-- [ ] `includes/Core/Plugin.php` — Remove `admin_enqueue_scripts` hook for `enqueue_admin_assets` from `setup_hooks()`
-- [ ] `includes/Block/Registry.php` — Remove `init_core_block_checks()` method and its constructor call
-- [ ] `includes/Block/Registry.php` — Remove `$core_block_checks` property
-- [ ] `includes/Block/Registry.php` — Remove `use BlockAccessibility\Block\CoreChecks` (if present as use statement)
+- [x] `includes/Core/Assets.php` — Remove `private const ADMIN_STYLE_PATH`
+- [x] `includes/Core/Assets.php` — Remove `enqueue_admin_assets()` method
+- [x] `includes/Core/Assets.php` — Remove `enqueue_admin_styles()` method (enqueues `block-admin.css`)
+- [x] `includes/Core/Assets.php` — Remove `get_option('block_checks_options')` call in `enqueue_block_scripts()`
+- [x] `includes/Core/Assets.php` — Remove `get_option('block_checks_site_editor_options')` call
+- [x] `includes/Core/Assets.php` — Remove `blockChecksOptions` and `siteEditorOptions` from `wp_localize_script` array
+- [x] `includes/Core/Plugin.php` — Remove `admin_enqueue_scripts` hook for `enqueue_admin_assets` from `setup_hooks()`
+- [x] `includes/Block/Registry.php` — Remove `init_core_block_checks()` method and its constructor call
+- [x] `includes/Block/Registry.php` — Remove `$core_block_checks` property
+- [x] `includes/Block/Registry.php` — Remove `use BlockAccessibility\Block\CoreChecks` (if present as use statement)
 
 ### Verify
-- [ ] No remaining references to `CoreChecks`, `HeadingLevels`, `Settings`, `SettingsAPI` anywhere in `includes/`
-- [ ] `Plugin.php` constructor no longer calls `init_heading_levels()`
-- [ ] `Plugin.php::init()` no longer calls `init_settings_page()`
-- [ ] `Plugin.php::setup_hooks()` no longer hooks `admin_enqueue_scripts`
-- [ ] `Assets.php` has no `get_option()` calls
-- [ ] `Assets.php` `wp_localize_script` array contains only: `editorContext`, `validationRules`, `metaValidationRules`, `editorValidationRules`, `registeredBlockTypes`
-- [ ] `Block/Registry.php` constructor is empty or minimal (no `init_core_block_checks()`)
-- [ ] Plugin activates without PHP fatal errors
+- [x] No remaining references to `CoreChecks`, `HeadingLevels`, `Settings`, `SettingsAPI` anywhere in `includes/`
+- [x] `Plugin.php` constructor no longer calls `init_heading_levels()`
+- [x] `Plugin.php::init()` no longer calls `init_settings_page()`
+- [x] `Plugin.php::setup_hooks()` no longer hooks `admin_enqueue_scripts`
+- [x] `Assets.php` has no `get_option()` calls
+- [x] `Assets.php` `wp_localize_script` array contains only: `editorContext`, `validationRules`, `metaValidationRules`, `editorValidationRules`, `registeredBlockTypes`
+- [x] `Block/Registry.php` constructor is empty or minimal (no `init_core_block_checks()`)
+- [x] Plugin activates without PHP fatal errors
 
 ### Manual Tests
-- [ ] Activate plugin in wp-env — no fatal errors, no PHP warnings in debug log
-- [ ] Open a post in the block editor — no JS errors in console
-- [ ] Confirm no "Block Accessibility Checks Settings" menu item appears in wp-admin
-- [ ] Confirm no REST API routes for settings are registered (`/wp-json/` should not have old settings routes)
+- [x] Activate plugin in wp-env — no fatal errors, no PHP warnings in debug log
+- [x] Open a post in the block editor — no JS errors in console
+- [x] Confirm no "Block Accessibility Checks Settings" menu item appears in wp-admin
+- [x] Confirm no REST API routes for settings are registered (`/wp-json/` should not have old settings routes)
 
 ---
 
