@@ -5,11 +5,11 @@
  * Provides shared functionality for detecting the current WordPress editor context,
  * including post editor (default and template views) and site editor.
  *
- * @package BlockAccessibilityChecks
- * @since 1.3.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Core\Traits;
+namespace ValidationAPI\Core\Traits;
 
 /**
  * Editor Detection Trait

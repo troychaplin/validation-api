@@ -1,40 +1,42 @@
 <?php
 /**
- * Meta Validation Class
+ * Meta Validation Helper
  *
- * Provides validation callback methods for post meta fields.
+ * Provides static helper methods for creating post meta validation callbacks
+ * that integrate with register_post_meta().
  *
- * @package BlockAccessibilityChecks
- * @since 1.4.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Meta;
+namespace ValidationAPI\Meta;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Meta Validation Class
+ * Meta Validator Class
  *
  * Static methods for creating and managing post meta validation.
  */
 class Validator {
 
 	/**
-	 * Create a required field validator for post meta
+	 * Create a required field validator for post meta.
 	 *
-	 * This method registers the check upfront AND returns a validation callback.
+	 * Registers the check with the Meta Registry and returns a validate_callback
+	 * for use with register_post_meta().
 	 *
 	 * Usage:
-	 * use BlockAccessibility\Meta\Validator;
+	 * use ValidationAPI\Meta\Validator;
 	 *
-	 * register_post_meta('band', 'band_origin', [
-	 *     'validate_callback' => Validator::required('band', 'band_origin', [
+	 * register_post_meta( 'band', 'band_origin', [
+	 *     'validate_callback' => Validator::required( 'band', 'band_origin', [
 	 *         'error_msg' => 'Field is required',
-	 *         'type' => 'settings',
-	 *     ]),
-	 * ]);
+	 *         'type'      => 'error',
+	 *     ] ),
+	 * ] );
 	 *
 	 * @param string $post_type Post type (e.g., 'band', 'post').
 	 * @param string $meta_key  Meta key being validated.
@@ -45,15 +47,14 @@ class Validator {
 		$defaults = array(
 			'error_msg'   => 'This field is required.',
 			'warning_msg' => 'This field is recommended.',
-			'type'        => 'settings',
+			'type'        => 'error',
 			'check_name'  => 'required',
 			'description' => '',
 		);
 
 		$config = \wp_parse_args( $args, $defaults );
 
-		// Register the check immediately (not lazy).
-		// This is critical for client-side validation to know about the rules on initial load.
+		// Register the check immediately so client-side validation is aware on initial load.
 		$registry = Registry::get_instance();
 		$registry->register_meta_check(
 			$post_type,
@@ -64,7 +65,6 @@ class Validator {
 
 		// Return the validation callback.
 		return function ( $value ) use ( $post_type, $meta_key, $config ) {
-			// Get the effective validation level (respects admin settings).
 			$registry = Registry::get_instance();
 			$level    = $registry->get_effective_meta_check_level(
 				$post_type,
@@ -72,13 +72,14 @@ class Validator {
 				$config['check_name']
 			);
 
+			// Check disabled — allow save.
 			if ( 'none' === $level ) {
-				return true; // Check disabled in settings.
+				return true;
 			}
 
 			// Run validation through filter system.
 			$is_valid = \apply_filters(
-				'ba11yc_validate_meta',
+				'validation_api_validate_meta',
 				true,
 				$value,
 				$post_type,
@@ -92,10 +93,10 @@ class Validator {
 				$is_valid = ! empty( $value ) && trim( (string) $value ) !== '';
 			}
 
-			// Return error only if validation fails and level is "error".
+			// Return error only if validation fails and level is 'error'.
 			if ( ! $is_valid && 'error' === $level ) {
 				return new \WP_Error(
-					'ba11yc_validation_failed',
+					'validation_api_validation_failed',
 					$config['error_msg'],
 					array( 'status' => 400 )
 				);

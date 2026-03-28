@@ -4,15 +4,15 @@
  *
  * Simple class to organize plugin startup logic and provide basic service location.
  *
- * @package BlockAccessibilityChecks
- * @since 1.3.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Core;
+namespace ValidationAPI\Core;
 
-use BlockAccessibility\Core\Traits\Logger;
-use BlockAccessibility\Block\Registry as BlockChecksRegistry;
-use BlockAccessibility\Editor\Registry as EditorChecksRegistry;
+use ValidationAPI\Core\Traits\Logger;
+use ValidationAPI\Block\Registry as BlockChecksRegistry;
+use ValidationAPI\Editor\Registry as EditorChecksRegistry;
 
 /**
  * Plugin Initializer Class
@@ -78,13 +78,13 @@ class Plugin {
 			$this->setup_hooks();
 
 			// Allow other plugins to hook into our initialization.
-			\do_action( 'ba11yc_plugin_initialized', $this );
+			\do_action( 'validation_api_initialized', $this );
 
 			// Allow developers to access the registry and add custom checks.
-			\do_action( 'ba11yc_ready', $this->get_service( 'block_checks_registry' ), $this );
+			\do_action( 'validation_api_ready', $this->get_service( 'block_checks_registry' ), $this );
 
 			// Allow developers to register editor checks.
-			\do_action( 'ba11yc_editor_checks_ready', $this->get_service( 'editor_checks_registry' ), $this );
+			\do_action( 'validation_api_editor_checks_ready', $this->get_service( 'editor_checks_registry' ), $this );
 
 			$this->log_debug( 'Plugin initialization completed successfully.' );
 
@@ -253,8 +253,8 @@ class Plugin {
 	public function display_initialization_error(): void {
 		printf(
 			'<div class="notice notice-error"><p><strong>%s:</strong> %s</p></div>',
-			esc_html__( 'Plugin Error', 'block-accessibility-checks' ),
-			esc_html__( 'Block Accessibility Checks plugin failed to initialize properly. Please check your error logs for more details.', 'block-accessibility-checks' )
+			esc_html__( 'Validation API Error', 'validation-api' ),
+			esc_html__( 'Validation API plugin failed to initialize properly. Please check your error logs for more details.', 'validation-api' )
 		);
 	}
 }

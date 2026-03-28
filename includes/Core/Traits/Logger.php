@@ -5,11 +5,11 @@
  * Provides shared logging functionality for debug and error messages
  * when WP_DEBUG is enabled.
  *
- * @package BlockAccessibilityChecks
- * @since 1.3.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Core\Traits;
+namespace ValidationAPI\Core\Traits;
 
 /**
  * Logger Trait
@@ -29,7 +29,7 @@ trait Logger {
 		if ( defined( 'WP_DEBUG' ) && constant( 'WP_DEBUG' ) ) {
 			$class_name = basename( str_replace( '\\', '/', static::class ) );
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			\error_log( "Block Accessibility Checks - {$class_name}: {$message}" );
+			\error_log( "Validation API - {$class_name}: {$message}" );
 		}
 	}
 
@@ -43,7 +43,7 @@ trait Logger {
 		if ( defined( 'WP_DEBUG' ) && constant( 'WP_DEBUG' ) && defined( 'WP_DEBUG_LOG' ) && constant( 'WP_DEBUG_LOG' ) ) {
 			$class_name = basename( str_replace( '\\', '/', static::class ) );
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			\error_log( "Block Accessibility Checks - {$class_name} DEBUG: {$message}" );
+			\error_log( "Validation API - {$class_name} DEBUG: {$message}" );
 		}
 	}
 }

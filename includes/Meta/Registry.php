@@ -4,13 +4,13 @@
  *
  * Central registry for managing post meta validation checks.
  *
- * @package BlockAccessibilityChecks
- * @since 1.4.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Meta;
+namespace ValidationAPI\Meta;
 
-use BlockAccessibility\Core\Traits\Logger;
+use ValidationAPI\Core\Traits\Logger;
 
 /**
  * Meta Checks Registry Class
@@ -101,7 +101,7 @@ class Registry {
 			$defaults = array(
 				'error_msg'   => '',
 				'warning_msg' => '',
-				'type'        => 'settings',
+				'type'        => 'error',
 				'priority'    => 10,
 				'enabled'     => true,
 				'description' => '',
@@ -121,17 +121,17 @@ class Registry {
 			}
 
 			// Validate type parameter.
-			$valid_types = array( 'error', 'warning', 'settings', 'none' );
+			$valid_types = array( 'error', 'warning', 'none' );
 			if ( ! in_array( $check_args['type'], $valid_types, true ) ) {
-				$this->log_error( "Invalid type '{$check_args['type']}' for {$post_type}/{$meta_key}/{$check_name}. Using 'settings'." );
-				$check_args['type'] = 'settings';
+				$this->log_error( "Invalid type '{$check_args['type']}' for {$post_type}/{$meta_key}/{$check_name}. Using 'error'." );
+				$check_args['type'] = 'error';
 			}
 
 			// Allow developers to filter check arguments before registration.
-			$check_args = \apply_filters( 'ba11yc_meta_check_args', $check_args, $post_type, $meta_key, $check_name );
+			$check_args = \apply_filters( 'validation_api_meta_check_args', $check_args, $post_type, $meta_key, $check_name );
 
 			// Allow developers to prevent specific checks from being registered.
-			if ( ! \apply_filters( 'ba11yc_should_register_meta_check', true, $post_type, $meta_key, $check_name, $check_args ) ) {
+			if ( ! \apply_filters( 'validation_api_should_register_meta_check', true, $post_type, $meta_key, $check_name, $check_args ) ) {
 				$this->log_debug( "Meta check registration prevented by filter: {$post_type}/{$meta_key}/{$check_name}" );
 				return false;
 			}
@@ -153,7 +153,7 @@ class Registry {
 			\uasort( $this->meta_checks[ $post_type ][ $meta_key ], array( $this, 'sort_checks_by_priority' ) );
 
 			// Action hook for developers to know when a check is registered.
-			\do_action( 'ba11yc_meta_check_registered', $post_type, $meta_key, $check_name, $check_args );
+			\do_action( 'validation_api_meta_check_registered', $post_type, $meta_key, $check_name, $check_args );
 
 			$this->log_debug( "Successfully registered meta check: {$post_type}/{$meta_key}/{$check_name}" );
 			return true;
@@ -202,8 +202,9 @@ class Registry {
 	/**
 	 * Get the effective check level for a specific meta check
 	 *
-	 * This method determines the actual check level by considering both
-	 * the check configuration and user settings.
+	 * Passes the registered level through the validation_api_check_level filter,
+	 * allowing external plugins (e.g. a settings companion) to override the level
+	 * at runtime. Checks set to 'none' are skipped without firing the filter.
 	 *
 	 * @param string $post_type  The post type.
 	 * @param string $meta_key   The meta key.
@@ -217,49 +218,22 @@ class Registry {
 			return 'none';
 		}
 
-		$check      = $meta_checks[ $meta_key ][ $check_name ];
-		$check_type = $check['type'] ?? 'settings';
+		$check_type = $meta_checks[ $meta_key ][ $check_name ]['type'] ?? 'error';
 
-		// If the check has a forced type (not 'settings'), use it directly.
-		if ( 'settings' !== $check_type ) {
-			return $check_type;
+		// 'none' short-circuits — filter does not fire.
+		if ( 'none' === $check_type ) {
+			return 'none';
 		}
 
-		// For settings-based checks, get the user's preference.
-		return $this->get_meta_check_level_from_settings( $post_type, $meta_key, $check_name );
-	}
-
-	/**
-	 * Get meta check level from user settings
-	 *
-	 * @param string $post_type  The post type.
-	 * @param string $meta_key   The meta key.
-	 * @param string $check_name The check name.
-	 * @return string The check level from settings.
-	 */
-	private function get_meta_check_level_from_settings( string $post_type, string $meta_key, string $check_name ): string {
-		// Field name format: meta_{post_type}_{meta_key}_{check_name} for external plugins
-		// Field name format: meta_key_check_name for core post types.
-		$external_field_name = 'meta_' . $post_type . '_' . $meta_key . '_' . $check_name;
-		$core_field_name     = $meta_key . '_' . $check_name;
-
-		// Try to find this in external plugin settings first
-		// by checking all external plugin options.
-		$all_options = \wp_load_alloptions();
-		foreach ( $all_options as $option_name => $option_value ) {
-			if ( strpos( $option_name, 'block_checks_external_' ) === 0 ) {
-				$options = \get_option( $option_name, array() );
-				// Check with external field name format first.
-				if ( isset( $options[ $external_field_name ] ) ) {
-					return $options[ $external_field_name ];
-				}
-			}
-		}
-
-		// Fallback to post-type-specific option (for core post types).
-		$option_name = 'block_checks_meta_' . $post_type;
-		$options     = \get_option( $option_name, array() );
-
-		return $options[ $core_field_name ] ?? 'error';
+		return \apply_filters(
+			'validation_api_check_level',
+			$check_type,
+			array(
+				'scope'      => 'meta',
+				'post_type'  => $post_type,
+				'meta_key'   => $meta_key,
+				'check_name' => $check_name,
+			)
+		);
 	}
 }

@@ -12,14 +12,14 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [x] Delete `includes/Editor/CoreChecks.php`
 - [x] Delete `includes/Core/Settings.php`
 - [x] Delete `includes/Core/SettingsAPI.php`
-- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Block\HeadingLevels`
-- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\Editor\CoreChecks as EditorCoreChecks`
+- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\\Block\\HeadingLevels`
+- [x] `includes/Core/Plugin.php` — Remove `use BlockAccessibility\\Editor\\CoreChecks as EditorCoreChecks`
 - [x] `includes/Core/Plugin.php` — Remove `init_heading_levels()` method and its constructor call
 - [x] `includes/Core/Plugin.php` — Remove `init_settings_page()` method and its call in `init()`
 - [x] `includes/Core/Plugin.php` — Remove `use Settings` and `use SettingsAPI` from `init_settings_page()`
 - [x] `includes/Core/Plugin.php` — Remove `$editor_core_checks` instantiation from `init_editor_checks_registry()`
 - [x] `includes/Core/Plugin.php` — Remove `get_heading_levels()` accessor method
-- [ ] `includes/Core/Plugin.php` — Update `display_initialization_error()` text domain (Phase 4, but flag now)
+- [x] `includes/Core/Plugin.php` — Update `display_initialization_error()` text domain (completed in Phase 4)
 - [x] `includes/Core/Assets.php` — Remove `private const ADMIN_STYLE_PATH`
 - [x] `includes/Core/Assets.php` — Remove `enqueue_admin_assets()` method
 - [x] `includes/Core/Assets.php` — Remove `enqueue_admin_styles()` method (enqueues `block-admin.css`)
@@ -29,7 +29,7 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [x] `includes/Core/Plugin.php` — Remove `admin_enqueue_scripts` hook for `enqueue_admin_assets` from `setup_hooks()`
 - [x] `includes/Block/Registry.php` — Remove `init_core_block_checks()` method and its constructor call
 - [x] `includes/Block/Registry.php` — Remove `$core_block_checks` property
-- [x] `includes/Block/Registry.php` — Remove `use BlockAccessibility\Block\CoreChecks` (if present as use statement)
+- [x] `includes/Block/Registry.php` — Remove `use BlockAccessibility\\Block\\CoreChecks` (if present as use statement)
 
 ### Verify
 - [x] No remaining references to `CoreChecks`, `HeadingLevels`, `Settings`, `SettingsAPI` anywhere in `includes/`
@@ -52,35 +52,35 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ## Phase 2: Clean JavaScript
 
 ### Tasks
-- [ ] Delete `src/admin/` directory entirely (all 13 files)
-- [ ] Delete `src/admin.js` (settings entry point)
-- [ ] Delete `src/editor/validation/blocks/validators/button.js`
-- [ ] Delete `src/editor/validation/blocks/validators/heading.js`
-- [ ] Delete `src/editor/validation/blocks/validators/headingListener.js`
-- [ ] Delete `src/editor/validation/blocks/validators/image.js`
-- [ ] Delete `src/editor/validation/blocks/validators/table.js`
-- [ ] Delete `src/editor/validation/blocks/validators/index.js`
-- [ ] Delete `src/editor/validation/editor/validators/postTitle.js`
-- [ ] Delete `src/editor/validation/editor/validators/index.js`
-- [ ] Delete `src/editor/modifications/imageAttributes.js`
-- [ ] Delete `src/editor/modifications/index.js`
-- [ ] Delete `src/shared/utils/isValidUrl.js`
-- [ ] `src/editor/validation/blocks/index.js` — Remove imports of deleted validators
-- [ ] `src/editor/validation/editor/index.js` — Remove imports of deleted validators
-- [ ] `src/editor/index.js` — Remove import of `modifications`
-- [ ] `src/shared/utils/index.js` — Remove export of `isValidUrl`
-- [ ] `src/editor/register.js` — Audit for any admin/settings imports to remove
-- [ ] `src/script.js` — Audit for any admin/settings imports to remove
+- [x] Delete `src/admin/` directory entirely (all 13 files)
+- [x] Delete `src/admin.js` (settings entry point)
+- [x] Delete `src/editor/validation/blocks/validators/button.js`
+- [x] Delete `src/editor/validation/blocks/validators/heading.js`
+- [x] Delete `src/editor/validation/blocks/validators/headingListener.js`
+- [x] Delete `src/editor/validation/blocks/validators/image.js`
+- [x] Delete `src/editor/validation/blocks/validators/table.js`
+- [x] Delete `src/editor/validation/blocks/validators/index.js`
+- [x] Delete `src/editor/validation/editor/validators/postTitle.js`
+- [x] Delete `src/editor/validation/editor/validators/index.js`
+- [x] Delete `src/editor/modifications/imageAttributes.js`
+- [x] Delete `src/editor/modifications/index.js`
+- [x] Delete `src/shared/utils/isValidUrl.js`
+- [x] `src/editor/validation/blocks/index.js` — Remove imports of deleted validators
+- [x] `src/editor/validation/editor/index.js` — Remove imports of deleted validators
+- [x] `src/editor/index.js` — Remove import of `modifications`
+- [x] `src/shared/utils/index.js` — Remove export of `isValidUrl`
+- [x] `src/editor/register.js` — Audit for any admin/settings imports to remove
+- [x] `src/script.js` — Audit for any admin/settings imports to remove
 
 ### Verify
-- [ ] No remaining imports of `isValidUrl` anywhere in `src/`
-- [ ] No remaining imports of `imageAttributes` anywhere in `src/`
-- [ ] No remaining imports from `src/admin/` anywhere in `src/`
-- [ ] No remaining imports from `validators/` (blocks or editor) anywhere in `src/`
-- [ ] `src/editor/modifications/` directory no longer exists
-- [ ] `src/editor/validation/blocks/validators/` directory no longer exists
-- [ ] `src/editor/validation/editor/validators/` directory no longer exists
-- [ ] `npm run build` completes with zero errors
+- [x] No remaining imports of `isValidUrl` anywhere in `src/`
+- [x] No remaining imports of `imageAttributes` anywhere in `src/`
+- [x] No remaining imports from `src/admin/` anywhere in `src/`
+- [x] No remaining imports from `validators/` (blocks or editor) anywhere in `src/`
+- [x] `src/editor/modifications/` directory no longer exists
+- [x] `src/editor/validation/blocks/validators/` directory no longer exists
+- [x] `src/editor/validation/editor/validators/` directory no longer exists
+- [x] `npm run build` completes with zero errors
 
 ### Manual Tests
 - [x] Build succeeds: `npm run build`
@@ -113,45 +113,45 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ## Phase 4: Rebrand
 
 ### Tasks
-- [ ] `validation-api.php` — Plugin header: `Plugin Name`, `Description`, `Text Domain: validation-api`
-- [ ] `validation-api.php` — Version constant: rename `BA11YC_VERSION` → `VALIDATION_API_VERSION` and set to `1.0.0`
-- [ ] `validation-api.php` — Plugin path constant: rename `BA11YC_PLUGIN_FILE` → `VALIDATION_API_PLUGIN_FILE` (or equivalent)
-- [ ] `validation-api.php` — Update any other `BA11YC_*` constants
-- [ ] All PHP files — Rename namespace `BlockAccessibility\` → `ValidationAPI\` (all `namespace` and `use` statements)
-- [ ] `includes/Core/Assets.php` — Rename `SCRIPT_HANDLE` constant value from `block-accessibility-script` → `validation-api-script`
-- [ ] `includes/Core/Assets.php` — Rename `wp_localize_script` object from `BlockAccessibilityChecks` → `ValidationAPI`
-- [ ] `includes/Core/Assets.php` — Update `BA11YC_VERSION` → `VALIDATION_API_VERSION` in all `wp_enqueue_script` / `wp_enqueue_style` version args
-- [ ] `includes/Core/Assets.php` — Update style handle `block-checks-style` → `validation-api-style`
-- [ ] All PHP files — Replace every `__( '...', 'block-accessibility-checks' )` with `__( '...', 'validation-api' )`
-- [ ] All PHP files — Replace every `_e( '...', 'block-accessibility-checks' )` with `_e( '...', 'validation-api' )`
-- [ ] All PHP files — Replace every `esc_html__( '...', 'block-accessibility-checks' )` with `esc_html__( '...', 'validation-api' )`
-- [ ] `composer.json` — Update PSR-4 autoload key from `BlockAccessibility\\` → `ValidationAPI\\`
-- [ ] `composer.json` — Update `name` field
-- [ ] Run `composer dump-autoload` after updating `composer.json`
-- [ ] All PHP hook calls — Rename all `ba11yc_*` to `validation_api_*` (actions and filters)
-- [ ] `src/editor/validation/ValidationAPI.js` — Update global reference from `BlockAccessibilityChecks` → `ValidationAPI`
-- [ ] All JS files — Update any `window.BlockAccessibilityChecks` references → `window.ValidationAPI`
-- [ ] All JS files — Update any `ba11yc_validate_*` filter names → `validation_api_validate_*`
+- [x] `validation-api.php` — Plugin header: `Plugin Name`, `Description`, `Text Domain: validation-api`
+- [x] `validation-api.php` — Version constant: rename `BA11YC_VERSION` → `VALIDATION_API_VERSION` and set to `1.0.0`
+- [x] `validation-api.php` — Plugin path constant: rename `BA11YC_PLUGIN_FILE` → `VALIDATION_API_PLUGIN_FILE` (or equivalent)
+- [x] `validation-api.php` — Update any other `BA11YC_*` constants
+- [x] All PHP files — Rename namespace `BlockAccessibility\\` → `ValidationAPI\\` (all `namespace` and `use` statements)
+- [x] `includes/Core/Assets.php` — Rename `SCRIPT_HANDLE` constant value from `block-accessibility-script` → `validation-api-script`
+- [x] `includes/Core/Assets.php` — Rename `wp_localize_script` object from `BlockAccessibilityChecks` → `ValidationAPI`
+- [x] `includes/Core/Assets.php` — Update `BA11YC_VERSION` → `VALIDATION_API_VERSION` in all `wp_enqueue_script` / `wp_enqueue_style` version args
+- [x] `includes/Core/Assets.php` — Update style handle `block-checks-style` → `validation-api-style`
+- [x] All PHP files — Replace every `__( '...', 'block-accessibility-checks' )` with `__( '...', 'validation-api' )`
+- [x] All PHP files — Replace every `_e( '...', 'block-accessibility-checks' )` with `_e( '...', 'validation-api' )`
+- [x] All PHP files — Replace every `esc_html__( '...', 'block-accessibility-checks' )` with `esc_html__( '...', 'validation-api' )`
+- [x] `composer.json` — Update PSR-4 autoload key from `BlockAccessibility\\\\` → `ValidationAPI\\\\`
+- [x] `composer.json` — Update `name` field
+- [x] Run `composer dump-autoload` after updating `composer.json`
+- [x] All PHP hook calls — Rename all `ba11yc_*` to `validation_api_*` (actions and filters)
+- [x] `src/editor/validation/ValidationAPI.js` — Update global reference from `BlockAccessibilityChecks` → `ValidationAPI`
+- [x] All JS files — Update any `window.BlockAccessibilityChecks` references → `window.ValidationAPI`
+- [x] All JS files — Update any `ba11yc_validate_*` filter names → `validation_api_validate_*`
 
 ### Verify
-- [ ] Zero remaining occurrences of `BlockAccessibility` in `includes/` (grep check)
-- [ ] Zero remaining occurrences of `BA11YC_` in `includes/` and `validation-api.php` (grep check)
-- [ ] Zero remaining occurrences of `ba11yc_` in `includes/` (grep check)
-- [ ] Zero remaining occurrences of `block-accessibility-checks` text domain in `includes/` (grep check)
-- [ ] Zero remaining occurrences of `BlockAccessibilityChecks` in `src/` (grep check)
-- [ ] Zero remaining occurrences of `ba11yc_` in `src/` (grep check)
-- [ ] `composer.json` autoload maps `ValidationAPI\\` to `includes/`
-- [ ] `validation-api.php` plugin header version shows `1.0.0`
-- [ ] `validation-api.php` text domain header shows `validation-api`
-- [ ] `npm run build` — no errors
+- [x] Zero remaining occurrences of `BlockAccessibility` in `includes/` (grep check)
+- [x] Zero remaining occurrences of `BA11YC_` in `includes/` and `validation-api.php` (grep check)
+- [x] Zero remaining occurrences of `ba11yc_` in `includes/` (grep check)
+- [x] Zero remaining occurrences of `block-accessibility-checks` text domain in `includes/` (grep check)
+- [x] Zero remaining occurrences of `BlockAccessibilityChecks` in `src/` (grep check)
+- [x] Zero remaining occurrences of `ba11yc_` in `src/` (grep check)
+- [x] `composer.json` autoload maps `ValidationAPI\\\\` to `includes/`
+- [x] `validation-api.php` plugin header version shows `1.0.0`
+- [x] `validation-api.php` text domain header shows `validation-api`
+- [x] `npm run build` — no errors
 
 ### Manual Tests
-- [ ] Activate plugin — no fatal errors
-- [ ] In browser console: `window.ValidationAPI` is defined and has expected keys (`validationRules`, `editorContext`, etc.)
-- [ ] `window.BlockAccessibilityChecks` is **undefined** (old global is gone)
-- [ ] PHP error log is clean (no undefined constant or class not found errors)
-- [ ] Register a test block check via `validation_api_ready` hook and confirm it appears in `window.ValidationAPI.validationRules`
-- [ ] Register a test editor check via `validation_api_editor_checks_ready` hook and confirm it appears in `window.ValidationAPI.editorValidationRules`
+- [x] Activate plugin — no fatal errors
+- [x] In browser console: `window.ValidationAPI` is defined and has expected keys (`validationRules`, `editorContext`, etc.)
+- [x] `window.BlockAccessibilityChecks` is **undefined** (old global is gone)
+- [x] PHP error log is clean (no undefined constant or class not found errors)
+- [x] Register a test block check via `validation_api_ready` hook and confirm it appears in `window.ValidationAPI.validationRules`
+- [x] Register a test editor check via `validation_api_editor_checks_ready` hook and confirm it appears in `window.ValidationAPI.editorValidationRules`
 
 ---
 
@@ -160,40 +160,40 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ### Tasks
 
 #### `includes/Block/Registry.php`
-- [ ] Remove `$plugin_info` property
-- [ ] Remove `$plugin_info_cache` property
-- [ ] Remove `detect_plugin_info()` method
-- [ ] Remove `find_main_plugin_file()` method
-- [ ] Remove `find_plugin_file_in_directory()` method
-- [ ] Remove `ensure_plugin_data_function()` method
-- [ ] Remove `extract_plugin_info_from_block_type()` method
-- [ ] Remove `get_all_plugin_info()` method
-- [ ] Remove `get_check_level_from_settings()` method
-- [ ] Remove `get_core_block_setting()` method
-- [ ] Remove `get_external_block_setting()` method
-- [ ] Remove `$plugin_info` param from `register_check()` signature and body
+- [x] Remove `$plugin_info` property
+- [x] Remove `$plugin_info_cache` property
+- [x] Remove `detect_plugin_info()` method
+- [x] Remove `find_main_plugin_file()` method
+- [x] Remove `find_plugin_file_in_directory()` method
+- [x] Remove `ensure_plugin_data_function()` method
+- [x] Remove `extract_plugin_info_from_block_type()` method
+- [x] Remove `get_all_plugin_info()` method
+- [x] Remove `get_check_level_from_settings()` method
+- [x] Remove `get_core_block_setting()` method
+- [x] Remove `get_external_block_setting()` method
+- [x] Remove `$plugin_info` param from `register_check()` signature and body
 - [ ] Remove `register_block_check()` wrapper (or simplify — it now just calls `register_check()` directly)
 - [ ] `register_check()` — Change `'type' => 'settings'` default → `'level' => 'error'` (rename key `type` → `level`)
-- [ ] `register_check()` — Update `$valid_types` to `[ 'error', 'warning', 'none' ]` (remove `'settings'`)
-- [ ] `register_check()` — Remove `'settings'` from type validation error message
+- [x] `register_check()` — Update `$valid_types` to `[ 'error', 'warning', 'none' ]` (remove `'settings'`)
+- [x] `register_check()` — Remove `'settings'` from type validation error message
 - [ ] `register_check()` — Remove `category` field (accessibility-specific concept) or confirm it should stay
-- [ ] `get_effective_check_level()` — Replace `get_option()` settings lookup with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
-- [ ] `get_effective_check_level()` — `$context` shape: `[ 'scope' => 'block', 'block_type' => $block_type, 'check_name' => $check_name ]`
-- [ ] `get_effective_check_level()` — `'none'` short-circuits before filter fires
+- [x] `get_effective_check_level()` — Replace `get_option()` settings lookup with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
+- [x] `get_effective_check_level()` — `$context` shape: `[ 'scope' => 'block', 'block_type' => $block_type, 'check_name' => $check_name ]`
+- [x] `get_effective_check_level()` — `'none'` short-circuits before filter fires
 
 #### `includes/Meta/Registry.php`
-- [ ] Remove `get_option()` calls from `get_effective_meta_check_level()`
-- [ ] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
-- [ ] `$context` shape: `[ 'scope' => 'meta', 'post_type' => $post_type, 'meta_key' => $meta_key, 'check_name' => $check_name ]`
+- [x] Remove `get_option()` calls from `get_effective_meta_check_level()`
+- [x] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
+- [x] `$context` shape: `[ 'scope' => 'meta', 'post_type' => $post_type, 'meta_key' => $meta_key, 'check_name' => $check_name ]`
 - [ ] Update `'type'` → `'level'` key in defaults and registration if applicable
-- [ ] Remove `'settings'` from valid types/levels
+- [x] Remove `'settings'` from valid types/levels
 
 #### `includes/Editor/Registry.php`
-- [ ] Remove `get_option()` calls from `get_effective_editor_check_level()`
-- [ ] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
-- [ ] `$context` shape: `[ 'scope' => 'editor', 'post_type' => $post_type, 'check_name' => $check_name ]`
+- [x] Remove `get_option()` calls from `get_effective_editor_check_level()`
+- [x] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
+- [x] `$context` shape: `[ 'scope' => 'editor', 'post_type' => $post_type, 'check_name' => $check_name ]`
 - [ ] Update `'type'` → `'level'` key in defaults and registration if applicable
-- [ ] Remove `'settings'` from valid types/levels
+- [x] Remove `'settings'` from valid types/levels
 
 #### `includes/Core/Assets.php`
 - [ ] Update `prepare_validation_rules_for_js()` — field key `'type'` → `'level'` in JS output (matches new registry key)
@@ -201,11 +201,11 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [ ] Update `prepare_editor_validation_rules_for_js()` — same `type` → `level` key rename
 
 ### Verify
-- [ ] Zero remaining `get_option( 'block_checks` )` calls anywhere in `includes/`
+- [x] Zero remaining `get_option( 'block_checks' )` calls anywhere in `includes/`
 - [ ] Zero remaining `debug_backtrace` calls anywhere in `includes/`
-- [ ] Zero remaining `'settings'` as a valid level value in any registry
-- [ ] `get_effective_check_level()` in all 3 registries calls `apply_filters( 'validation_api_check_level', ... )`
-- [ ] `get_effective_check_level()` short-circuits for `'none'` without firing the filter
+- [x] Zero remaining `'settings'` as a valid level value in any registry
+- [x] `get_effective_check_level()` in all 3 registries calls `apply_filters( 'validation_api_check_level', ... )`
+- [x] `get_effective_check_level()` short-circuits for `'none'` without firing the filter
 - [ ] `register_check()` accepts `'level'` key (not `'type'`) in all 3 registries
 - [ ] The JS data object (`window.ValidationAPI`) uses `level` key not `type` for each check rule
 
@@ -244,7 +244,7 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [ ] Block editor (post editor): plugin loads, sidebar renders correctly
 - [ ] Site editor: plugin loads, no JS errors
 - [ ] Register a custom block check via `validation_api_ready` from a test plugin — check triggers validation in editor
-- [ ] Register a custom meta check via `Meta\Registry` — meta field shows validation state
+- [ ] Register a custom meta check via `Meta\\Registry` — meta field shows validation state
 - [ ] Register a custom editor check via `validation_api_editor_checks_ready` — editor-level check fires
 - [ ] Post with errors cannot be published (save is locked)
 - [ ] Post with only warnings can be published

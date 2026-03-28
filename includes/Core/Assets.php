@@ -1,39 +1,36 @@
 <?php
 /**
- * Namespace declaration for the BlockAccessibility plugin.
+ * Assets
  *
- * This namespace is used to encapsulate all functionality related to
- * the Block Accessibility Checks plugin, ensuring that classes, functions,
- * and constants do not conflict with other plugins or themes.
+ * Manages registration and enqueueing of scripts and styles.
  *
- * @package BlockAccessibility
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Core;
+namespace ValidationAPI\Core;
 
-use BlockAccessibility\Core\Traits\EditorDetection;
-use BlockAccessibility\Block\Registry as BlockChecksRegistry;
-use BlockAccessibility\Meta\Registry as MetaChecksRegistry;
-use BlockAccessibility\Editor\Registry as EditorChecksRegistry;
+use ValidationAPI\Core\Traits\EditorDetection;
+use ValidationAPI\Block\Registry as BlockChecksRegistry;
+use ValidationAPI\Meta\Registry as MetaChecksRegistry;
+use ValidationAPI\Editor\Registry as EditorChecksRegistry;
 
 /**
  * Class Assets
  *
- * This class is responsible for managing the registration and enqueueing
- * of scripts and styles within the Block Accessibility Checks plugin.
- *
- * @package BlockAccessibilityChecks
+ * Responsible for managing the registration and enqueueing of scripts and
+ * styles within the Validation API plugin.
  */
 class Assets {
 
 	use EditorDetection;
 
 	/**
-	 * Script handle for the main block accessibility script.
+	 * Script handle for the main validation API script.
 	 *
 	 * @var string
 	 */
-	private const SCRIPT_HANDLE = 'block-accessibility-script';
+	private const SCRIPT_HANDLE = 'validation-api-script';
 
 	/**
 	 * Path to the main block checks JavaScript file.
@@ -75,16 +72,13 @@ class Assets {
 	}
 
 	/**
-	 * Enqueues the assets for the block.
-	 *
-	 * This method is responsible for enqueueing the necessary scripts and styles for the block.
-	 * It sets up script translations and then calls the methods to enqueue the block scripts and styles.
+	 * Enqueues the assets for the block editor.
 	 *
 	 * Runs in both editor contexts:
 	 * - enqueue_block_editor_assets: Main editor window
 	 * - enqueue_block_assets: Editor iframe (site editor) and frontend
 	 *
-	 * We only want to load in admin/editor contexts, not on the frontend.
+	 * Only loads in admin/editor contexts, not on the frontend.
 	 *
 	 * @return void
 	 */
@@ -103,9 +97,6 @@ class Assets {
 	/**
 	 * Enqueues the block scripts for the plugin.
 	 *
-	 * This function is responsible for enqueueing the necessary JavaScript scripts for the plugin's blocks.
-	 * It registers the script handle, script path, dependencies, version, and localization data.
-	 *
 	 * @access private
 	 * @return void
 	 */
@@ -114,11 +105,11 @@ class Assets {
 			self::SCRIPT_HANDLE,
 			plugins_url( self::BLOCK_SCRIPT_PATH, $this->plugin_file ),
 			array( 'wp-block-editor', 'wp-components', 'wp-compose', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-plugins' ),
-			BA11YC_VERSION,
+			VALIDATION_API_VERSION,
 			true
 		);
 
-		// Get the block checks registry to expose validation rules to JavaScript.
+		// Get the registries to expose validation rules to JavaScript.
 		$registry                = BlockChecksRegistry::get_instance();
 		$meta_registry           = MetaChecksRegistry::get_instance();
 		$editor_registry         = EditorChecksRegistry::get_instance();
@@ -129,7 +120,7 @@ class Assets {
 
 		\wp_localize_script(
 			self::SCRIPT_HANDLE,
-			'BlockAccessibilityChecks',
+			'ValidationAPI',
 			array(
 				'editorContext'         => $this->get_editor_context(),
 				'validationRules'       => $validation_rules,
@@ -143,19 +134,15 @@ class Assets {
 	/**
 	 * Enqueues the block styles.
 	 *
-	 * This function is responsible for enqueueing the block styles for the plugin.
-	 * It uses the `wp_enqueue_style` function to enqueue the styles.
-	 *
 	 * @access private
 	 * @return void
 	 */
 	private function enqueue_block_styles() {
-		// Enqueue the main stylesheet.
 		wp_enqueue_style(
-			'block-checks-style',
+			'validation-api-style',
 			plugins_url( self::BLOCK_STYLE_PATH, $this->plugin_file ),
 			array(),
-			BA11YC_VERSION
+			VALIDATION_API_VERSION
 		);
 
 		// Dynamically generate the SVG URLs.
@@ -180,14 +167,11 @@ class Assets {
 			esc_url( $error_icon_url )
 		);
 
-		wp_add_inline_style( 'block-checks-style', $inline_css );
+		wp_add_inline_style( 'validation-api-style', $inline_css );
 	}
 
 	/**
-	 * Prepare validation rules from PHP registry for JavaScript consumption
-	 *
-	 * Converts the PHP BlockChecksRegistry data into a format that JavaScript
-	 * can use for client-side validation, excluding server-side callbacks.
+	 * Prepare validation rules from PHP registry for JavaScript consumption.
 	 *
 	 * @param BlockChecksRegistry $registry The block checks registry instance.
 	 * @return array Prepared validation rules for JavaScript.
@@ -200,7 +184,6 @@ class Assets {
 			$js_rules[ $block_type ] = array();
 
 			foreach ( $checks as $check_name => $check_config ) {
-				// Get the effective check level (considering settings).
 				$effective_type = $registry->get_effective_check_level( $block_type, $check_name );
 
 				// Skip checks set to 'none'.
@@ -208,12 +191,11 @@ class Assets {
 					continue;
 				}
 
-				// Only include configuration that JavaScript needs.
 				$js_rules[ $block_type ][ $check_name ] = array(
 					'error_msg'   => $check_config['error_msg'],
 					'warning_msg' => $check_config['warning_msg'],
-					'type'        => $effective_type, // Use effective type instead of config type.
-					'category'    => $check_config['category'] ?? 'accessibility', // Include category field.
+					'type'        => $effective_type,
+					'category'    => $check_config['category'] ?? 'validation',
 					'priority'    => $check_config['priority'],
 					'enabled'     => $check_config['enabled'],
 					'description' => $check_config['description'],
@@ -225,10 +207,7 @@ class Assets {
 	}
 
 	/**
-	 * Prepare meta validation rules for JavaScript
-	 *
-	 * Formats the meta validation rules from the registry into a structure
-	 * that can be consumed by JavaScript.
+	 * Prepare meta validation rules for JavaScript.
 	 *
 	 * @param MetaChecksRegistry $meta_registry The meta checks registry instance.
 	 * @return array Formatted meta validation rules for JavaScript.
@@ -244,7 +223,6 @@ class Assets {
 				$js_rules[ $post_type ][ $meta_key ] = array();
 
 				foreach ( $checks as $check_name => $check_config ) {
-					// Get the effective check level (considering settings).
 					$effective_type = $meta_registry->get_effective_meta_check_level( $post_type, $meta_key, $check_name );
 
 					// Skip checks set to 'none'.
@@ -252,7 +230,6 @@ class Assets {
 						continue;
 					}
 
-					// Only include configuration that JavaScript needs.
 					$js_rules[ $post_type ][ $meta_key ][ $check_name ] = array(
 						'error_msg'   => $check_config['error_msg'],
 						'warning_msg' => $check_config['warning_msg'],
@@ -269,10 +246,7 @@ class Assets {
 	}
 
 	/**
-	 * Prepare editor validation rules for JavaScript
-	 *
-	 * Formats the editor validation rules from the registry into a structure
-	 * that can be consumed by JavaScript.
+	 * Prepare editor validation rules for JavaScript.
 	 *
 	 * @param EditorChecksRegistry $editor_registry The editor checks registry instance.
 	 * @return array Formatted editor validation rules for JavaScript.
@@ -285,7 +259,6 @@ class Assets {
 			$js_rules[ $post_type ] = array();
 
 			foreach ( $checks as $check_name => $check_config ) {
-				// Get the effective check level (considering settings).
 				$effective_type = $editor_registry->get_effective_editor_check_level( $post_type, $check_name );
 
 				// Skip checks set to 'none'.
@@ -293,7 +266,6 @@ class Assets {
 					continue;
 				}
 
-				// Only include configuration that JavaScript needs.
 				$js_rules[ $post_type ][ $check_name ] = array(
 					'error_msg'   => $check_config['error_msg'],
 					'warning_msg' => $check_config['warning_msg'],

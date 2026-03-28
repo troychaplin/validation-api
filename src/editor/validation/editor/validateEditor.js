@@ -19,7 +19,7 @@ import {
  * These rules are post-type specific and validate overall document structure
  * rather than individual blocks. Rules are exposed via the window object by PHP.
  */
-const editorChecksConfig = window.BlockAccessibilityChecks?.editorValidationRules || {};
+const editorChecksConfig = window.ValidationAPI?.editorValidationRules || {};
 
 /**
  * Validates entire editor content against editor-level validation rules.
@@ -27,7 +27,7 @@ const editorChecksConfig = window.BlockAccessibilityChecks?.editorValidationRule
  * Runs all registered validation checks for the overall editor/document state,
  * which differ from block-level validation by checking document-wide requirements
  * (e.g., heading hierarchy, required content sections). External plugins can hook
- * into the validation process via the 'ba11yc_validate_editor' filter.
+ * into the validation process via the 'validation_api_validate_editor' filter.
  *
  * @param {string} postType - The current post type (e.g., 'post', 'page').
  * @param {Array}  blocks   - Array of all block objects in the editor.
@@ -46,13 +46,13 @@ export function validateEditor(postType, blocks) {
 		}
 
 		/**
-		 * Filter: ba11yc_validate_editor
+		 * Filter: validation_api_validate_editor
 		 *
 		 * Allows external plugins to implement validation logic for editor-level checks.
 		 * Plugins should return false if validation fails, true if it passes.
 		 */
 		const isValid = applyFilters(
-			'ba11yc_validate_editor',
+			'validation_api_validate_editor',
 			true,
 			blocks,
 			postType,

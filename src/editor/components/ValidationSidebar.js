@@ -308,7 +308,7 @@ export function ValidationSidebar() {
 	return (
 		<PluginSidebar
 			name="validation-sidebar"
-			title={__('Accessibility & Validation', 'block-accessibility-checks')}
+			title={__('Accessibility & Validation', 'validation-api')}
 			icon={ba11yIcon}
 			className="ba11y-validation-sidebar"
 		>
@@ -317,7 +317,7 @@ export function ValidationSidebar() {
 				<PanelBody
 					title={sprintf(
 						/* translators: %d: number of errors */
-						__('Errors (%d)', 'block-accessibility-checks'),
+						__('Errors (%d)', 'validation-api'),
 						totalErrors
 					)}
 					initialOpen={true}
@@ -330,7 +330,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-error-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Block Errors', 'block-accessibility-checks')}
+										{__('Block Errors', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-error-list">
@@ -365,7 +365,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-error-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Meta Errors', 'block-accessibility-checks')}
+										{__('Meta Errors', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-error-list">
@@ -384,7 +384,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-error-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Editor Errors', 'block-accessibility-checks')}
+										{__('Editor Errors', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-error-list">
@@ -403,7 +403,7 @@ export function ValidationSidebar() {
 				<PanelBody
 					title={sprintf(
 						/* translators: %d: number of warnings */
-						__('Warnings (%d)', 'block-accessibility-checks'),
+						__('Warnings (%d)', 'validation-api'),
 						totalWarnings
 					)}
 					initialOpen={true}
@@ -416,7 +416,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-warning-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Block Warnings', 'block-accessibility-checks')}
+										{__('Block Warnings', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-warning-list">
@@ -451,7 +451,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-warning-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Meta Warnings', 'block-accessibility-checks')}
+										{__('Meta Warnings', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-warning-list">
@@ -470,7 +470,7 @@ export function ValidationSidebar() {
 								<p className="ba11y-warning-subheading">
 									<strong>
 										<span className="ba11y-indicator-circle"></span>
-										{__('Editor Warnings', 'block-accessibility-checks')}
+										{__('Editor Warnings', 'validation-api')}
 									</strong>
 								</p>
 								<ul className="ba11y-warning-list">

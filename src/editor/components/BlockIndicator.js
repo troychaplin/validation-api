@@ -50,8 +50,8 @@ export function BlockIndicator({ issues }) {
 	const getMessageWithCategory = (text, category) => {
 		const categoryLabel =
 			category === 'validation'
-				? __('(Validation)', 'block-accessibility-checks')
-				: __('(Accessibility)', 'block-accessibility-checks');
+				? __('(Validation)', 'validation-api')
+				: __('(Accessibility)', 'validation-api');
 
 		return (
 			<>
@@ -67,12 +67,12 @@ export function BlockIndicator({ issues }) {
 					icon={icon}
 					onClick={openModal}
 					className="ba11y-block-indicator-button"
-					aria-label={__('View block issues or concerns', 'block-accessibility-checks')}
+					aria-label={__('View block issues or concerns', 'validation-api')}
 				/>
 			</div>
 			{isModalOpen && (
 				<Modal
-					title={__('Issues or Concerns', 'block-accessibility-checks')}
+					title={__('Issues or Concerns', 'validation-api')}
 					onRequestClose={closeModal}
 					className="ba11y-block-indicator-modal"
 				>
@@ -83,7 +83,7 @@ export function BlockIndicator({ issues }) {
 								<p>
 									<strong className="ba11y-indicator-section-title">
 										<span className="ba11y-indicator-section-title-circle"></span>
-										{__('Errors', 'block-accessibility-checks')}
+										{__('Errors', 'validation-api')}
 									</strong>
 								</p>
 								<ul>
@@ -105,7 +105,7 @@ export function BlockIndicator({ issues }) {
 								<p>
 									<strong className="ba11y-indicator-section-title">
 										<span className="ba11y-indicator-section-title-circle"></span>
-										{__('Warnings', 'block-accessibility-checks')}
+										{__('Warnings', 'validation-api')}
 									</strong>
 								</p>
 								<ul>

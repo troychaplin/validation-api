@@ -32,7 +32,7 @@ import {
  */
 export function ValidationAPI() {
 	// Get the editor context from PHP
-	const editorContext = window.BlockAccessibilityChecks?.editorContext || 'none';
+	const editorContext = window.ValidationAPI?.editorContext || 'none';
 
 	// Check if we're in a supported editor context
 	const isPostEditor =
@@ -96,18 +96,18 @@ export function ValidationAPI() {
 
 		// Lock saving if any validation errors exist
 		if (hasBlockErrors || hasMetaErrors || hasEditorErrors) {
-			lockPostSaving('block-accessibility-checks');
+			lockPostSaving('validation-api');
 			if (lockPostAutosaving) {
-				lockPostAutosaving('block-accessibility-checks');
+				lockPostAutosaving('validation-api');
 			}
 			if (disablePublishSidebar) {
 				disablePublishSidebar();
 			}
 		} else {
 			// Re-enable saving when all errors are resolved
-			unlockPostSaving('block-accessibility-checks');
+			unlockPostSaving('validation-api');
 			if (unlockPostAutosaving) {
-				unlockPostAutosaving('block-accessibility-checks');
+				unlockPostAutosaving('validation-api');
 			}
 			if (enablePublishSidebar) {
 				enablePublishSidebar();

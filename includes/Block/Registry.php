@@ -4,13 +4,13 @@
  *
  * Central registry for managing block accessibility checks.
  *
- * @package BlockAccessibilityChecks
- * @since 1.3.0
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Block;
+namespace ValidationAPI\Block;
 
-use BlockAccessibility\Core\Traits\Logger;
+use ValidationAPI\Core\Traits\Logger;
 
 /**
  * Block Checks Registry Class
@@ -123,10 +123,10 @@ class Registry {
 			}
 
 			// Allow developers to filter check arguments before registration.
-			$check_args = \apply_filters( 'ba11yc_check_args', $check_args, $block_type, $check_name );
+			$check_args = \apply_filters( 'validation_api_check_args', $check_args, $block_type, $check_name );
 
 			// Allow developers to prevent specific checks from being registered.
-			if ( ! \apply_filters( 'ba11yc_should_register_check', true, $block_type, $check_name, $check_args ) ) {
+			if ( ! \apply_filters( 'validation_api_should_register_check', true, $block_type, $check_name, $check_args ) ) {
 				$this->log_debug( "Check registration prevented by filter: {$block_type}/{$check_name}" );
 				return false;
 			}
@@ -148,7 +148,7 @@ class Registry {
 			\uasort( $this->checks[ $block_type ], array( $this, 'sort_checks_by_priority' ) );
 
 			// Action hook for developers to know when a check is registered.
-			\do_action( 'ba11yc_check_registered', $block_type, $check_name, $check_args );
+			\do_action( 'validation_api_check_registered', $block_type, $check_name, $check_args );
 
 			$this->log_debug( "Successfully registered check: {$block_type}/{$check_name}" );
 			return true;
@@ -178,7 +178,7 @@ class Registry {
 		}
 
 		// Action hook for developers to know when a check is unregistered.
-		\do_action( 'ba11yc_check_unregistered', $block_type, $check_name );
+		\do_action( 'validation_api_check_unregistered', $block_type, $check_name );
 
 		return true;
 	}
@@ -199,7 +199,7 @@ class Registry {
 		$this->checks[ $block_type ][ $check_name ]['enabled'] = (bool) $enabled;
 
 		// Action hook for developers to know when a check is enabled/disabled.
-		\do_action( 'ba11yc_check_toggled', $block_type, $check_name, $enabled );
+		\do_action( 'validation_api_check_toggled', $block_type, $check_name, $enabled );
 
 		return true;
 	}
@@ -272,8 +272,9 @@ class Registry {
 	/**
 	 * Get the effective check level for a specific check
 	 *
-	 * This method determines the actual check level by considering both
-	 * the check configuration and user settings.
+	 * Passes the registered level through the validation_api_check_level filter,
+	 * allowing external plugins (e.g. a settings companion) to override the level
+	 * at runtime. Checks set to 'none' are skipped without firing the filter.
 	 *
 	 * @param string $block_type The block type.
 	 * @param string $check_name The check name.
@@ -286,9 +287,21 @@ class Registry {
 			return 'none';
 		}
 
-		$check      = $checks[ $check_name ];
-		$check_type = $check['type'] ?? 'error';
+		$check_type = $checks[ $check_name ]['type'] ?? 'error';
 
-		return $check_type;
+		// 'none' short-circuits — filter does not fire.
+		if ( 'none' === $check_type ) {
+			return 'none';
+		}
+
+		return \apply_filters(
+			'validation_api_check_level',
+			$check_type,
+			array(
+				'scope'      => 'block',
+				'block_type' => $block_type,
+				'check_name' => $check_name,
+			)
+		);
 	}
 }

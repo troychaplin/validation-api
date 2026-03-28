@@ -32,7 +32,7 @@ function addBlockValidationCategory(settings) {
  */
 addFilter(
 	'blocks.registerBlockType',
-	'block-accessibility-checks/add-validation-category',
+	'validation-api/add-validation-category',
 	addBlockValidationCategory
 );
 
@@ -42,7 +42,7 @@ addFilter(
  * This Proxy object provides transparent access to validation rules that are
  * registered server-side via PHP and exposed through the window object. The
  * proxy allows JavaScript code to access rules as if they were stored locally,
- * while actually fetching them from window.BlockAccessibilityChecks.validationRules.
+ * while actually fetching them from window.ValidationAPI.validationRules.
  *
  * Usage: blockChecksArray['core/image'] returns validation rules for the image block.
  *
@@ -53,11 +53,8 @@ export const blockChecksArray = new Proxy(
 	{
 		get(target, prop) {
 			// Access validation rules from the window object (populated by PHP)
-			if (
-				window.BlockAccessibilityChecks &&
-				window.BlockAccessibilityChecks.validationRules
-			) {
-				return window.BlockAccessibilityChecks.validationRules[prop];
+			if (window.ValidationAPI && window.ValidationAPI.validationRules) {
+				return window.ValidationAPI.validationRules[prop];
 			}
 			return undefined;
 		},

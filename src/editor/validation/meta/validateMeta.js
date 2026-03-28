@@ -20,14 +20,14 @@ import {
  * These rules are exposed via the window object by PHP and define what
  * validation checks should run for each meta field.
  */
-const metaValidationRules = window.BlockAccessibilityChecks?.metaValidationRules || {};
+const metaValidationRules = window.ValidationAPI?.metaValidationRules || {};
 
 /**
  * Validates a single meta field against a specific validation check.
  *
  * Runs a single validation rule (e.g., 'required', 'min_length') for a meta field.
  * Supports built-in checks and allows external plugins to extend validation via
- * the 'ba11yc_validate_meta' filter hook. Returns true if validation passes.
+ * the 'validation_api_validate_meta' filter hook. Returns true if validation passes.
  *
  * @param {string} postType  - The post type (e.g., 'post', 'page').
  * @param {string} metaKey   - The meta key to validate (e.g., '_wp_page_template').
@@ -54,12 +54,19 @@ export function validateMetaField(postType, metaKey, value, checkName) {
 	// Additional built-in check types can be added here as needed
 
 	/**
-	 * Filter: ba11yc_validate_meta
+	 * Filter: validation_api_validate_meta
 	 *
 	 * Allows external plugins to modify or extend validation logic for meta fields.
 	 * Plugins should return false if validation fails, true if it passes.
 	 */
-	isValid = applyFilters('ba11yc_validate_meta', isValid, value, postType, metaKey, checkName);
+	isValid = applyFilters(
+		'validation_api_validate_meta',
+		isValid,
+		value,
+		postType,
+		metaKey,
+		checkName
+	);
 
 	return isValid;
 }

@@ -19,9 +19,9 @@ import {
  * Validates a block against all PHP-registered checks.
  *
  * Checks are registered server-side via PHP and exposed through
- * window.BlockAccessibilityChecks.validationRules. External plugins provide
+ * window.ValidationAPI.validationRules. External plugins provide
  * validation logic either via a `validator` function on the check config or
- * via the `ba11yc_validate_block` JS filter.
+ * via the `validation_api_validate_block` JS filter.
  *
  * @param {Object} block - The block object containing name, attributes, clientId, etc.
  * @return {Object} Validation result with isValid, issues array, severity mode, clientId, and block name.
@@ -61,14 +61,14 @@ export const validateBlock = block => {
 		}
 
 		/**
-		 * Filter: ba11yc_validate_block
+		 * Filter: validation_api_validate_block
 		 *
 		 * Primary extension point for block validation logic. External plugins
 		 * hook here to implement their check logic and return true (valid) or
 		 * false (invalid).
 		 */
 		isValid = applyFilters(
-			'ba11yc_validate_block',
+			'validation_api_validate_block',
 			isValid,
 			blockType,
 			attributes,

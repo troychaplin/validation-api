@@ -1,17 +1,17 @@
 <?php
 /**
  * Plugin Name:       Validation API
- * Description:       Add plugin that add errors and warnings to core blocks to meet WCAG (Web Content Accessibility Guidelines) requirements.
+ * Description:       A framework for registering block, meta, and editor validation checks in the WordPress block editor.
  * Requires at least: 6.7
  * Requires PHP:      7.0
- * Version:           3.0.1
+ * Version:           1.0.0
  * Author:            Troy Chaplin
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       block-accessibility-checks
+ * Text Domain:       validation-api
  * Domain Path:       /languages
  *
- * @package           block-accessibility-checks
+ * @package           validation-api
  */
 
 // Prevent direct access to the file.
@@ -19,35 +19,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Defines the version of the Block Accessibility Checks plugin.
-define( 'BA11YC_VERSION', '3.0.1' );
+// Defines the version of the Validation API plugin.
+define( 'VALIDATION_API_VERSION', '1.0.0' );
 
 // This file is responsible for including the necessary autoload file.
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Imports the necessary classes for the plugin.
-use BlockAccessibility\Core\Plugin;
+use ValidationAPI\Core\Plugin;
 
 // Global variables for the plugin.
-$ba11yc_plugin_file = __FILE__;
-$ba11yc_text_domain = 'block-accessibility-checks';
+$validation_api_plugin_file = __FILE__;
+$validation_api_text_domain = 'validation-api';
 
-// Initialize the Plugin immediately (before 'init' hook).
-// This is required for HeadingLevels to register its filter early enough.
-$ba11yc_plugin_initializer = new Plugin( $ba11yc_plugin_file, $ba11yc_text_domain );
+// Initialize the Plugin.
+$validation_api_plugin_initializer = new Plugin( $validation_api_plugin_file, $validation_api_text_domain );
 
 /**
- * Initializes the Block Accessibility Checks plugin services.
- *
- * This function is called on the 'init' hook to complete plugin initialization
- * after HeadingLevels has been set up in the Plugin constructor.
+ * Initializes the Validation API plugin services.
  *
  * @return void
  */
-function ba11yc_init_plugin() {
-	global $ba11yc_plugin_initializer;
-
-	// Complete plugin initialization (HeadingLevels already initialized in constructor).
-	$ba11yc_plugin_initializer->init();
+function validation_api_init_plugin() {
+	global $validation_api_plugin_initializer;
+	$validation_api_plugin_initializer->init();
 }
-add_action( 'init', 'ba11yc_init_plugin' );
+add_action( 'init', 'validation_api_init_plugin' );

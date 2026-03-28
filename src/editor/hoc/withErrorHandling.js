@@ -80,8 +80,4 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
  * This filter intercepts all block editor components and wraps them
  * with our validation and error handling functionality.
  */
-wp.hooks.addFilter(
-	'editor.BlockEdit',
-	'block-accessibility-checks/with-error-handling',
-	withErrorHandling
-);
+wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', withErrorHandling);
