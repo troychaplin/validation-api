@@ -94,23 +94,19 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ## Phase 3: Clean Build Config
 
 ### Tasks
-- [ ] `webpack.config.js` — Remove `settings-core-blocks` entry point
-- [ ] `webpack.config.js` — Remove `settings-editor-validation` entry point
-- [ ] `webpack.config.js` — Remove `settings-external-plugins` entry point
-- [ ] `webpack.config.js` — Remove `block-admin` entry point (if separate from `block-checks`)
-- [ ] `package.json` — Update `name` field to `validation-api`
-- [ ] `package.json` — Update `description` field
-- [ ] Delete stale build artifacts from `/build/`: `settings-core-blocks.*`, `settings-editor-validation.*`, `settings-external-plugins.*`, `block-admin.*`
+- [x] `webpack.config.js` — Already clean, only `block-checks` entry. Settings entries were auto-discovered by `@wordpress/scripts` from source files deleted in Phase 2.
+- [x] `package.json` — `name` already `validation-api`, description already updated
+- [x] Stale build artifacts — `build/` already clean after Phase 2 `npm run build`
 
 ### Verify
-- [ ] `webpack.config.js` entry points match only the scripts the plugin still ships
-- [ ] `npm run build` produces no output files for removed entry points
-- [ ] No `.asset.php` files in `build/` for removed entries
-- [ ] `package.json` `name` is `validation-api`
+- [x] `webpack.config.js` entry points match only the scripts the plugin still ships
+- [x] `npm run build` produces no output files for removed entry points
+- [x] No `.asset.php` files in `build/` for removed entries
+- [x] `package.json` `name` is `validation-api`
 
 ### Manual Tests
-- [ ] `npm run build` — clean run, no errors, no unexpected output files
-- [ ] `npm run start` (dev mode) — no errors related to missing source files
+- [x] `npm run build` — clean run, no errors, no unexpected output files
+- [x] `npm run start` (dev mode) — no errors related to missing source files
 
 ---
 
