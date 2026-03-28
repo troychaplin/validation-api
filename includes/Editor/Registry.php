@@ -10,6 +10,7 @@
 
 namespace ValidationAPI\Editor;
 
+use ValidationAPI\Core\PluginContext;
 use ValidationAPI\Core\Traits\Logger;
 
 /**
@@ -133,6 +134,12 @@ class Registry {
 			// Initialize post type array if needed.
 			if ( ! isset( $this->editor_checks[ $post_type ] ) ) {
 				$this->editor_checks[ $post_type ] = array();
+			}
+
+			// Stamp plugin attribution from active context.
+			$plugin_context = PluginContext::get();
+			if ( null !== $plugin_context ) {
+				$check_args['_plugin'] = $plugin_context;
 			}
 
 			// Store the check.

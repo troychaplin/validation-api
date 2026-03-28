@@ -13,6 +13,7 @@ namespace ValidationAPI\Core;
 use ValidationAPI\Core\Traits\Logger;
 use ValidationAPI\Block\Registry as BlockChecksRegistry;
 use ValidationAPI\Editor\Registry as EditorChecksRegistry;
+use ValidationAPI\Rest\ChecksController;
 
 /**
  * Plugin Initializer Class
@@ -74,6 +75,7 @@ class Plugin {
 
 			// Setup hooks.
 			$this->setup_hooks();
+			$this->init_rest_api();
 
 			// Allow other plugins to hook into our initialization.
 			\do_action( 'validation_api_initialized', $this );
@@ -183,6 +185,23 @@ class Plugin {
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to setup WordPress hooks: ' . $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Initialize the REST API
+	 *
+	 * Registers REST API routes on the rest_api_init hook.
+	 *
+	 * @return void
+	 */
+	private function init_rest_api(): void {
+		\add_action(
+			'rest_api_init',
+			function () {
+				$controller = new ChecksController();
+				$controller->register_routes();
+			}
+		);
 	}
 
 	/**

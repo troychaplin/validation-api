@@ -10,6 +10,7 @@
 
 namespace ValidationAPI\Block;
 
+use ValidationAPI\Core\PluginContext;
 use ValidationAPI\Core\Traits\Logger;
 
 /**
@@ -131,6 +132,12 @@ class Registry {
 			// Initialize block type array if needed.
 			if ( ! isset( $this->checks[ $block_type ] ) ) {
 				$this->checks[ $block_type ] = array();
+			}
+
+			// Stamp plugin attribution from active context.
+			$plugin_context = PluginContext::get();
+			if ( null !== $plugin_context ) {
+				$check_args['_plugin'] = $plugin_context;
 			}
 
 			// Store the check.
