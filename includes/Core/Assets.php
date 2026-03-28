@@ -37,14 +37,14 @@ class Assets {
 	 *
 	 * @var string
 	 */
-	private const BLOCK_SCRIPT_PATH = 'build/block-checks.js';
+	private const BLOCK_SCRIPT_PATH = 'build/validation-api.js';
 
 	/**
 	 * Path to the main block checks stylesheet.
 	 *
 	 * @var string
 	 */
-	private const BLOCK_STYLE_PATH = 'build/block-checks.css';
+	private const BLOCK_STYLE_PATH = 'build/validation-api.css';
 
 	/**
 	 * The path to the plugin file.

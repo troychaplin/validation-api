@@ -9,8 +9,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Build folder
-build/block-checks.css.map
-build/block-checks.js.map
+build/validation-api.css.map
+build/validation-api.js.map
 
 # Package Addon
 validation-api-settings
