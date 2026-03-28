@@ -1,4 +1,4 @@
-<img src="assets/icon-256x256.png" alt="Validation API Plugin Banner" style="float: left; margin-right: 1.5em; height: auto; max-width: 210px;">
+<img src="assets/icon-256x256.png" alt="Validation API Plugin Banner" style="float: left; margin-right: 1.5em; height: auto; width: 210px;">
   
 # Validation API
 
