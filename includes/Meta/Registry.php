@@ -10,6 +10,7 @@
 
 namespace ValidationAPI\Meta;
 
+use ValidationAPI\Core\PluginContext;
 use ValidationAPI\Core\Traits\Logger;
 
 /**
@@ -144,6 +145,12 @@ class Registry {
 			// Initialize meta key array if needed.
 			if ( ! isset( $this->meta_checks[ $post_type ][ $meta_key ] ) ) {
 				$this->meta_checks[ $post_type ][ $meta_key ] = array();
+			}
+
+			// Stamp plugin attribution from active context.
+			$plugin_context = PluginContext::get();
+			if ( null !== $plugin_context ) {
+				$check_args['_plugin'] = $plugin_context;
 			}
 
 			// Store the check.
