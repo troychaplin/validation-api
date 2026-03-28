@@ -83,11 +83,11 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [ ] `npm run build` completes with zero errors
 
 ### Manual Tests
-- [ ] Build succeeds: `npm run build`
-- [ ] No orphaned JS errors in browser console related to missing validator modules
-- [ ] `validateBlock.js`, `validateMeta.js`, `validateEditor.js` runners still load (confirm via console or Sources tab)
-- [ ] `window.ValidationAPI` (post-Phase 4) or current global is still accessible in browser console
-- [ ] Block editor loads without JS errors
+- [x] Build succeeds: `npm run build`
+- [x] No orphaned JS errors in browser console related to missing validator modules
+- [x] Runners still load — confirm `window.BlockAccessibilityChecks` is defined and `Object.keys(window.BlockAccessibilityChecks)` includes expected keys (`validationRules`, `editorContext`, `registeredBlockTypes`, `useMetaField`). Note: `wp.hooks.getFilters` is not a public API — use `wp.hooks.hasFilter('ba11yc_validate_block')` only if an external listener has been registered.
+- [x] `window.ValidationAPI` (post-Phase 4) or current global is still accessible in browser console
+- [x] Block editor loads without JS errors
 
 ---
 

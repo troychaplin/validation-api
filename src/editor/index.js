@@ -7,4 +7,3 @@
 export * from './components';
 export * from './hoc';
 export * from './validation';
-export * from './modifications';
