@@ -12,6 +12,9 @@ yarn-error.log*
 build/block-checks.css.map
 build/block-checks.js.map
 
+# Package Addon
+validation-api-settings
+
 # Dependency directories
 node_modules/
 

@@ -9,12 +9,11 @@ These changes go into the existing `validation-api` plugin to support the compan
 - [ ] Create `includes/Contracts/CheckProvider.php` interface with `register(): void` method
 - [ ] Create `includes/Core/PluginContext.php` static class to manage current plugin context (set/get/clear)
 - [ ] Create `validation_api_register_plugin()` global function in main plugin file
-  - [ ] Accept `$plugin_info` array and `$checks` callable or array
+  - [ ] Accept `$plugin_info` array (with `name` key) and `$checks` callable or array
   - [ ] Set plugin context before invoking checks
   - [ ] Support callable (closure) pattern
   - [ ] Support array of `CheckProvider` class names
   - [ ] Clear plugin context after invocation
-  - [ ] Auto-generate `slug` from `name` if not provided
 - [ ] Update `Block\Registry::register_check()` to read and store `_plugin` from active context
 - [ ] Update `Meta\Registry::register_meta_check()` to read and store `_plugin` from active context
 - [ ] Update `Editor\Registry::register_editor_check()` to read and store `_plugin` from active context
@@ -29,6 +28,11 @@ These changes go into the existing `validation-api` plugin to support the compan
   - [ ] Define response schema
 - [ ] Register REST routes in `Core\Plugin::init()` via `rest_api_init` hook
 
+### Documentation
+
+- [ ] Document the `function_exists` safe integration pattern for plugin authors
+- [ ] Add integration examples to inline PHPDoc on `validation_api_register_plugin()`
+
 ### Tests
 
 - [ ] Test `validation_api_register_plugin()` with callable pattern
@@ -36,6 +40,7 @@ These changes go into the existing `validation-api` plugin to support the compan
 - [ ] Test plugin context is set on checks registered within scope
 - [ ] Test plugin context is cleared after scope completes
 - [ ] Test checks registered outside scope have no `_plugin` key
+- [ ] Test `function_exists` guard works when core plugin is deactivated
 - [ ] Test `GET /validation-api/v1/checks` returns all registries
 - [ ] Test REST endpoint requires `manage_options` capability
 
@@ -43,8 +48,10 @@ These changes go into the existing `validation-api` plugin to support the compan
 
 ## Phase 2: Companion Package Setup
 
-### Package Structure
+### Repository and Package Structure
 
+- [ ] Clone companion repo inside core plugin directory
+- [ ] Add companion repo path to core plugin `.gitignore`
 - [ ] Create companion plugin directory structure
 - [ ] Create main plugin file with plugin header
 - [ ] Create `composer.json` for the companion package

@@ -25,10 +25,7 @@ function validation_api_register_plugin( array $plugin_info, callable|array $che
 **Parameters:**
 
 - `$plugin_info` — Associative array with plugin metadata:
-  - `name` (string, required) — Display name shown in the settings table
-  - `slug` (string, optional) — Unique identifier, auto-generated from name if omitted
-  - `version` (string, optional) — Plugin version
-  - `url` (string, optional) — Plugin URL
+  - `name` (string, required) — Display name shown in the settings table Plugin column
 
 - `$checks` — Either:
   - A `callable` (closure or function) that registers checks within the scoped context
@@ -79,6 +76,30 @@ add_action( 'validation_api_ready', function() {
 5. After the callable/array completes, the static context is cleared
 
 Checks registered outside of `validation_api_register_plugin()` have no `_plugin` attribution — they display as "—" in the settings table.
+
+### Safe Integration Pattern
+
+Plugin authors should always guard their registration code so their plugin doesn't break if the Validation API is deactivated:
+
+```php
+add_action( 'init', function() {
+    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
+        return;
+    }
+
+    validation_api_register_plugin(
+        [ 'name' => 'My Plugin' ],
+        function() {
+            validation_api_register_block_check( 'core/image', [
+                'name'  => 'alt_text',
+                'level' => 'error',
+            ] );
+        }
+    );
+} );
+```
+
+This is the recommended integration pattern. The `function_exists` check ensures registration code is silently skipped when the Validation API plugin is not active. This follows standard WordPress conventions for optional plugin dependencies.
 
 ### 2. CheckProvider Interface
 
@@ -146,8 +167,7 @@ Returns all registered checks across all three registries with plugin attributio
         "priority": 10,
         "enabled": true,
         "_plugin": {
-          "name": "My SEO Plugin",
-          "slug": "my-seo-plugin"
+          "name": "My SEO Plugin"
         }
       }
     }
@@ -163,8 +183,7 @@ Returns all registered checks across all three registries with plugin attributio
           "priority": 10,
           "enabled": true,
           "_plugin": {
-            "name": "My SEO Plugin",
-            "slug": "my-seo-plugin"
+            "name": "My SEO Plugin"
           }
         }
       }
@@ -187,6 +206,10 @@ Returns all registered checks across all three registries with plugin attributio
 ```
 
 **Permissions:** `manage_options` capability required.
+
+### Repository Structure
+
+The companion package lives in its own Git repository, separate from the core `validation-api` plugin. During development, the companion repo is cloned inside the core plugin directory and gitignored — this allows developing both side-by-side while keeping their histories and release cycles independent.
 
 ---
 
@@ -374,7 +397,7 @@ wp validation-api settings import < settings.json
 
 ### Per-Plugin Subpages
 
-If a site has many plugins registering checks, the single table may become unwieldy. A future version could add subpages under the top-level menu — one per registered plugin. The `_plugin.slug` already supports this grouping.
+If a site has many plugins registering checks, the single table may become unwieldy. A future version could add subpages under the top-level menu — one per registered plugin. The `_plugin.name` attribution already supports this grouping.
 
 ### Bulk Operations
 
