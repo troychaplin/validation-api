@@ -5,7 +5,7 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		...defaultConfig.entry,
-		'block-checks': [path.resolve(__dirname, 'src/script.js')],
+		'validation-api': [path.resolve(__dirname, 'src/script.js')],
 	},
 	output: {
 		...defaultConfig.output,

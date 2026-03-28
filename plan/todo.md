@@ -93,7 +93,7 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ## Phase 3: Clean Build Config
 
 ### Tasks
-- [x] `webpack.config.js` — Already clean, only `block-checks` entry. Settings entries were auto-discovered by `@wordpress/scripts` from source files deleted in Phase 2.
+- [x] `webpack.config.js` — Already clean, only `validation-api` entry. Settings entries were auto-discovered by `@wordpress/scripts` from source files deleted in Phase 2.
 - [x] `package.json` — `name` already `validation-api`, description already updated
 - [x] Stale build artifacts — `build/` already clean after Phase 2 `npm run build`
 
@@ -120,7 +120,7 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [x] `includes/Core/Assets.php` — Rename `SCRIPT_HANDLE` constant value from `block-accessibility-script` → `validation-api-script`
 - [x] `includes/Core/Assets.php` — Rename `wp_localize_script` object from `BlockAccessibilityChecks` → `ValidationAPI`
 - [x] `includes/Core/Assets.php` — Update `BA11YC_VERSION` → `VALIDATION_API_VERSION` in all `wp_enqueue_script` / `wp_enqueue_style` version args
-- [x] `includes/Core/Assets.php` — Update style handle `block-checks-style` → `validation-api-style`
+- [x] `includes/Core/Assets.php` — Update style handle `validation-api-style` → `validation-api-style`
 - [x] All PHP files — Replace every `__( '...', 'block-accessibility-checks' )` with `__( '...', 'validation-api' )`
 - [x] All PHP files — Replace every `_e( '...', 'block-accessibility-checks' )` with `_e( '...', 'validation-api' )`
 - [x] All PHP files — Replace every `esc_html__( '...', 'block-accessibility-checks' )` with `esc_html__( '...', 'validation-api' )`
