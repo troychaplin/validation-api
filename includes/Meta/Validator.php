@@ -34,7 +34,7 @@ class Validator {
 	 * register_post_meta( 'band', 'band_origin', [
 	 *     'validate_callback' => Validator::required( 'band', 'band_origin', [
 	 *         'error_msg' => 'Field is required',
-	 *         'type'      => 'error',
+	 *         'level'     => 'error',
 	 *     ] ),
 	 * ] );
 	 *
@@ -47,7 +47,7 @@ class Validator {
 		$defaults = array(
 			'error_msg'   => 'This field is required.',
 			'warning_msg' => 'This field is recommended.',
-			'type'        => 'error',
+			'level'       => 'error',
 			'check_name'  => 'required',
 			'description' => '',
 		);

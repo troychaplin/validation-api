@@ -85,8 +85,7 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 ### Manual Tests
 - [x] Build succeeds: `npm run build`
 - [x] No orphaned JS errors in browser console related to missing validator modules
-- [x] Runners still load — confirm `window.BlockAccessibilityChecks` is defined and `Object.keys(window.BlockAccessibilityChecks)` includes expected keys (`validationRules`, `editorContext`, `registeredBlockTypes`, `useMetaField`). Note: `wp.hooks.getFilters` is not a public API — use `wp.hooks.hasFilter('ba11yc_validate_block')` only if an external listener has been registered.
-- [x] `window.ValidationAPI` (post-Phase 4) or current global is still accessible in browser console
+- [x] Runners still load — confirm `window.ValidationAPI` is defined in browser console
 - [x] Block editor loads without JS errors
 
 ---
@@ -172,11 +171,10 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [x] Remove `get_core_block_setting()` method
 - [x] Remove `get_external_block_setting()` method
 - [x] Remove `$plugin_info` param from `register_check()` signature and body
-- [ ] Remove `register_block_check()` wrapper (or simplify — it now just calls `register_check()` directly)
-- [ ] `register_check()` — Change `'type' => 'settings'` default → `'level' => 'error'` (rename key `type` → `level`)
-- [x] `register_check()` — Update `$valid_types` to `[ 'error', 'warning', 'none' ]` (remove `'settings'`)
-- [x] `register_check()` — Remove `'settings'` from type validation error message
-- [ ] `register_check()` — Remove `category` field (accessibility-specific concept) or confirm it should stay
+- [x] Remove `register_block_check()` wrapper — not present after Phase 1/4 rewrite
+- [x] `register_check()` — Rename key `'type'` → `'level'`, default `'error'`
+- [x] `register_check()` — Update `$valid_levels` to `[ 'error', 'warning', 'none' ]` (removed `'settings'`)
+- [x] `register_check()` — Remove `category` field (companion package will own this via `validation_api_check_args` filter)
 - [x] `get_effective_check_level()` — Replace `get_option()` settings lookup with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
 - [x] `get_effective_check_level()` — `$context` shape: `[ 'scope' => 'block', 'block_type' => $block_type, 'check_name' => $check_name ]`
 - [x] `get_effective_check_level()` — `'none'` short-circuits before filter fires
@@ -185,68 +183,66 @@ Checklist, verifications, and manual tests per phase. Check off as you go.
 - [x] Remove `get_option()` calls from `get_effective_meta_check_level()`
 - [x] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
 - [x] `$context` shape: `[ 'scope' => 'meta', 'post_type' => $post_type, 'meta_key' => $meta_key, 'check_name' => $check_name ]`
-- [ ] Update `'type'` → `'level'` key in defaults and registration if applicable
-- [x] Remove `'settings'` from valid types/levels
+- [x] Rename `'type'` → `'level'` key in defaults and registration
+- [x] Remove `'settings'` from valid levels
+
+#### `includes/Meta/Validator.php`
+- [x] Rename `'type'` → `'level'` in `$defaults` and docblock example
 
 #### `includes/Editor/Registry.php`
 - [x] Remove `get_option()` calls from `get_effective_editor_check_level()`
 - [x] Replace with `apply_filters( 'validation_api_check_level', $registered_level, $context )`
 - [x] `$context` shape: `[ 'scope' => 'editor', 'post_type' => $post_type, 'check_name' => $check_name ]`
-- [ ] Update `'type'` → `'level'` key in defaults and registration if applicable
-- [x] Remove `'settings'` from valid types/levels
+- [x] Rename `'type'` → `'level'` key in defaults and registration
+- [x] Remove `'settings'` from valid levels
 
 #### `includes/Core/Assets.php`
-- [ ] Update `prepare_validation_rules_for_js()` — field key `'type'` → `'level'` in JS output (matches new registry key)
-- [ ] Update `prepare_meta_validation_rules_for_js()` — same `type` → `level` key rename
-- [ ] Update `prepare_editor_validation_rules_for_js()` — same `type` → `level` key rename
+- [x] Update `prepare_validation_rules_for_js()` — field key `'type'` → `'level'` in JS output, removed `'category'`
+- [x] Update `prepare_meta_validation_rules_for_js()` — `'type'` → `'level'`
+- [x] Update `prepare_editor_validation_rules_for_js()` — `'type'` → `'level'`
+
+#### `src/shared/utils/validation/issueHelpers.js`
+- [x] `createIssue()` — Read `config.level` (not `config.type`) for severity
+- [x] `createIssue()` — Remove `category` from issue object
 
 ### Verify
 - [x] Zero remaining `get_option( 'block_checks' )` calls anywhere in `includes/`
-- [ ] Zero remaining `debug_backtrace` calls anywhere in `includes/`
+- [x] Zero remaining `debug_backtrace` calls anywhere in `includes/`
 - [x] Zero remaining `'settings'` as a valid level value in any registry
+- [x] Zero remaining `'type'` field keys in any registry defaults or JS output
 - [x] `get_effective_check_level()` in all 3 registries calls `apply_filters( 'validation_api_check_level', ... )`
 - [x] `get_effective_check_level()` short-circuits for `'none'` without firing the filter
-- [ ] `register_check()` accepts `'level'` key (not `'type'`) in all 3 registries
-- [ ] The JS data object (`window.ValidationAPI`) uses `level` key not `type` for each check rule
+- [x] `register_check()` accepts `'level'` key (not `'type'`) in all 3 registries
+- [x] The JS data object (`window.ValidationAPI`) uses `level` key not `type` for each check rule
 
 ### Manual Tests
-- [ ] Register a check with no `level` declared → resolves to `'error'` in JS rules
+- [ ] Register a check with no `level` declared → resolves to `'error'` in `window.ValidationAPI.validationRules`
 - [ ] Register a check with `'level' => 'warning'` → JS rules show `'warning'`
 - [ ] Register a check with `'level' => 'none'` → check does **not** appear in JS rules
 - [ ] Register a filter on `validation_api_check_level` that overrides `'error'` → `'warning'` → verify JS rules reflect `'warning'`
 - [ ] Register a filter that overrides to `'none'` → check absent from JS rules
-- [ ] `'none'` check: confirm the `validation_api_check_level` filter does **not** fire (add temporary `error_log` to filter to confirm)
-- [ ] All 3 scopes (block, meta, editor) verified through the filter system
+- [ ] All 3 scopes (block, meta, editor) confirmed working through the filter system
 
 ---
 
 ## Cross-Phase Final Checks
 
 ### Code Quality
-- [ ] Run `phpcs` — zero new violations
-- [ ] Run `npm run lint` — zero new JS lint errors
-- [ ] `composer dump-autoload` — no autoload errors
-- [ ] No `TODO` or `FIXME` comments left from refactor work
+- [x] Run `phpcs` — zero violations
+- [x] Run `npm run lint` — zero JS/CSS lint errors
+- [x] `composer dump-autoload` — no autoload errors
+- [x] No `TODO` or `FIXME` comments left from refactor work
 
-### Grep Audit (run before marking complete)
-- [ ] `grep -r "BlockAccessibility" includes/` → 0 results
-- [ ] `grep -r "BA11YC_" includes/ validation-api.php` → 0 results
-- [ ] `grep -r "ba11yc_" includes/ src/` → 0 results
-- [ ] `grep -r "block-accessibility-checks" includes/ src/` → 0 results
-- [ ] `grep -r "BlockAccessibilityChecks" src/` → 0 results
-- [ ] `grep -r "block_checks_options" includes/` → 0 results
-- [ ] `grep -r "debug_backtrace" includes/` → 0 results
-- [ ] `grep -r "type.*settings" includes/` → 0 results (no 'settings' level remaining)
-- [ ] `grep -r "CoreChecks\|HeadingLevels\|SettingsAPI" includes/` → 0 results
+### Grep Audit
+- [x] `grep -r "BlockAccessibility" includes/` → 0 results
+- [x] `grep -r "BA11YC_" includes/ validation-api.php` → 0 results
+- [x] `grep -r "ba11yc_" includes/ src/` → 0 results
+- [x] `grep -r "block-accessibility-checks" includes/ src/` → 0 results
+- [x] `grep -r "BlockAccessibilityChecks" src/` → 0 results
+- [x] `grep -r "block_checks_options" includes/` → 0 results
+- [x] `grep -r "debug_backtrace" includes/` → 0 results
+- [x] `grep -rn "'type'" includes/` → 0 results (all renamed to `'level'`)
+- [x] `grep -r "CoreChecks\|HeadingLevels\|SettingsAPI" includes/` → 0 results
 
 ### Final Manual Tests
-- [ ] Fresh install (deactivate → delete → reinstall) — no errors
-- [ ] Block editor (post editor): plugin loads, sidebar renders correctly
-- [ ] Site editor: plugin loads, no JS errors
-- [ ] Register a custom block check via `validation_api_ready` from a test plugin — check triggers validation in editor
-- [ ] Register a custom meta check via `Meta\\Registry` — meta field shows validation state
-- [ ] Register a custom editor check via `validation_api_editor_checks_ready` — editor-level check fires
-- [ ] Post with errors cannot be published (save is locked)
-- [ ] Post with only warnings can be published
-- [ ] `window.ValidationAPI` in console contains correct structure
-- [ ] No references to old `BlockAccessibilityChecks` global anywhere in page source or console
+- [ ] See `plan/final-manual-test.md`

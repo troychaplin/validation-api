@@ -194,8 +194,7 @@ class Assets {
 				$js_rules[ $block_type ][ $check_name ] = array(
 					'error_msg'   => $check_config['error_msg'],
 					'warning_msg' => $check_config['warning_msg'],
-					'type'        => $effective_type,
-					'category'    => $check_config['category'] ?? 'validation',
+					'level'       => $effective_type,
 					'priority'    => $check_config['priority'],
 					'enabled'     => $check_config['enabled'],
 					'description' => $check_config['description'],
@@ -233,7 +232,7 @@ class Assets {
 					$js_rules[ $post_type ][ $meta_key ][ $check_name ] = array(
 						'error_msg'   => $check_config['error_msg'],
 						'warning_msg' => $check_config['warning_msg'],
-						'type'        => $effective_type,
+						'level'       => $effective_type,
 						'priority'    => $check_config['priority'],
 						'enabled'     => $check_config['enabled'],
 						'description' => $check_config['description'],
@@ -269,7 +268,7 @@ class Assets {
 				$js_rules[ $post_type ][ $check_name ] = array(
 					'error_msg'   => $check_config['error_msg'],
 					'warning_msg' => $check_config['warning_msg'],
-					'type'        => $effective_type,
+					'level'       => $effective_type,
 					'priority'    => $check_config['priority'],
 					'enabled'     => $check_config['enabled'],
 					'description' => $check_config['description'],

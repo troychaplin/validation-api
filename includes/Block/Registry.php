@@ -82,8 +82,7 @@ class Registry {
 			$defaults = array(
 				'error_msg'   => '',
 				'warning_msg' => '',
-				'type'        => 'error',
-				'category'    => 'accessibility',
+				'level'       => 'error',
 				'priority'    => 10,
 				'enabled'     => true,
 				'description' => '',
@@ -102,18 +101,11 @@ class Registry {
 				$check_args['warning_msg'] = $check_args['error_msg'];
 			}
 
-			// Validate type parameter (optional, defaults to 'error').
-			$valid_types = array( 'error', 'warning', 'none' );
-			if ( ! in_array( $check_args['type'], $valid_types, true ) ) {
-				$this->log_error( "Invalid type '{$check_args['type']}' for {$block_type}/{$check_name}. Using 'error'." );
-				$check_args['type'] = 'error';
-			}
-
-			// Validate category parameter (optional, defaults to 'accessibility').
-			$valid_categories = array( 'accessibility', 'validation' );
-			if ( ! in_array( $check_args['category'], $valid_categories, true ) ) {
-				$this->log_error( "Invalid category '{$check_args['category']}' for {$block_type}/{$check_name}. Using 'accessibility'." );
-				$check_args['category'] = 'accessibility';
+			// Validate level parameter (optional, defaults to 'error').
+			$valid_levels = array( 'error', 'warning', 'none' );
+			if ( ! in_array( $check_args['level'], $valid_levels, true ) ) {
+				$this->log_error( "Invalid level '{$check_args['level']}' for {$block_type}/{$check_name}. Using 'error'." );
+				$check_args['level'] = 'error';
 			}
 
 			// Validate priority parameter.
@@ -287,7 +279,7 @@ class Registry {
 			return 'none';
 		}
 
-		$check_type = $checks[ $check_name ]['type'] ?? 'error';
+		$check_type = $checks[ $check_name ]['level'] ?? 'error';
 
 		// 'none' short-circuits — filter does not fire.
 		if ( 'none' === $check_type ) {

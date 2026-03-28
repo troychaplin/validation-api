@@ -96,10 +96,9 @@ export const createIssue = (config, checkName, additionalFields = {}) => {
 	const errorMsg = config.error_msg || message;
 	const warningMsg = config.warning_msg || config.error_msg || message;
 
-	const type = config.type || 'error';
-	const category = config.category || 'accessibility';
+	const type = config.level || 'error';
 
-	// Calculate priority based on type
+	// Calculate priority based on level
 	let priority;
 	if (type === 'error') {
 		priority = 1;
@@ -113,7 +112,6 @@ export const createIssue = (config, checkName, additionalFields = {}) => {
 		check: checkName,
 		checkName, // For compatibility with different naming conventions
 		type,
-		category,
 		priority,
 		message,
 		// Support both camelCase and snake_case for compatibility

@@ -95,7 +95,7 @@ class Registry {
 			$defaults = array(
 				'error_msg'   => '',
 				'warning_msg' => '',
-				'type'        => 'error',
+				'level'       => 'error',
 				'priority'    => 10,
 				'enabled'     => true,
 				'description' => '',
@@ -114,11 +114,11 @@ class Registry {
 				$check_args['warning_msg'] = $check_args['error_msg'];
 			}
 
-			// Validate type parameter.
-			$valid_types = array( 'error', 'warning', 'none' );
-			if ( ! in_array( $check_args['type'], $valid_types, true ) ) {
-				$this->log_error( "Invalid type '{$check_args['type']}' for {$post_type}/{$check_name}. Using 'error'." );
-				$check_args['type'] = 'error';
+			// Validate level parameter.
+			$valid_levels = array( 'error', 'warning', 'none' );
+			if ( ! in_array( $check_args['level'], $valid_levels, true ) ) {
+				$this->log_error( "Invalid level '{$check_args['level']}' for {$post_type}/{$check_name}. Using 'error'." );
+				$check_args['level'] = 'error';
 			}
 
 			// Allow developers to filter check arguments before registration.
@@ -223,7 +223,7 @@ class Registry {
 			return 'none';
 		}
 
-		$check_type = $editor_checks[ $check_name ]['type'] ?? 'error';
+		$check_type = $editor_checks[ $check_name ]['level'] ?? 'error';
 
 		// 'none' short-circuits — filter does not fire.
 		if ( 'none' === $check_type ) {
