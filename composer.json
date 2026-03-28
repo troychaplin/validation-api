@@ -1,11 +1,11 @@
 {
-	"name": "troychaplin/block-accessibility-checks",
-	"description": "Add plugin that add errors and warnings to core blocks to meet WCAG (Web Content Accessibility Guidelines) requirements.",
+	"name": "troychaplin/validation-api",
+	"description": "A framework for registering block, meta, and editor validation checks in the WordPress block editor.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"autoload": {
 		"psr-4": {
-			"BlockAccessibility\\": "includes/"
+			"ValidationAPI\\": "includes/"
 		}
 	},
 	"require-dev": {

@@ -30,7 +30,7 @@ export function GetInvalidMeta() {
 
 	// Retrieve validation rules registered for this post type
 	// Rules are registered via PHP and made available through the window object
-	const metaValidationRules = window.BlockAccessibilityChecks?.metaValidationRules || {};
+	const metaValidationRules = window.ValidationAPI?.metaValidationRules || {};
 	const postTypeRules = metaValidationRules[postType] || {};
 
 	const invalidMeta = [];

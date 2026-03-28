@@ -81,7 +81,7 @@ function findPostContentBlock(blocks) {
  */
 export function GetInvalidBlocks() {
 	// Get editor context to determine filtering strategy
-	const editorContext = window.BlockAccessibilityChecks?.editorContext || 'none';
+	const editorContext = window.ValidationAPI?.editorContext || 'none';
 	const isPostEditor =
 		editorContext === 'post-editor' || editorContext === 'post-editor-template';
 	const isSiteEditor = editorContext === 'site-editor';

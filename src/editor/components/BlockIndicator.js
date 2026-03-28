@@ -46,20 +46,6 @@ export function BlockIndicator({ issues }) {
 	const openModal = () => setIsModalOpen(true);
 	const closeModal = () => setIsModalOpen(false);
 
-	// Helper to format message with category
-	const getMessageWithCategory = (text, category) => {
-		const categoryLabel =
-			category === 'validation'
-				? __('(Validation)', 'block-accessibility-checks')
-				: __('(Accessibility)', 'block-accessibility-checks');
-
-		return (
-			<>
-				{text} <span className="ba11y-indicator-category-label">{categoryLabel}</span>
-			</>
-		);
-	};
-
 	return (
 		<>
 			<div className={className}>
@@ -67,12 +53,12 @@ export function BlockIndicator({ issues }) {
 					icon={icon}
 					onClick={openModal}
 					className="ba11y-block-indicator-button"
-					aria-label={__('View block issues or concerns', 'block-accessibility-checks')}
+					aria-label={__('View block issues or concerns', 'validation-api')}
 				/>
 			</div>
 			{isModalOpen && (
 				<Modal
-					title={__('Issues or Concerns', 'block-accessibility-checks')}
+					title={__('Issues or Concerns', 'validation-api')}
 					onRequestClose={closeModal}
 					className="ba11y-block-indicator-modal"
 				>
@@ -83,17 +69,12 @@ export function BlockIndicator({ issues }) {
 								<p>
 									<strong className="ba11y-indicator-section-title">
 										<span className="ba11y-indicator-section-title-circle"></span>
-										{__('Errors', 'block-accessibility-checks')}
+										{__('Errors', 'validation-api')}
 									</strong>
 								</p>
 								<ul>
 									{errors.map((issue, index) => (
-										<li key={`error-${index}`}>
-											{getMessageWithCategory(
-												issue.error_msg,
-												issue.category
-											)}
-										</li>
+										<li key={`error-${index}`}>{issue.error_msg}</li>
 									))}
 								</ul>
 							</div>
@@ -105,16 +86,13 @@ export function BlockIndicator({ issues }) {
 								<p>
 									<strong className="ba11y-indicator-section-title">
 										<span className="ba11y-indicator-section-title-circle"></span>
-										{__('Warnings', 'block-accessibility-checks')}
+										{__('Warnings', 'validation-api')}
 									</strong>
 								</p>
 								<ul>
 									{warnings.map((warning, index) => (
 										<li key={`warning-${index}`}>
-											{getMessageWithCategory(
-												warning.warning_msg || warning.error_msg,
-												warning.category
-											)}
+											{warning.warning_msg || warning.error_msg}
 										</li>
 									))}
 								</ul>

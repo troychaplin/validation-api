@@ -1,24 +1,19 @@
 <?php
 /**
- * Namespace declaration for the Block Accessibility plugin.
+ * Internationalization
  *
- * This namespace is used to encapsulate all functionality related to
- * the Block Accessibility Checks plugin, ensuring that classes, functions,
- * and constants do not conflict with other plugins or themes.
+ * Handles translation and script localization for the Validation API plugin.
  *
- * @package BlockAccessibilityChecks
+ * @package ValidationAPI
+ * @since 1.0.0
  */
 
-namespace BlockAccessibility\Core;
+namespace ValidationAPI\Core;
 
 /**
  * Class I18n
  *
- * This class is responsible for handling translation-related functionality
- * within the Block Accessibility Checks plugin. It provides methods and
- * utilities to manage and process translations for accessibility checks.
- *
- * @package BlockAccessibilityChecks
+ * Responsible for handling translation-related functionality within the Validation API plugin.
  */
 class I18n {
 
@@ -37,7 +32,7 @@ class I18n {
 	private $text_domain;
 
 	/**
-	 * Constructs a new instance of the Translations class.
+	 * Constructor.
 	 *
 	 * @param string $plugin_file The path to the plugin file.
 	 * @param string $text_domain The text domain for translations.
@@ -50,9 +45,6 @@ class I18n {
 	/**
 	 * Loads the text domain for the plugin.
 	 *
-	 * This function loads the translation files for the plugin's text domain.
-	 * It uses the WordPress function `load_plugin_textdomain()` to load the translation files.
-	 *
 	 * @return void
 	 */
 	public function load_text_domain(): void {
@@ -61,9 +53,6 @@ class I18n {
 
 	/**
 	 * Sets up translations for a script.
-	 *
-	 * This method sets up translations for a given script handle by calling the `wp_set_script_translations()` function.
-	 * It takes the script handle, text domain, and the path to the languages directory as parameters.
 	 *
 	 * @param string $script_handle The handle of the script to set up translations for.
 	 * @return void

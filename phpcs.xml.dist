@@ -17,7 +17,7 @@
 
     <!-- Rules: WordPress Coding Standards -->
     <config name="minimum_supported_wp_version" value="6.6"/>
-    <config name="text_domain" value="block-accessibility-checks"/>
+    <config name="text_domain" value="validation-api"/>
     
     <rule ref="WordPress">
         <exclude name="WordPress.Files.FileName"/>
@@ -42,8 +42,8 @@
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
             <property name="prefixes" type="array">
-                <element value="BlockAccessibility"/>
-                <element value="ba11yc"/>
+                <element value="ValidationAPI"/>
+                <element value="validation_api"/>
             </property>
         </properties>
     </rule>
@@ -51,7 +51,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="block-accessibility-checks"/>
+                <element value="validation-api"/>
             </property>
         </properties>
     </rule>
