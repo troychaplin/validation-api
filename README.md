@@ -1,5 +1,3 @@
-
-<div style="overflow: hidden; margin-bottom: 1em;">
 <img src="assets/icon-256x256.png" alt="Validation API Plugin Banner" style="float: left; margin-right: 1.5em; height: auto; max-width: 210px;">
   
 # Validation API
@@ -7,8 +5,6 @@
 A pure validation framework for the WordPress block editor. Register validation checks for blocks, post meta fields, and editor-level content structure — with real-time feedback, visual indicators, and publish-locking. Zero built-in checks. Zero settings UI. Zero opinions. Just infrastructure.
 
 Designed for Gutenberg core merge. External plugins provide the rules.
-</div>
-
 
 ## Features
 
