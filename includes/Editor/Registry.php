@@ -151,7 +151,6 @@ class Registry {
 			// Action hook for developers to know when a check is registered.
 			\do_action( 'validation_api_editor_check_registered', $post_type, $check_name, $check_args );
 
-			$this->log_debug( "Successfully registered editor check: {$post_type}/{$check_name}" );
 			return true;
 
 		} catch ( \Exception $e ) {

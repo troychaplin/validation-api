@@ -140,11 +140,23 @@ The core plugin has no settings UI and no storage. The companion bridges admin s
 
 ## Documentation
 
-- **[Complete Developer API Documentation](docs/README.md)** — Comprehensive guide with examples for block, meta, and editor validation
-- **[Block Validation Quick Start](docs/block-validation/quick-start.md)** — Adding block attribute checks
-- **[Meta Validation Quick Start](docs/meta-validation/quick-start.md)** — Adding post meta field checks
-- **[Editor Validation Quick Start](docs/editor-validation/quick-start.md)** — Adding editor-level checks
-- **[API Reference](docs/reference/api.md)** — All available functions, hooks, and filters
+### Developer Guide
+
+- **[Getting Started](docs/guide/README.md)** — Register your first check in 30 lines
+- **[Block Checks](docs/guide/block-checks.md)** — Validate block attributes
+- **[Meta Checks](docs/guide/meta-checks.md)** — Validate post meta fields
+- **[Editor Checks](docs/guide/editor-checks.md)** — Validate document-level concerns
+- **[Severity Model](docs/guide/severity.md)** — Error vs. warning vs. none, and runtime overrides
+- **[CheckProvider Pattern](docs/guide/check-providers.md)** — Class-based registration for enterprise plugins
+- **[Examples](docs/guide/examples.md)** — Complete integration examples
+
+### Technical Reference
+
+- **[Architecture](docs/technical/README.md)** — System design and internals
+- **[Data Flow](docs/technical/data-flow.md)** — PHP → JS pipeline
+- **[Hooks Reference](docs/technical/hooks.md)** — All PHP and JS hooks
+- **[API Reference](docs/technical/api.md)** — Public functions and contracts
+- **[Design Decisions](docs/technical/decisions.md)** — Why the API is shaped this way
 
 ## Getting Involved
 
@@ -185,7 +197,7 @@ This repo uses [@wordpress/env](https://github.com/WordPress/gutenberg/tree/HEAD
 
 For bug reports, feature requests, or questions:
 
-1. Check the [Developer API Documentation](docs/README.md)
+1. Check the [Documentation](docs/README.md)
 2. Search existing GitHub issues before creating new ones
 3. Provide detailed reproduction steps for bugs
 4. Include WordPress version, PHP version, and block details

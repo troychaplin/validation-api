@@ -29,6 +29,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 use ValidationAPI\Core\Plugin;
 use ValidationAPI\Core\PluginContext;
 use ValidationAPI\Contracts\CheckProvider;
+use ValidationAPI\Block\Registry as BlockRegistry;
+use ValidationAPI\Editor\Registry as EditorRegistry;
+use ValidationAPI\Meta\Registry as MetaRegistry;
 
 // Global variables for the plugin.
 $validation_api_plugin_file = __FILE__;
@@ -135,4 +138,92 @@ function validation_api_register_plugin( array $plugin_info, $checks ): void {
 	} finally {
 		PluginContext::clear();
 	}
+}
+
+/**
+ * Register a validation check for a block type.
+ *
+ * Extracts 'name' from $args and delegates to the Block Registry singleton.
+ * Must be called within a validation_api_register_plugin() context.
+ *
+ * @param string $block_type Block type name (e.g., 'core/image').
+ * @param array  $args       Check configuration. Required keys: 'name' (string), 'error_msg' (string).
+ * @return bool True on success, false on failure.
+ */
+function validation_api_register_block_check( string $block_type, array $args ): bool {
+	if ( empty( $args['name'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "name" key.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
+	$check_name = $args['name'];
+	unset( $args['name'] );
+
+	return BlockRegistry::get_instance()->register_check( $block_type, $check_name, $args );
+}
+
+/**
+ * Register a validation check for a post meta field.
+ *
+ * Extracts 'name' and 'meta_key' from $args and delegates to the Meta Registry singleton.
+ * Must be called within a validation_api_register_plugin() context.
+ *
+ * @param string $post_type Post type (e.g., 'post', 'page').
+ * @param array  $args      Check configuration. Required keys: 'name' (string), 'meta_key' (string), 'error_msg' (string).
+ * @return bool True on success, false on failure.
+ */
+function validation_api_register_meta_check( string $post_type, array $args ): bool {
+	if ( empty( $args['name'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "name" key.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
+	if ( empty( $args['meta_key'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "meta_key" key.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
+	$check_name = $args['name'];
+	$meta_key   = $args['meta_key'];
+	unset( $args['name'], $args['meta_key'] );
+
+	return MetaRegistry::get_instance()->register_meta_check( $post_type, $meta_key, $check_name, $args );
+}
+
+/**
+ * Register a validation check for the editor (document-level).
+ *
+ * Extracts 'name' from $args and delegates to the Editor Registry singleton.
+ * Must be called within a validation_api_register_plugin() context.
+ *
+ * @param string $post_type Post type (e.g., 'post', 'page').
+ * @param array  $args      Check configuration. Required keys: 'name' (string), 'error_msg' (string).
+ * @return bool True on success, false on failure.
+ */
+function validation_api_register_editor_check( string $post_type, array $args ): bool {
+	if ( empty( $args['name'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "name" key.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
+	$check_name = $args['name'];
+	unset( $args['name'] );
+
+	return EditorRegistry::get_instance()->register_editor_check( $post_type, $check_name, $args );
 }
