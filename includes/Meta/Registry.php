@@ -100,12 +100,13 @@ class Registry {
 			}
 
 			$defaults = array(
-				'error_msg'   => '',
-				'warning_msg' => '',
-				'level'       => 'error',
-				'priority'    => 10,
-				'enabled'     => true,
-				'description' => '',
+				'error_msg'    => '',
+				'warning_msg'  => '',
+				'level'        => 'error',
+				'priority'     => 10,
+				'enabled'      => true,
+				'description'  => '',
+				'configurable' => true,
 			);
 
 			$check_args = \wp_parse_args( $check_args, $defaults );

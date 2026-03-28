@@ -175,13 +175,14 @@ class ChecksController extends WP_REST_Controller {
 	 */
 	private function format_check( array $check_args ): array {
 		return array(
-			'level'       => $check_args['level'] ?? 'error',
-			'description' => $check_args['description'] ?? '',
-			'error_msg'   => $check_args['error_msg'] ?? '',
-			'warning_msg' => $check_args['warning_msg'] ?? '',
-			'priority'    => $check_args['priority'] ?? 10,
-			'enabled'     => $check_args['enabled'] ?? true,
-			'_plugin'     => $check_args['_plugin'] ?? null,
+			'level'        => $check_args['level'] ?? 'error',
+			'description'  => $check_args['description'] ?? '',
+			'error_msg'    => $check_args['error_msg'] ?? '',
+			'warning_msg'  => $check_args['warning_msg'] ?? '',
+			'priority'     => $check_args['priority'] ?? 10,
+			'enabled'      => $check_args['enabled'] ?? true,
+			'configurable' => $check_args['configurable'] ?? true,
+			'_plugin'      => $check_args['_plugin'] ?? null,
 		);
 	}
 
