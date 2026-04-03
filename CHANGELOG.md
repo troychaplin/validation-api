@@ -17,6 +17,36 @@ Prefix the change with one of these keywords:
 
 ## [Unreleased]
 
+## [1.0.0] — Validation API (new direction)
+
+This release marks a complete change of direction. The plugin has been rebuilt from the ground up as **Validation API** — a pure validation framework for the WordPress block editor — and the version has been reset to 1.0.0 to reflect the new identity and API surface.
+
+### What changed
+
+The previous plugin, **Block Accessibility Checks**, shipped with built-in accessibility checks, an admin settings UI, and a `ba11yc_*` hook namespace. That approach tightly coupled the framework and the rules, making it difficult to extend or adapt to non-accessibility use cases.
+
+Validation API removes all of that:
+
+- **Zero built-in checks.** All checks come from integrating plugins. The framework ships clean.
+- **No settings UI.** Severity configuration is handled via the `validation_api_check_level` filter, enabling a separate companion settings plugin without coupling settings logic to the framework.
+- **New registration API.** `validation_api_register_plugin()` provides a scoped registration context. Three global helpers (`validation_api_register_block_check()`, `validation_api_register_meta_check()`, `validation_api_register_editor_check()`) handle the three validation scopes.
+- **New hook namespace.** All PHP actions, filters, and JS filters use the `validation_api_` prefix. The old `ba11yc_*` hooks are removed.
+- **New CSS class prefix.** All editor UI classes use `validation-api-` (was `ba11y-`).
+- **`CheckProvider` interface.** Class-based check registration for enterprise or package-based integration.
+- **REST endpoint.** `GET /validation-api/v1/checks` exposes all registered checks for companion tooling.
+
+### Why the version reset
+
+The old version history (1.0.0–3.0.1) belongs to Block Accessibility Checks. Validation API is a different plugin with a different purpose and a different API. Carrying forward the old version numbers would misrepresent compatibility and upgrade paths. The version resets to 1.0.0.
+
+The full Block Accessibility Checks version history is preserved below for reference.
+
+---
+
+## [Block Accessibility Checks history]
+
+The entries below document the history of the predecessor plugin, Block Accessibility Checks (versions 1.0.0–3.0.1). They are preserved for reference only. This version history does not apply to Validation API.
+
 ## [3.0.1]
 
 ### Fixed

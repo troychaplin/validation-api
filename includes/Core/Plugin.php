@@ -11,8 +11,8 @@
 namespace ValidationAPI\Core;
 
 use ValidationAPI\Core\Traits\Logger;
-use ValidationAPI\Block\Registry as BlockChecksRegistry;
-use ValidationAPI\Editor\Registry as EditorChecksRegistry;
+use ValidationAPI\Block\Registry as BlockRegistry;
+use ValidationAPI\Editor\Registry as EditorRegistry;
 use ValidationAPI\Rest\ChecksController;
 
 /**
@@ -136,7 +136,7 @@ class Plugin {
 	 */
 	private function init_block_checks_registry(): void {
 		try {
-			$block_checks_registry                   = BlockChecksRegistry::get_instance();
+			$block_checks_registry                   = BlockRegistry::get_instance();
 			$this->services['block_checks_registry'] = $block_checks_registry;
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize block checks registry: ' . $e->getMessage() );
@@ -152,7 +152,7 @@ class Plugin {
 	 */
 	private function init_editor_checks_registry(): void {
 		try {
-			$editor_checks_registry                   = EditorChecksRegistry::get_instance();
+			$editor_checks_registry                   = EditorRegistry::get_instance();
 			$this->services['editor_checks_registry'] = $editor_checks_registry;
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize editor checks registry: ' . $e->getMessage() );
@@ -240,18 +240,18 @@ class Plugin {
 	/**
 	 * Get the block checks registry
 	 *
-	 * @return BlockChecksRegistry|null The registry instance or null if not initialized.
+	 * @return BlockRegistry|null The registry instance or null if not initialized.
 	 */
-	public function get_block_checks_registry(): ?BlockChecksRegistry {
+	public function get_block_checks_registry(): ?BlockRegistry {
 		return $this->get_service( 'block_checks_registry' );
 	}
 
 	/**
 	 * Get the editor checks registry
 	 *
-	 * @return EditorChecksRegistry|null The registry instance or null if not initialized.
+	 * @return EditorRegistry|null The registry instance or null if not initialized.
 	 */
-	public function get_editor_checks_registry(): ?EditorChecksRegistry {
+	public function get_editor_checks_registry(): ?EditorRegistry {
 		return $this->get_service( 'editor_checks_registry' );
 	}
 

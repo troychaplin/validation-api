@@ -1,12 +1,12 @@
 // Block wrapper needs relative positioning for absolute indicator
-.ba11y-block-error,
-.ba11y-block-warning {
+.validation-api-block-error,
+.validation-api-block-warning {
 	position: relative;
 }
 
 // Inline block and meta field indicators
-.ba11y-block-indicator,
-.ba11y-meta-indicator {
+.validation-api-block-indicator,
+.validation-api-meta-indicator {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -17,8 +17,8 @@
 }
 
 // Inline block and meta field indicator buttons
-.ba11y-block-indicator-button.components-button.has-icon,
-.ba11y-meta-indicator-button.components-button.has-icon {
+.validation-api-block-indicator-button.components-button.has-icon,
+.validation-api-meta-indicator-button.components-button.has-icon {
 	pointer-events: all;
 	position: absolute;
 	min-width: 0;
@@ -46,8 +46,8 @@
 }
 
 // Inline block and meta field warning buttons
-.ba11y-block-indicator--warning .ba11y-block-indicator-button.components-button,
-.ba11y-meta-indicator--warning .ba11y-meta-indicator-button.components-button {
+.validation-api-block-indicator--warning .validation-api-block-indicator-button.components-button,
+.validation-api-meta-indicator--warning .validation-api-meta-indicator-button.components-button {
 	background-color: var(--a11y-light-yellow);
 	border-color: var(--a11y-yellow);
 	color: var(--a11y-yellow);

@@ -40,8 +40,8 @@ export function BlockIndicator({ issues }) {
 	// Set icon and CSS classes based on severity (errors take precedence)
 	const icon = hasBlockErrors ? error : caution;
 	const className = hasBlockErrors
-		? 'ba11y-block-indicator ba11y-block-indicator--error'
-		: 'ba11y-block-indicator ba11y-block-indicator--warning';
+		? 'validation-api-block-indicator validation-api-block-indicator--error'
+		: 'validation-api-block-indicator validation-api-block-indicator--warning';
 
 	const openModal = () => setIsModalOpen(true);
 	const closeModal = () => setIsModalOpen(false);
@@ -52,7 +52,7 @@ export function BlockIndicator({ issues }) {
 				<Button
 					icon={icon}
 					onClick={openModal}
-					className="ba11y-block-indicator-button"
+					className="validation-api-block-indicator-button"
 					aria-label={__('View block issues or concerns', 'validation-api')}
 				/>
 			</div>
@@ -60,15 +60,15 @@ export function BlockIndicator({ issues }) {
 				<Modal
 					title={__('Issues or Concerns', 'validation-api')}
 					onRequestClose={closeModal}
-					className="ba11y-block-indicator-modal"
+					className="validation-api-block-indicator-modal"
 				>
-					<div className="ba11y-indicator-modal-content">
+					<div className="validation-api-indicator-modal-content">
 						{/* Errors Section */}
 						{errors.length > 0 && (
-							<div className="ba11y-indicator-section ba11y-indicator-errors">
+							<div className="validation-api-indicator-section validation-api-indicator-errors">
 								<p>
-									<strong className="ba11y-indicator-section-title">
-										<span className="ba11y-indicator-section-title-circle"></span>
+									<strong className="validation-api-indicator-section-title">
+										<span className="validation-api-indicator-section-title-circle"></span>
 										{__('Errors', 'validation-api')}
 									</strong>
 								</p>
@@ -82,10 +82,10 @@ export function BlockIndicator({ issues }) {
 
 						{/* Warnings Section */}
 						{warnings.length > 0 && (
-							<div className="ba11y-indicator-section ba11y-indicator-warnings">
+							<div className="validation-api-indicator-section validation-api-indicator-warnings">
 								<p>
-									<strong className="ba11y-indicator-section-title">
-										<span className="ba11y-indicator-section-title-circle"></span>
+									<strong className="validation-api-indicator-section-title">
+										<span className="validation-api-indicator-section-title-circle"></span>
 										{__('Warnings', 'validation-api')}
 									</strong>
 								</p>

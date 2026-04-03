@@ -2,7 +2,7 @@
 /**
  * Block Checks Registry
  *
- * Central registry for managing block accessibility checks.
+ * Central registry for managing block validation checks.
  *
  * @package ValidationAPI
  * @since 1.0.0
