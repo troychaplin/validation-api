@@ -30,21 +30,21 @@ class Assets {
 	 *
 	 * @var string
 	 */
-	private const SCRIPT_HANDLE = 'validation-api-script';
+	private const VALIDATION_SCRIPT_HANDLE = 'validation-api-script';
 
 	/**
 	 * Path to the main block checks JavaScript file.
 	 *
 	 * @var string
 	 */
-	private const BLOCK_SCRIPT_PATH = 'build/validation-api.js';
+	private const VALIDATION_SCRIPT_PATH = 'build/validation-api.js';
 
 	/**
 	 * Path to the main block checks stylesheet.
 	 *
 	 * @var string
 	 */
-	private const BLOCK_STYLE_PATH = 'build/validation-api.css';
+	private const VALIDATION_STYLE_PATH = 'build/validation-api.css';
 
 	/**
 	 * The path to the plugin file.
@@ -88,7 +88,7 @@ class Assets {
 			return;
 		}
 
-		$this->translations->setup_script_translations( self::SCRIPT_HANDLE );
+		$this->translations->setup_script_translations( self::VALIDATION_SCRIPT_HANDLE );
 
 		$this->enqueue_block_scripts();
 		$this->enqueue_block_styles();
@@ -102,8 +102,8 @@ class Assets {
 	 */
 	private function enqueue_block_scripts() {
 		wp_enqueue_script(
-			self::SCRIPT_HANDLE,
-			plugins_url( self::BLOCK_SCRIPT_PATH, $this->plugin_file ),
+			self::VALIDATION_SCRIPT_HANDLE,
+			plugins_url( self::VALIDATION_SCRIPT_PATH, $this->plugin_file ),
 			array( 'wp-block-editor', 'wp-components', 'wp-compose', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-plugins' ),
 			VALIDATION_API_VERSION,
 			true
@@ -119,7 +119,7 @@ class Assets {
 		$registered_block_types  = $registry->get_registered_block_types();
 
 		\wp_localize_script(
-			self::SCRIPT_HANDLE,
+			self::VALIDATION_SCRIPT_HANDLE,
 			'ValidationAPI',
 			array(
 				'editorContext'         => $this->get_editor_context(),
@@ -140,7 +140,7 @@ class Assets {
 	private function enqueue_block_styles() {
 		wp_enqueue_style(
 			'validation-api-style',
-			plugins_url( self::BLOCK_STYLE_PATH, $this->plugin_file ),
+			plugins_url( self::VALIDATION_STYLE_PATH, $this->plugin_file ),
 			array(),
 			VALIDATION_API_VERSION
 		);

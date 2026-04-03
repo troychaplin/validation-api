@@ -21,15 +21,14 @@ jobs:
                       if (match) {
                         const category = match[1].trim();
                         const labelMap = {
-                          "New Accessibility Check": "create-a11y-check",
-                          "Existing Accessibility Check": "update-a11y-check",
+                          "New Validation Scope": "new-scope",
                           "Developer API Enhancement": "api-enhancement",
                           "User Interface Improvement": "ui-improvement",
                           "Settings/Configuration Option": "settings-config",
                           "Performance Enhancement": "performance",
                           "Integration Feature": "integration",
-                          "Automation/Workflow Improvement": "automation",
-                          "Other Support Request": "needs-triage"
+                          "Developer Experience": "developer-experience",
+                          "Other": "needs-triage"
                         };
                         const label = labelMap[category];
                         if (label) {

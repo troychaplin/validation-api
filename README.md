@@ -31,6 +31,12 @@ Each registered check has a severity level (`error`, `warning`, or `none`) that 
 
 The plugin ships no built-in checks — it's a framework. Install a companion plugin or write your own checks.
 
+## Demo
+
+> Recorded against the previous version of this plugin — the UI and plugin name differ, but the core validation behaviour demonstrated is the same.
+
+[![Validation API demo video](https://img.youtube.com/vi/mLsC2tDcdL8/maxresdefault.jpg)](https://www.youtube.com/watch?v=mLsC2tDcdL8)
+
 ## Severity Model
 
 | Level | Behavior |
@@ -167,7 +173,7 @@ The core plugin has no settings UI and no storage. The companion bridges admin s
 - Clone your fork locally
 - Run the following in the repo root:
     - `npm -g i @wordpress/env` — installs wp-env if you don't already have it
-    - `npm install` — installs project dependencies
+    - `pnpm install` — installs project dependencies
 
 ### Start Developing
 
@@ -175,8 +181,8 @@ This repo uses [@wordpress/env](https://github.com/WordPress/gutenberg/tree/HEAD
 
 - Make sure `Docker Desktop` is running
 - Start WordPress: `wp-env start`
-- Start watch task: `npm run start`
-- Build assets: `npm run build`
+- Start watch task: `pnpm start`
+- Build assets: `pnpm build`
 - Stop WordPress: `wp-env stop`
 
 ### Local Site Details
@@ -188,7 +194,7 @@ This repo uses [@wordpress/env](https://github.com/WordPress/gutenberg/tree/HEAD
 ### Contributing
 
 1. Ensure your code follows WordPress coding standards
-2. Run `npm run build` to build production assets
+2. Run `pnpm build` to build production assets
 3. Test in both the post editor and site editor
 4. Create a PR from your branch into the primary repo
 5. Provide detailed info in the PR template

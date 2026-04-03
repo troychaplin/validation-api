@@ -5,19 +5,25 @@
 	"author": "Troy Chaplin",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
+	"packageManager": "pnpm@10.33.0",
 	"lint-staged": {
 		"*.{css,scss}": [
-			"stylelint --fix",
-			"git add"
+			"stylelint --fix"
 		],
 		"*.js": [
 			"wp-scripts format",
-			"wp-scripts lint-js",
-			"git add"
+			"wp-scripts lint-js"
 		],
 		"*.php": [
-			"composer run format",
-			"git add"
+			"composer run format"
+		]
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@parcel/watcher",
+			"core-js",
+			"core-js-pure",
+			"unrs-resolver"
 		]
 	},
 	"files": [
@@ -26,21 +32,22 @@
 	"scripts": {
 		"build": "wp-scripts build",
 		"start": "wp-scripts start",
-		"format": "npm run format:js && npm run format:php && npm run format:css",
+		"format": "pnpm format:js && pnpm format:php && pnpm format:css",
 		"format:js": "wp-scripts lint-js --fix",
 		"format:php": "composer run format",
 		"format:css": "stylelint \"**/*.scss\" --fix",
-		"lint": "npm run lint:js && npm run lint:php && npm run lint:css",
+		"lint": "pnpm lint:js && pnpm lint:php && pnpm lint:css",
 		"lint:js": "wp-scripts lint-js",
 		"lint:php": "composer run lint",
 		"lint:css": "stylelint \"**/*.scss\"",
-		"clean": "rm -rf node_modules ; rm package-lock.json ; npm install ; npm run build",
+		"clean": "rm -rf node_modules ; rm pnpm-lock.yaml ; pnpm install ; pnpm build",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@wordpress/data": "10.35.0",
+		"lint-staged": "^15.5.1",
 		"@wordpress/element": "6.35.0",
 		"@wordpress/env": "10.35.0",
 		"@wordpress/eslint-plugin": "22.21.0",
