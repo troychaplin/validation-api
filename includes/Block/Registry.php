@@ -1,8 +1,8 @@
 <?php
 /**
- * Block Checks Registry
+ * Validation Checks Registry
  *
- * Central registry for managing block validation checks.
+ * Central registry for managing validation checks.
  *
  * @package ValidationAPI
  * @since 1.0.0
@@ -14,7 +14,7 @@ use ValidationAPI\Core\PluginContext;
 use ValidationAPI\Core\Traits\Logger;
 
 /**
- * Block Checks Registry Class
+ * Validation Checks Registry Class
  *
  * Manages registration and retrieval of validation checks for block types.
  */
@@ -55,7 +55,7 @@ class Registry {
 	private function __construct() {}
 
 	/**
-	 * Register a new accessibility check
+	 * Register a new validation check
 	 *
 	 * @param string $block_type Block type (e.g., 'core/image').
 	 * @param string $check_name Unique check name.
@@ -147,7 +147,7 @@ class Registry {
 			// Sort checks by priority.
 			\uasort( $this->checks[ $block_type ], array( $this, 'sort_checks_by_priority' ) );
 
-			// Action hook for developers to know when a check is registered.
+			// Action hook for developers to know when a validation check is registered.
 			\do_action( 'validation_api_check_registered', $block_type, $check_name, $check_args );
 
 			return true;
@@ -159,7 +159,7 @@ class Registry {
 	}
 
 	/**
-	 * Unregister an accessibility check
+	 * Unregister a validation check
 	 *
 	 * @param string $block_type Block type.
 	 * @param string $check_name Check name.
@@ -176,14 +176,14 @@ class Registry {
 			unset( $this->checks[ $block_type ] );
 		}
 
-		// Action hook for developers to know when a check is unregistered.
+		// Action hook for developers to know when a validation check is unregistered.
 		\do_action( 'validation_api_check_unregistered', $block_type, $check_name );
 
 		return true;
 	}
 
 	/**
-	 * Enable or disable a specific check
+	 * Enable or disable a specific validation check
 	 *
 	 * @param string $block_type Block type.
 	 * @param string $check_name Check name.
@@ -197,7 +197,7 @@ class Registry {
 
 		$this->checks[ $block_type ][ $check_name ]['enabled'] = (bool) $enabled;
 
-		// Action hook for developers to know when a check is enabled/disabled.
+		// Action hook for developers to know when a validation check is enabled/disabled.
 		\do_action( 'validation_api_check_toggled', $block_type, $check_name, $enabled );
 
 		return true;
