@@ -22,7 +22,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // Header section (React)
-.ba11y-settings-header {
+.validation-api-settings-header {
 	padding: var(--a11y-settings-space);
 	border-bottom: 1px solid var(--a11y-light-grey);
 	background: #fff;
@@ -44,7 +44,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // Save notifications
-.ba11y-settings-content .components-notice {
+.validation-api-settings-content .components-notice {
     margin: calc(var(--a11y-settings-space) / 1.5) var(--a11y-settings-space);
     background-color: var(--a11y-lightest-green);
     border: 1px solid var(--a11y-green);
@@ -53,7 +53,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // DataView container
-.ba11y-dataview {
+.validation-api-dataview {
 	background: #fff;
     margin: 32px 24px;
     padding: 0;
@@ -62,7 +62,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // Table container - using standard HTML table
-.ba11y-dataview-table {
+.validation-api-dataview-table {
 	width: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -83,18 +83,18 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	}
 }
 
-.ba11y-dataview-thead th,
-.ba11y-dataview-table td {
+.validation-api-dataview-thead th,
+.validation-api-dataview-table td {
     padding: calc(var(--a11y-settings-space) / 2);
     vertical-align: middle;
 
-    &.ba11y-dataview-td-level {
+    &.validation-api-dataview-td-level {
         padding-top: calc(calc(var(--a11y-settings-space) / 2) - 8px);
     }
 }
 
 // Table header
-.ba11y-dataview-thead {
+.validation-api-dataview-thead {
 	th {
 		font-size: var(--a11y-font-small);
 		font-weight: 500;
@@ -106,40 +106,40 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	}
 
 	// Set fixed widths for consistent column sizing across all tables
-	.ba11y-dataview-th-block {
+	.validation-api-dataview-th-block {
 		min-width: 90px;
         width: 10%;
 	}
 
-	.ba11y-dataview-th-category {
+	.validation-api-dataview-th-category {
 		min-width: 90px;
         width: 10%;
 	}
 
-	.ba11y-dataview-th-level {
+	.validation-api-dataview-th-level {
 		min-width: 220px;
         width: 220px;
 	}
 
-	.ba11y-dataview-th-siteEditor {
+	.validation-api-dataview-th-siteEditor {
 		width: 90px;
 	}
 
 	// First column (check) will auto-fill remaining space
-	.ba11y-dataview-th-check {
+	.validation-api-dataview-th-check {
 		min-width: 180px;
 		width: auto;
 	}
 }
 
-.ba11y-dataview-th-content {
+.validation-api-dataview-th-content {
 	display: flex;
 	align-items: center;
 	gap: 2px;
 }
 
 // Table cells
-.ba11y-dataview-cell {
+.validation-api-dataview-cell {
 	font-size: var(--a11y-font-small);
 	color: var(--a11y-black);
 	padding: calc(var(--a11y-settings-space) / 2);
@@ -147,19 +147,19 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	vertical-align: middle;
 	text-align: left !important;
 
-    &.ba11y-dataview-cell-level {
+    &.validation-api-dataview-cell-level {
         padding-top: calc(var(--a11y-settings-space) / 4);
     }
 }
 
 // Check description
-.ba11y-check-description {
+.validation-api-check-description {
 	color: var(--a11y-black);
 }
 
 // Block badge
-.ba11y-block-badge,
-.ba11y-category-badge {
+.validation-api-block-badge,
+.validation-api-category-badge {
 	display: inline-flex;
 	padding: 2px 8px;
 	background: var(--a11y-lightest-grey);
@@ -171,7 +171,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	white-space: nowrap;
 }
 
-.ba11y-dataview-td-level {
+.validation-api-dataview-td-level {
     .components-base-control {
         width: 100%;
     }
@@ -207,7 +207,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // // Heading levels checkboxes
-.ba11y-heading-levels-checkboxes {
+.validation-api-heading-levels-checkboxes {
 	display: flex;
 	gap: 20px;
 	justify-content: flex-end;
@@ -220,7 +220,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 }
 
 // // Actions footer
-.ba11y-settings-actions {
+.validation-api-settings-actions {
 	display: flex;
 	align-items: center;
 	gap: 20px;
@@ -236,7 +236,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
         }
     }
 
-	.ba11y-unsaved-notice {
+	.validation-api-unsaved-notice {
 		font-size: var(--a11y-font-small);
 		color: var(--a11y-dark-red);
 		font-style: italic;
@@ -249,9 +249,9 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 
 // Tablet - reduce margins
 @media screen and (max-width: 960px) {
-	.ba11y-settings-header,
-	.ba11y-settings-content .components-notice,
-	.ba11y-settings-actions {
+	.validation-api-settings-header,
+	.validation-api-settings-content .components-notice,
+	.validation-api-settings-actions {
 		margin-left: 24px;
 		margin-right: 24px;
 		padding-left: 24px;
@@ -261,10 +261,10 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 
 // Mobile - WordPress responsive table pattern
 @media screen and (max-width: 782px) {
-	.ba11y-settings-header,
-	.ba11y-dataview,
-	.ba11y-settings-content .components-notice,
-	.ba11y-settings-actions {
+	.validation-api-settings-header,
+	.validation-api-dataview,
+	.validation-api-settings-content .components-notice,
+	.validation-api-settings-actions {
 		margin-left: var(--a11y-settings-space-mobile);
 		margin-right: var(--a11y-settings-space-mobile);
 		padding-left: var(--a11y-settings-space-mobile);
@@ -272,7 +272,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	}
 
 	// Responsive table layout
-	.ba11y-dataview-table {
+	.validation-api-dataview-table {
 		border: 0;
 
 		thead {
@@ -311,7 +311,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 				letter-spacing: 0.5px;
 			}
 
-			&.ba11y-dataview-td-check {
+			&.validation-api-dataview-td-check {
 				padding-bottom: 12px;
 				margin-bottom: 12px;
 				border-bottom: 1px solid var(--a11y-light-grey);
@@ -321,8 +321,8 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 				}
 			}
 
-			&.ba11y-dataview-td-level,
-			&.ba11y-dataview-td-siteEditor {
+			&.validation-api-dataview-td-level,
+			&.validation-api-dataview-td-siteEditor {
 				.components-toggle-group-control,
 				.components-toggle-control {
 					width: 100%;
@@ -332,14 +332,14 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 	}
 
 	// Make heading levels checkboxes stack vertically
-	.ba11y-heading-levels-checkboxes {
+	.validation-api-heading-levels-checkboxes {
 		flex-direction: column;
 		gap: 12px;
 		align-items: flex-start;
 	}
 
 	// Settings actions stack vertically
-	.ba11y-settings-actions {
+	.validation-api-settings-actions {
 		flex-direction: column;
 		align-items: stretch;
 
@@ -349,7 +349,7 @@ body[class*='accessibility-validation_page_block-a11y-checks-'] {
 			margin-bottom: 12px;
 		}
 
-		.ba11y-unsaved-notice {
+		.validation-api-unsaved-notice {
 			text-align: center;
 		}
 	}

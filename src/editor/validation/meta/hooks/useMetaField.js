@@ -61,7 +61,9 @@ export function useMetaField(metaKey, originalHelp = '') {
 			.join('. ');
 
 		// Determine CSS class based on severity (errors take precedence)
-		const messageClass = validation.hasErrors ? 'ba11y-error-text' : 'ba11y-warning-text';
+		const messageClass = validation.hasErrors
+			? 'validation-api-error-text'
+			: 'validation-api-warning-text';
 
 		// Append validation messages to existing help text, or create new help text
 		if (helpText) {
@@ -91,6 +93,8 @@ export function useMetaField(metaKey, originalHelp = '') {
 		// Help text with validation messages appended if issues exist
 		help: helpText,
 		// CSS classes for styling validation state (error/warning indicators)
-		className: validation?.wrapperClassName ? `ba11y-field ${validation.wrapperClassName}` : '',
+		className: validation?.wrapperClassName
+			? `validation-api-field ${validation.wrapperClassName}`
+			: '',
 	};
 }

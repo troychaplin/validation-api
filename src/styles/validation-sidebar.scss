@@ -1,10 +1,10 @@
-.ba11y-errors-panel .components-panel__row + .components-panel__row,
-.ba11y-warnings-panel .components-panel__row + .components-panel__row {
+.validation-api-errors-panel .components-panel__row + .components-panel__row,
+.validation-api-warnings-panel .components-panel__row + .components-panel__row {
     margin-top: 20px;
 }
 
-.ba11y-error-group .ba11y-indicator-circle,
-.ba11y-warning-group .ba11y-indicator-circle {
+.validation-api-error-group .validation-api-indicator-circle,
+.validation-api-warning-group .validation-api-indicator-circle {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -14,16 +14,16 @@
     margin-bottom: 2px;
 }
 
-.ba11y-error-group .ba11y-indicator-circle {
+.validation-api-error-group .validation-api-indicator-circle {
     background-color: var(--a11y-red);
 }
 
-.ba11y-warning-group .ba11y-indicator-circle {
+.validation-api-warning-group .validation-api-indicator-circle {
     background-color: var(--a11y-yellow);
 }
 
-.ba11y-error-group,
-.ba11y-warning-group {
+.validation-api-error-group,
+.validation-api-warning-group {
     p, ul {
         line-height: 1.4;
         margin: 0;
@@ -44,8 +44,8 @@
     }
 }
 
-.ba11y-error-group .ba11y-issue-link,
-.ba11y-warning-group .ba11y-issue-link {
+.validation-api-error-group .validation-api-issue-link,
+.validation-api-warning-group .validation-api-issue-link {
     cursor: pointer;
     font-weight: 400;
     text-decoration: underline;

@@ -11,9 +11,9 @@
 namespace ValidationAPI\Core;
 
 use ValidationAPI\Core\Traits\EditorDetection;
-use ValidationAPI\Block\Registry as BlockChecksRegistry;
-use ValidationAPI\Meta\Registry as MetaChecksRegistry;
-use ValidationAPI\Editor\Registry as EditorChecksRegistry;
+use ValidationAPI\Block\Registry as BlockRegistry;
+use ValidationAPI\Meta\Registry as MetaRegistry;
+use ValidationAPI\Editor\Registry as EditorRegistry;
 
 /**
  * Class Assets
@@ -110,9 +110,9 @@ class Assets {
 		);
 
 		// Get the registries to expose validation rules to JavaScript.
-		$registry                = BlockChecksRegistry::get_instance();
-		$meta_registry           = MetaChecksRegistry::get_instance();
-		$editor_registry         = EditorChecksRegistry::get_instance();
+		$registry                = BlockRegistry::get_instance();
+		$meta_registry           = MetaRegistry::get_instance();
+		$editor_registry         = EditorRegistry::get_instance();
 		$validation_rules        = $this->prepare_validation_rules_for_js( $registry );
 		$meta_validation_rules   = $this->prepare_meta_validation_rules_for_js( $meta_registry );
 		$editor_validation_rules = $this->prepare_editor_validation_rules_for_js( $editor_registry );
@@ -173,10 +173,10 @@ class Assets {
 	/**
 	 * Prepare validation rules from PHP registry for JavaScript consumption.
 	 *
-	 * @param BlockChecksRegistry $registry The block checks registry instance.
+	 * @param BlockRegistry $registry The block checks registry instance.
 	 * @return array Prepared validation rules for JavaScript.
 	 */
-	private function prepare_validation_rules_for_js( BlockChecksRegistry $registry ): array {
+	private function prepare_validation_rules_for_js( BlockRegistry $registry ): array {
 		$all_checks = $registry->get_all_checks();
 		$js_rules   = array();
 
@@ -208,10 +208,10 @@ class Assets {
 	/**
 	 * Prepare meta validation rules for JavaScript.
 	 *
-	 * @param MetaChecksRegistry $meta_registry The meta checks registry instance.
+	 * @param MetaRegistry $meta_registry The meta checks registry instance.
 	 * @return array Formatted meta validation rules for JavaScript.
 	 */
-	private function prepare_meta_validation_rules_for_js( MetaChecksRegistry $meta_registry ): array {
+	private function prepare_meta_validation_rules_for_js( MetaRegistry $meta_registry ): array {
 		$all_meta_checks = $meta_registry->get_all_meta_checks();
 		$js_rules        = array();
 
@@ -247,10 +247,10 @@ class Assets {
 	/**
 	 * Prepare editor validation rules for JavaScript.
 	 *
-	 * @param EditorChecksRegistry $editor_registry The editor checks registry instance.
+	 * @param EditorRegistry $editor_registry The editor checks registry instance.
 	 * @return array Formatted editor validation rules for JavaScript.
 	 */
-	private function prepare_editor_validation_rules_for_js( EditorChecksRegistry $editor_registry ): array {
+	private function prepare_editor_validation_rules_for_js( EditorRegistry $editor_registry ): array {
 		$all_editor_checks = $editor_registry->get_all_editor_checks();
 		$js_rules          = array();
 

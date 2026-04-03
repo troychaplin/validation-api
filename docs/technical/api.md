@@ -124,7 +124,7 @@ These are the internal registry singletons. Most integrations should use the glo
 
 ### ValidationAPI\Block\Registry
 
-Singleton. Access via `BlockChecksRegistry::get_instance()`.
+Singleton. Access via `BlockRegistry::get_instance()`.
 
 ```php
 register_check( string $block_type, string $check_name, array $check_args ): bool
@@ -140,7 +140,7 @@ get_effective_check_level( string $block_type, string $check_name ): string
 
 ### ValidationAPI\Editor\Registry
 
-Singleton. Access via `EditorChecksRegistry::get_instance()`.
+Singleton. Access via `EditorRegistry::get_instance()`.
 
 ```php
 register_editor_check( string $post_type, string $check_name, array $check_args ): bool
@@ -153,7 +153,7 @@ get_effective_editor_check_level( string $post_type, string $check_name ): strin
 
 ### ValidationAPI\Meta\Registry
 
-Singleton. Access via `MetaChecksRegistry::get_instance()`.
+Singleton. Access via `MetaRegistry::get_instance()`.
 
 ```php
 register_meta_check( string $post_type, string $meta_key, string $check_name, array $check_args ): bool

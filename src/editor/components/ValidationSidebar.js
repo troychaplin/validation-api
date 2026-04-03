@@ -209,13 +209,13 @@ export function ValidationSidebar() {
 	}
 
 	// Accessibility icon SVG that changes color based on validation severity
-	const ba11yIcon = (
+	const sidebarIcon = (
 		<svg
 			width="16"
 			height="16"
 			viewBox="0 0 16 16"
 			fill={iconColor}
-			className="ba11y-sidebar-icon"
+			className="validation-api-sidebar-icon"
 			xmlns="http://www.w3.org/2000/svg"
 		>
 			<path
@@ -309,8 +309,8 @@ export function ValidationSidebar() {
 		<PluginSidebar
 			name="validation-sidebar"
 			title={__('Validation', 'validation-api')}
-			icon={ba11yIcon}
-			className="ba11y-validation-sidebar"
+			icon={sidebarIcon}
+			className="validation-api-validation-sidebar"
 		>
 			{/* Errors Panel: Displays all validation errors grouped by source type */}
 			{totalErrors > 0 && (
@@ -321,19 +321,19 @@ export function ValidationSidebar() {
 						totalErrors
 					)}
 					initialOpen={true}
-					className="ba11y-errors-panel"
+					className="validation-api-errors-panel"
 				>
 					{/* Block Errors: Deduplicated block validation issues */}
 					{deduplicatedBlockErrors.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-error-group">
-								<p className="ba11y-error-subheading">
+							<div className="validation-api-error-group">
+								<p className="validation-api-error-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Block Errors', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-error-list">
+								<ul className="validation-api-error-list">
 									{deduplicatedBlockErrors.map((issue, index) => {
 										const count = issue.clientIds.length;
 										const countDisplay = count > 1 ? ` (x${count})` : '';
@@ -341,7 +341,7 @@ export function ValidationSidebar() {
 											<li key={`block-error-${index}`}>
 												<button
 													type="button"
-													className="ba11y-issue-link"
+													className="validation-api-issue-link"
 													onClick={() =>
 														handleBlockClick(issue.clientIds[0])
 													}
@@ -361,14 +361,14 @@ export function ValidationSidebar() {
 					{/* Meta Errors: Deduplicated meta field validation issues */}
 					{deduplicatedMetaErrors.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-error-group">
-								<p className="ba11y-error-subheading">
+							<div className="validation-api-error-group">
+								<p className="validation-api-error-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Meta Errors', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-error-list">
+								<ul className="validation-api-error-list">
 									{deduplicatedMetaErrors.map((issue, index) => (
 										<li key={`meta-error-${index}`}>{issue.message}</li>
 									))}
@@ -380,14 +380,14 @@ export function ValidationSidebar() {
 					{/* Editor Errors: Deduplicated editor validation issues */}
 					{deduplicatedEditorErrors.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-error-group">
-								<p className="ba11y-error-subheading">
+							<div className="validation-api-error-group">
+								<p className="validation-api-error-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Editor Errors', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-error-list">
+								<ul className="validation-api-error-list">
 									{deduplicatedEditorErrors.map((issue, index) => (
 										<li key={`editor-error-${index}`}>{issue.message}</li>
 									))}
@@ -407,19 +407,19 @@ export function ValidationSidebar() {
 						totalWarnings
 					)}
 					initialOpen={true}
-					className="ba11y-warnings-panel"
+					className="validation-api-warnings-panel"
 				>
 					{/* Block Warnings: Deduplicated block validation warnings */}
 					{deduplicatedBlockWarnings.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-warning-group">
-								<p className="ba11y-warning-subheading">
+							<div className="validation-api-warning-group">
+								<p className="validation-api-warning-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Block Warnings', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-warning-list">
+								<ul className="validation-api-warning-list">
 									{deduplicatedBlockWarnings.map((issue, index) => {
 										const count = issue.clientIds.length;
 										const countDisplay = count > 1 ? ` (x${count})` : '';
@@ -427,7 +427,7 @@ export function ValidationSidebar() {
 											<li key={`block-warning-${index}`}>
 												<button
 													type="button"
-													className="ba11y-issue-link"
+													className="validation-api-issue-link"
 													onClick={() =>
 														handleBlockClick(issue.clientIds[0])
 													}
@@ -447,14 +447,14 @@ export function ValidationSidebar() {
 					{/* Meta Warnings: Deduplicated meta field validation warnings */}
 					{deduplicatedMetaWarnings.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-warning-group">
-								<p className="ba11y-warning-subheading">
+							<div className="validation-api-warning-group">
+								<p className="validation-api-warning-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Meta Warnings', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-warning-list">
+								<ul className="validation-api-warning-list">
 									{deduplicatedMetaWarnings.map((issue, index) => (
 										<li key={`meta-warning-${index}`}>{issue.message}</li>
 									))}
@@ -466,14 +466,14 @@ export function ValidationSidebar() {
 					{/* Editor Warnings: Deduplicated editor validation warnings */}
 					{deduplicatedEditorWarnings.length > 0 && (
 						<PanelRow>
-							<div className="ba11y-warning-group">
-								<p className="ba11y-warning-subheading">
+							<div className="validation-api-warning-group">
+								<p className="validation-api-warning-subheading">
 									<strong>
-										<span className="ba11y-indicator-circle"></span>
+										<span className="validation-api-indicator-circle"></span>
 										{__('Editor Warnings', 'validation-api')}
 									</strong>
 								</p>
-								<ul className="ba11y-warning-list">
+								<ul className="validation-api-warning-list">
 									{deduplicatedEditorWarnings.map((issue, index) => (
 										<li key={`editor-warning-${index}`}>{issue.message}</li>
 									))}

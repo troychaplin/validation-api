@@ -54,12 +54,12 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 		// Always render the same DOM structure to prevent focus loss.
 		// Toggling between <BlockEdit /> and <div><BlockEdit /></div> causes
 		// React to unmount and remount BlockEdit, stealing keyboard focus.
-		let wrapperClass = 'ba11y-block-wrapper';
+		let wrapperClass = 'validation-api-block-wrapper';
 		if (!validationResult.isValid) {
 			if (validationResult.mode === 'error') {
-				wrapperClass += ' ba11y-block-error';
+				wrapperClass += ' validation-api-block-error';
 			} else if (validationResult.mode === 'warning') {
-				wrapperClass += ' ba11y-block-warning';
+				wrapperClass += ' validation-api-block-warning';
 			}
 		}
 

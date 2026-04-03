@@ -54,9 +54,9 @@ export function useMetaValidation(metaKey) {
 			// Errors take precedence over warnings for styling
 			let wrapperClassName = '';
 			if (result.hasErrors) {
-				wrapperClassName = 'ba11y-meta-error';
+				wrapperClassName = 'validation-api-meta-error';
 			} else if (result.hasWarnings) {
-				wrapperClassName = 'ba11y-meta-warning';
+				wrapperClassName = 'validation-api-meta-warning';
 			}
 
 			// Return validation result with wrapper class appended
