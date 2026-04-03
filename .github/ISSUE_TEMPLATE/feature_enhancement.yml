@@ -7,7 +7,7 @@ body:
     - type: markdown
       attributes:
           value: |
-              Thanks for your suggestion! Your ideas and feedback help make Block Accessibility Checks better.
+              Thanks for your suggestion! Your ideas and feedback help make Validation API better.
 
     - type: checkboxes
       id: prerequisites
@@ -21,16 +21,16 @@ body:
     - type: dropdown
       id: request-type
       attributes:
-          label: What type of request is this?
+          label: Feature Category
           description: Select the category that best fits your request
           options:
-              - New Accessibility Check
-              - Improve Existing Check
+              - New Validation Scope
               - Developer API Enhancement
               - User Interface Improvement
               - Settings/Configuration Option
               - Performance Enhancement
-              - Developer Experience/Feedback
+              - Integration Feature
+              - Developer Experience
               - Other
       validations:
           required: true
@@ -56,7 +56,7 @@ body:
           placeholder: |
               Example scenario:
               - When a content editor adds a video block...
-              - When a developer creates a custom block...
+              - When a developer registers a meta check...
               - When working with...
 
     - type: textarea
@@ -65,7 +65,6 @@ body:
           label: Additional Context (optional)
           description: Add any other information that might help
           placeholder: |
-              - WCAG guidelines this relates to
               - Examples from other tools
               - Alternative approaches considered
               - Links or screenshots
