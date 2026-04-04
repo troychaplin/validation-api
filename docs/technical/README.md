@@ -15,9 +15,9 @@ The Validation API is a two-layer system: PHP registries that collect check defi
 │         │                 │                  │           │
 │         └────────┬────────┴──────────────────┘           │
 │                  │                                        │
-│           wp_localize_script                              │
+│         block_editor_settings_all filter                  │
 │                  │                                        │
-│           window.ValidationAPI                            │
+│         editorSettings.validationApi                      │
 └──────────────────┼────────────────────────────────────────┘
                    │
 ┌──────────────────┼────────────────────────────────────────┐
@@ -32,8 +32,8 @@ The Validation API is a two-layer system: PHP registries that collect check defi
 │                  │                                          │
 │          ┌───────┴────────┐                                │
 │          │ Data Store     │                                │
-│          │ (validation-   │                                │
-│          │  api)          │                                │
+│          │ (core/         │                                │
+│          │  validation)   │                                │
 │          └───────┬────────┘                                │
 │                  │                                          │
 │     ┌────────────┼────────────┐                            │
@@ -54,8 +54,8 @@ The entry point is `validation_api_init_plugin()`, called on `init`. This bootst
 1. Instantiates the three registries (Block, Meta, Editor) as singletons
 2. Initializes the `Assets` class for script/style loading
 3. Registers the REST API controller
-4. Fires `validation_api_ready` (with Block Registry) and `validation_api_editor_checks_ready` (with Editor Registry) actions
-5. Fires `validation_api_initialized` when setup is complete
+4. Fires `wp_validation_ready` (with Block Registry) and `wp_validation_editor_checks_ready` (with Editor Registry) actions
+5. Fires `wp_validation_initialized` when setup is complete
 
 ### Registries
 
@@ -68,29 +68,23 @@ Each registry is a singleton that stores check definitions:
 All three follow the same patterns:
 - Registration methods that validate input and fire `should_register_*` / `check_args` filters
 - Get methods for retrieving checks by type, name, or all at once
-- `get_effective_*_level()` methods that apply the `validation_api_check_level` filter
+- `get_effective_*_level()` methods that apply the `wp_validation_check_level` filter
 
-### PluginContext
+### Namespace Field
 
-The `PluginContext` class tracks which plugin is currently registering checks. When `validation_api_register_plugin()` is called, it:
-
-1. Sets the context (`PluginContext::set()`)
-2. Executes the callback or CheckProvider classes
-3. Clears the context (`PluginContext::clear()`)
-
-Checks registered during the callback automatically get a `_plugin` attribute with the plugin's name. This attribution appears in the REST API response and is used by the companion settings package.
+The `namespace` field in check args tracks which plugin registered each check. All checks with the same `namespace` value are grouped together. This attribution appears in the REST API response and is used by the companion settings package.
 
 ### Assets
 
 The `ValidationAPI\Core\Assets` class handles:
 
 - Enqueuing the editor JavaScript bundle via `enqueue_block_editor_assets`
-- Exporting check data via `wp_localize_script` to `window.ValidationAPI`
+- Exporting check data via the `block_editor_settings_all` filter to `editorSettings.validationApi`
 - Editor context detection (post editor, site editor, template editing)
 
 ### REST API
 
-The `ValidationAPI\Rest\ChecksController` registers `GET /validation-api/v1/checks`. It requires `manage_options` capability and returns all registered checks across all three scopes, including `_plugin` attribution.
+The `ValidationAPI\Rest\ChecksController` registers `GET /wp/v2/validation-checks`. It requires `manage_options` capability and returns all registered checks across all three scopes, including `_namespace` attribution.
 
 ### Traits
 
@@ -105,13 +99,13 @@ Two shared traits used by registry classes:
 
 Three runners, one per scope. Each subscribes to relevant store changes and re-runs validation when data changes:
 
-- **Block Runner** (`validateBlock.js`) — Watches for block attribute changes. For each block with registered checks, fires the `validation_api_validate_block` filter.
-- **Meta Runner** (`validateMeta.js`) — Watches for post meta changes. For each meta key with registered checks, fires the `validation_api_validate_meta` filter.
-- **Editor Runner** (`validateEditor.js`) — Watches for block list changes. Fires the `validation_api_validate_editor` filter with the full blocks array.
+- **Block Runner** (`validateBlock.js`) — Watches for block attribute changes. For each block with registered checks, fires the `editor.validateBlock` filter.
+- **Meta Runner** (`validateMeta.js`) — Watches for post meta changes. For each meta key with registered checks, fires the `editor.validateMeta` filter.
+- **Editor Runner** (`validateEditor.js`) — Watches for block list changes. Fires the `editor.validateEditor` filter with the full blocks array.
 
 ### Data Store
 
-All validation state is centralized in a custom `@wordpress/data` store registered under the `validation-api` namespace. This eliminates duplicate computation and gives all consumers reactive access via selectors.
+All validation state is centralized in a custom `@wordpress/data` store registered under the `core/validation` namespace. This eliminates duplicate computation and gives all consumers reactive access via selectors.
 
 **Producers:**
 
@@ -143,16 +137,16 @@ All validation state is centralized in a custom `@wordpress/data` store register
 Consumers can query the store from the browser console:
 
 ```js
-wp.data.select('validation-api').getInvalidBlocks()
-wp.data.select('validation-api').hasErrors()
+wp.data.select('core/validation').getInvalidBlocks()
+wp.data.select('core/validation').hasErrors()
 ```
 
 ### Coordinator
 
 The `ValidationAPI` component reads from the data store and manages publish locking:
 
-- If any check fails at `error` level → `wp.data.dispatch('core/editor').lockPostSaving('validation-api')`
-- When all errors resolve → `wp.data.dispatch('core/editor').unlockPostSaving('validation-api')`
+- If any check fails at `error` level → `wp.data.dispatch('core/editor').lockPostSaving('core-validation')`
+- When all errors resolve → `wp.data.dispatch('core/editor').unlockPostSaving('core-validation')`
 
 ### UI Components
 
@@ -172,19 +166,19 @@ The JS entry point (`register.js`) renders:
 
 ### No Storage
 
-The core plugin has no `wp_options`, no custom tables, no settings pages. Check definitions live in PHP memory (populated on each request), exported to JS via `wp_localize_script`. The `validation_api_check_level` filter is the extension point for runtime configuration.
+The core plugin has no `wp_options`, no custom tables, no settings pages. Check definitions live in PHP memory (populated on each request), exported to JS via the `block_editor_settings_all` filter. The `wp_validation_check_level` filter is the extension point for runtime configuration.
 
 ### Filter-First Architecture
 
 Every significant behavior passes through a filter:
-- Check args can be modified before registration (`validation_api_check_args`)
-- Checks can be prevented from registering (`validation_api_should_register_check`)
-- Severity is overridable at runtime (`validation_api_check_level`)
-- Validation results come from JS filters (`validation_api_validate_block`, etc.)
+- Check args can be modified before registration (`wp_validation_check_args`)
+- Checks can be prevented from registering (`wp_validation_should_register_check`)
+- Severity is overridable at runtime (`wp_validation_check_level`)
+- Validation results come from JS filters (`editor.validateBlock`, etc.)
 
 ### Multi-Context Support
 
-The plugin detects the editor context (`editorContext` in the localized data) and works in:
+The plugin detects the editor context (`editorContext` in the settings data) and works in:
 - Post editor (standard editing)
 - Post editor in template mode
 - Site editor (full site editing)

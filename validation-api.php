@@ -27,8 +27,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 // Imports the necessary classes for the plugin.
 use ValidationAPI\Core\Plugin;
-use ValidationAPI\Core\PluginContext;
-use ValidationAPI\Contracts\CheckProvider;
 use ValidationAPI\Block\Registry as BlockRegistry;
 use ValidationAPI\Editor\Registry as EditorRegistry;
 use ValidationAPI\Meta\Registry as MetaRegistry;
@@ -52,105 +50,25 @@ function validation_api_init_plugin() {
 add_action( 'init', 'validation_api_init_plugin' );
 
 /**
- * Register a plugin and its validation checks with the Validation API.
- *
- * Declares plugin identity once so all checks registered within the scope
- * are automatically attributed to this plugin. Accepts either a callable
- * or an array of CheckProvider class names.
- *
- * Safe integration pattern — wrap calls with a function_exists check:
- *
- *     add_action( 'init', function() {
- *         if ( ! function_exists( 'validation_api_register_plugin' ) ) {
- *             return;
- *         }
- *
- *         validation_api_register_plugin(
- *             [ 'name' => 'My Plugin' ],
- *             function() {
- *                 validation_api_register_block_check( 'core/image', [
- *                     'name'      => 'alt_text',
- *                     'error_msg' => 'Alt text is required.',
- *                 ] );
- *             }
- *         );
- *     } );
- *
- * @param array          $plugin_info Plugin metadata. Required key: 'name' (string).
- * @param callable|array $checks      A callable that registers checks, or an array
- *                                     of fully qualified CheckProvider class names.
- * @return void
- */
-function validation_api_register_plugin( array $plugin_info, $checks ): void {
-	if ( empty( $plugin_info['name'] ) ) {
-		_doing_it_wrong(
-			__FUNCTION__,
-			esc_html__( 'The $plugin_info array must include a "name" key.', 'validation-api' ),
-			'1.0.0'
-		);
-		return;
-	}
-
-	PluginContext::set( $plugin_info );
-
-	try {
-		if ( is_callable( $checks ) ) {
-			call_user_func( $checks );
-		} elseif ( is_array( $checks ) ) {
-			foreach ( $checks as $provider_class ) {
-				if ( ! class_exists( $provider_class ) ) {
-					_doing_it_wrong(
-						__FUNCTION__,
-						sprintf(
-							/* translators: %s: class name */
-							esc_html__( 'CheckProvider class "%s" does not exist.', 'validation-api' ),
-							esc_html( $provider_class )
-						),
-						'1.0.0'
-					);
-					continue;
-				}
-
-				$provider = new $provider_class();
-
-				if ( ! $provider instanceof CheckProvider ) {
-					_doing_it_wrong(
-						__FUNCTION__,
-						sprintf(
-							/* translators: %s: class name */
-							esc_html__( 'Class "%s" must implement ValidationAPI\\Contracts\\CheckProvider.', 'validation-api' ),
-							esc_html( $provider_class )
-						),
-						'1.0.0'
-					);
-					continue;
-				}
-
-				$provider->register();
-			}
-		} else {
-			_doing_it_wrong(
-				__FUNCTION__,
-				esc_html__( 'The $checks parameter must be a callable or an array of CheckProvider class names.', 'validation-api' ),
-				'1.0.0'
-			);
-		}
-	} finally {
-		PluginContext::clear();
-	}
-}
-
-/**
  * Register a validation check for a block type.
  *
  * Extracts 'name' from $args and delegates to the Block Registry singleton.
- * Must be called within a validation_api_register_plugin() context.
+ * A 'namespace' field is required for plugin attribution.
  *
  * @param string $block_type Block type name (e.g., 'core/image').
- * @param array  $args       Check configuration. Required keys: 'name' (string), 'error_msg' (string).
+ * @param array  $args       Check configuration. Required keys: 'namespace' (string), 'name' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function validation_api_register_block_check( string $block_type, array $args ): bool {
+function wp_register_block_validation_check( string $block_type, array $args ): bool {
+	if ( empty( $args['namespace'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "namespace" key for plugin attribution.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
 	if ( empty( $args['name'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -170,13 +88,22 @@ function validation_api_register_block_check( string $block_type, array $args ):
  * Register a validation check for a post meta field.
  *
  * Extracts 'name' and 'meta_key' from $args and delegates to the Meta Registry singleton.
- * Must be called within a validation_api_register_plugin() context.
+ * A 'namespace' field is required for plugin attribution.
  *
  * @param string $post_type Post type (e.g., 'post', 'page').
- * @param array  $args      Check configuration. Required keys: 'name' (string), 'meta_key' (string), 'error_msg' (string).
+ * @param array  $args      Check configuration. Required keys: 'namespace' (string), 'name' (string), 'meta_key' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function validation_api_register_meta_check( string $post_type, array $args ): bool {
+function wp_register_meta_validation_check( string $post_type, array $args ): bool {
+	if ( empty( $args['namespace'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "namespace" key for plugin attribution.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
 	if ( empty( $args['name'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -206,13 +133,22 @@ function validation_api_register_meta_check( string $post_type, array $args ): b
  * Register a validation check for the editor (document-level).
  *
  * Extracts 'name' from $args and delegates to the Editor Registry singleton.
- * Must be called within a validation_api_register_plugin() context.
+ * A 'namespace' field is required for plugin attribution.
  *
  * @param string $post_type Post type (e.g., 'post', 'page').
- * @param array  $args      Check configuration. Required keys: 'name' (string), 'error_msg' (string).
+ * @param array  $args      Check configuration. Required keys: 'namespace' (string), 'name' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function validation_api_register_editor_check( string $post_type, array $args ): bool {
+function wp_register_editor_validation_check( string $post_type, array $args ): bool {
+	if ( empty( $args['namespace'] ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			esc_html__( 'The $args array must include a "namespace" key for plugin attribution.', 'validation-api' ),
+			'1.0.0'
+		);
+		return false;
+	}
+
 	if ( empty( $args['name'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,

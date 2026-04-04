@@ -7,6 +7,7 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { validateAllMetaChecks } from '../../../editor/validation/meta/validateMeta';
+import { getMetaValidationRules } from './getValidationConfig';
 
 /**
  * React hook that retrieves all invalid meta field validations for the current post.
@@ -28,10 +29,8 @@ export function GetInvalidMeta() {
 		};
 	}, []);
 
-	// Retrieve validation rules registered for this post type
-	// Rules are registered via PHP and made available through the window object
-	const metaValidationRules = window.ValidationAPI?.metaValidationRules || {};
-	const postTypeRules = metaValidationRules[postType] || {};
+	// Retrieve validation rules registered for this post type via editor settings
+	const postTypeRules = getMetaValidationRules()[postType] || {};
 
 	const invalidMeta = [];
 

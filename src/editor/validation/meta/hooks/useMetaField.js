@@ -55,9 +55,8 @@ export function useMetaField(metaKey, originalHelp = '') {
 	// Enhance help text with validation messages if issues exist
 	if (validation && (validation.hasErrors || validation.hasWarnings)) {
 		// Extract all validation messages from issues
-		// Priority: message > error_msg > warning_msg
 		const messages = validation.issues
-			.map(issue => issue.message || issue.error_msg || issue.warning_msg)
+			.map(issue => issue.message || issue.errorMsg || issue.warningMsg)
 			.join('. ');
 
 		// Determine CSS class based on severity (errors take precedence)

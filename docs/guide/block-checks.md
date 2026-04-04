@@ -4,10 +4,11 @@ Block checks validate the attributes of individual blocks. If a `core/image` is 
 
 ## Registration (PHP)
 
-Register a block check inside your `validation_api_register_plugin()` callback:
+Register a block check with the `namespace` field to identify your plugin:
 
 ```php
-validation_api_register_block_check( 'core/image', [
+wp_register_block_validation_check( 'core/image', [
+    'namespace'   => 'my-plugin',
     'name'        => 'alt_text',
     'level'       => 'error',
     'description' => 'Images must have alt text',
@@ -24,6 +25,7 @@ The second argument is an array of check configuration:
 
 | Key | Type | Required | Default | Description |
 |---|---|---|---|---|
+| `namespace` | `string` | Yes | — | Identifier for the plugin registering this check |
 | `name` | `string` | Yes | — | Unique identifier for this check within the block type |
 | `error_msg` | `string` | Yes | — | Message shown when the check fails at error level |
 | `warning_msg` | `string` | No | Same as `error_msg` | Message shown when the check fails at warning level |
@@ -37,13 +39,15 @@ The second argument is an array of check configuration:
 Register as many checks as needed for a single block type:
 
 ```php
-validation_api_register_block_check( 'core/image', [
+wp_register_block_validation_check( 'core/image', [
+    'namespace'   => 'my-plugin',
     'name'        => 'alt_text',
     'level'       => 'error',
     'error_msg'   => 'This image is missing alt text.',
 ] );
 
-validation_api_register_block_check( 'core/image', [
+wp_register_block_validation_check( 'core/image', [
+    'namespace'   => 'my-plugin',
     'name'        => 'decorative_flag',
     'level'       => 'warning',
     'error_msg'   => 'Decorative images should be marked as decorative.',
@@ -55,13 +59,13 @@ Each check needs a unique `name` within the block type.
 
 ## Validation Logic (JavaScript)
 
-PHP registration tells the API *what* to check. JavaScript tells it *how* to check. Use the `validation_api_validate_block` filter:
+PHP registration tells the API *what* to check. JavaScript tells it *how* to check. Use the `editor.validateBlock` filter:
 
 ```javascript
 import { addFilter } from '@wordpress/hooks';
 
 addFilter(
-    'validation_api_validate_block',
+    'editor.validateBlock',
     'my-plugin/image-alt',
     ( isValid, blockType, attributes, checkName, block ) => {
         if ( blockType === 'core/image' && checkName === 'alt_text' ) {
@@ -84,7 +88,7 @@ addFilter(
 
 ### Return Value
 
-Return `true` if the block passes validation, `false` if it fails. The API uses the registered `error_msg` or `warning_msg` based on the effective severity level.
+Return `true` if the block passes validation, `false` if it fails. The API uses the registered `errorMsg` or `warningMsg` based on the effective severity level.
 
 ### Handling Multiple Checks in One Filter
 
@@ -92,7 +96,7 @@ You can handle all checks for a block type in a single filter callback:
 
 ```javascript
 addFilter(
-    'validation_api_validate_block',
+    'editor.validateBlock',
     'my-plugin/image-checks',
     ( isValid, blockType, attributes, checkName ) => {
         if ( blockType !== 'core/image' ) {
@@ -143,7 +147,7 @@ The fifth parameter (`block`) gives you access to the full block structure:
 
 ```javascript
 addFilter(
-    'validation_api_validate_block',
+    'editor.validateBlock',
     'my-plugin/nested-check',
     ( isValid, blockType, attributes, checkName, block ) => {
         if ( blockType === 'my-plugin/accordion' && checkName === 'has_items' ) {
@@ -161,7 +165,7 @@ This is useful for checks that depend on block structure rather than just attrib
 
 1. The user edits a block in the editor
 2. The Validation API's block runner iterates over registered checks for that block type
-3. For each check, the `validation_api_validate_block` filter fires
+3. For each check, the `editor.validateBlock` filter fires
 4. Your callback returns `true` (pass) or `false` (fail)
 5. Failed checks display the appropriate message based on severity
 6. Error-level failures lock publishing; warnings show feedback only

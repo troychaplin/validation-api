@@ -91,7 +91,7 @@ export const isCheckEnabled = config => {
  * @return {Object} Standardized issue object.
  */
 export const createIssue = (config, checkName, additionalFields = {}) => {
-	// Extract messages with proper fallbacks
+	// Extract messages from PHP config (snake_case) and normalize to camelCase output.
 	const message = config.message || '';
 	const errorMsg = config.error_msg || message;
 	const warningMsg = config.warning_msg || config.error_msg || message;
@@ -110,15 +110,12 @@ export const createIssue = (config, checkName, additionalFields = {}) => {
 
 	return {
 		check: checkName,
-		checkName, // For compatibility with different naming conventions
+		checkName,
 		type,
 		priority,
 		message,
-		// Support both camelCase and snake_case for compatibility
 		errorMsg,
 		warningMsg,
-		error_msg: errorMsg,
-		warning_msg: warningMsg,
 		...additionalFields,
 	};
 };

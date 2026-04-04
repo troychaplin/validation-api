@@ -19,6 +19,6 @@ For contributors and the WordPress core team reviewing this plugin.
 - **[Architecture](technical/README.md)** — System design, registries, data store, and UI components
 - **[Data Flow](technical/data-flow.md)** — How checks move from PHP registration through to JS validation and UI
 - **[Hooks Reference](technical/hooks.md)** — Every PHP action/filter and JS filter with signatures
-- **[API Reference](technical/api.md)** — All public functions, registry methods, and contracts
+- **[API Reference](technical/api.md)** — All public registration functions, registry methods, and contracts
 - **[Companion Package](technical/companion-package.md)** — Settings companion architecture and the filter bridge
 - **[Design Decisions](technical/decisions.md)** — Why the API is shaped the way it is

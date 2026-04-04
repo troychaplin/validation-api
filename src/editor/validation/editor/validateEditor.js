@@ -10,16 +10,8 @@ import {
 	isCheckEnabled,
 	createIssue,
 	createValidationResult,
+	getEditorValidationRules,
 } from '../../../shared/utils/validation';
-
-/**
- * Editor validation rules configuration from PHP
- *
- * Contains validation rules registered server-side for editor-level checks.
- * These rules are post-type specific and validate overall document structure
- * rather than individual blocks. Rules are exposed via the window object by PHP.
- */
-const editorChecksConfig = window.ValidationAPI?.editorValidationRules || {};
 
 /**
  * Validates entire editor content against editor-level validation rules.
@@ -27,7 +19,7 @@ const editorChecksConfig = window.ValidationAPI?.editorValidationRules || {};
  * Runs all registered validation checks for the overall editor/document state,
  * which differ from block-level validation by checking document-wide requirements
  * (e.g., heading hierarchy, required content sections). External plugins can hook
- * into the validation process via the 'validation_api_validate_editor' filter.
+ * into the validation process via the 'editor.validateEditor' filter.
  *
  * @param {string} postType - The current post type (e.g., 'post', 'page').
  * @param {Array}  blocks   - Array of all block objects in the editor.
@@ -35,7 +27,7 @@ const editorChecksConfig = window.ValidationAPI?.editorValidationRules || {};
  */
 export function validateEditor(postType, blocks) {
 	// Get validation rules specific to this post type
-	const postTypeRules = editorChecksConfig[postType] || {};
+	const postTypeRules = getEditorValidationRules()[postType] || {};
 	const issues = [];
 
 	// Iterate through each registered validation rule for this post type
@@ -46,13 +38,13 @@ export function validateEditor(postType, blocks) {
 		}
 
 		/**
-		 * Filter: validation_api_validate_editor
+		 * Filter: editor.validateEditor
 		 *
 		 * Allows external plugins to implement validation logic for editor-level checks.
 		 * Plugins should return false if validation fails, true if it passes.
 		 */
 		const isValid = applyFilters(
-			'validation_api_validate_editor',
+			'editor.validateEditor',
 			true,
 			blocks,
 			postType,

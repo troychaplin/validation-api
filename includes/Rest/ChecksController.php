@@ -31,14 +31,14 @@ class ChecksController extends WP_REST_Controller {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'validation-api/v1';
+	protected $namespace = 'wp/v2';
 
 	/**
 	 * The base for this controller's routes.
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'checks';
+	protected $rest_base = 'validation-checks';
 
 	/**
 	 * Register the routes for this controller.
@@ -182,7 +182,7 @@ class ChecksController extends WP_REST_Controller {
 			'priority'     => $check_args['priority'] ?? 10,
 			'enabled'      => $check_args['enabled'] ?? true,
 			'configurable' => $check_args['configurable'] ?? true,
-			'_plugin'      => $check_args['_plugin'] ?? null,
+			'_namespace'   => $check_args['_namespace'] ?? null,
 		);
 	}
 
@@ -224,15 +224,9 @@ class ChecksController extends WP_REST_Controller {
 					'type'        => 'boolean',
 					'description' => __( 'Whether the check is enabled.', 'validation-api' ),
 				),
-				'_plugin'     => array(
-					'type'        => array( 'object', 'null' ),
-					'description' => __( 'The plugin that registered this check, or null if unattributed.', 'validation-api' ),
-					'properties'  => array(
-						'name' => array(
-							'type'        => 'string',
-							'description' => __( 'Display name of the registering plugin.', 'validation-api' ),
-						),
-					),
+				'_namespace'  => array(
+					'type'        => array( 'string', 'null' ),
+					'description' => __( 'The namespace of the plugin that registered this check, or null if unattributed.', 'validation-api' ),
 				),
 			),
 		);

@@ -4,10 +4,11 @@ Editor checks validate the document as a whole. Heading hierarchy, minimum conte
 
 ## Registration (PHP)
 
-Register an editor check inside your `validation_api_register_plugin()` callback:
+Register an editor check with the `namespace` field to identify your plugin:
 
 ```php
-validation_api_register_editor_check( 'post', [
+wp_register_editor_validation_check( 'post', [
+    'namespace'   => 'my-plugin',
     'name'        => 'heading_hierarchy',
     'level'       => 'warning',
     'description' => 'Headings should follow a logical hierarchy',
@@ -24,6 +25,7 @@ The second argument is an array of check configuration:
 
 | Key | Type | Required | Default | Description |
 |---|---|---|---|---|
+| `namespace` | `string` | Yes | — | Identifier for the plugin registering this check |
 | `name` | `string` | Yes | — | Unique identifier for this check within the post type |
 | `error_msg` | `string` | Yes | — | Message shown when the check fails at error level |
 | `warning_msg` | `string` | No | Same as `error_msg` | Message shown at warning level |
@@ -39,7 +41,8 @@ Register the same check for multiple post types:
 ```php
 // Option 1: Loop
 foreach ( [ 'post', 'page' ] as $post_type ) {
-    validation_api_register_editor_check( $post_type, [
+    wp_register_editor_validation_check( $post_type, [
+        'namespace' => 'my-plugin',
         'name'      => 'heading_hierarchy',
         'level'     => 'warning',
         'error_msg' => 'Heading hierarchy is broken.',
@@ -51,13 +54,13 @@ The Editor Registry also provides a bulk registration method on the registry cla
 
 ## Validation Logic (JavaScript)
 
-Use the `validation_api_validate_editor` filter. Unlike block checks, editor checks receive the full array of blocks:
+Use the `editor.validateEditor` filter. Unlike block checks, editor checks receive the full array of blocks:
 
 ```javascript
 import { addFilter } from '@wordpress/hooks';
 
 addFilter(
-    'validation_api_validate_editor',
+    'editor.validateEditor',
     'my-plugin/heading-hierarchy',
     ( isValid, blocks, postType, checkName, rule ) => {
         if ( checkName !== 'heading_hierarchy' ) {
@@ -129,7 +132,7 @@ function findBlocks( blocks, blockType ) {
 **Check for required block type:**
 ```javascript
 addFilter(
-    'validation_api_validate_editor',
+    'editor.validateEditor',
     'my-plugin/requires-image',
     ( isValid, blocks, postType, checkName ) => {
         if ( checkName === 'requires_image' ) {
@@ -143,7 +146,7 @@ addFilter(
 **Count blocks:**
 ```javascript
 addFilter(
-    'validation_api_validate_editor',
+    'editor.validateEditor',
     'my-plugin/min-content',
     ( isValid, blocks, postType, checkName ) => {
         if ( checkName === 'min_content' ) {

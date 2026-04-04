@@ -28,25 +28,27 @@ If you don't declare a `level`, it defaults to `error`:
 
 ```php
 // These are equivalent:
-validation_api_register_block_check( 'core/image', [
+wp_register_block_validation_check( 'core/image', [
+    'namespace' => 'my-plugin',
     'name'      => 'alt_text',
     'level'     => 'error',
     'error_msg' => 'Alt text is required.',
 ] );
 
-validation_api_register_block_check( 'core/image', [
+wp_register_block_validation_check( 'core/image', [
+    'namespace' => 'my-plugin',
     'name'      => 'alt_text',
     'error_msg' => 'Alt text is required.',
 ] );
 ```
 
-## The validation_api_check_level Filter
+## The wp_validation_check_level Filter
 
 This is the central mechanism for severity configuration. Every active check (level is not `none`) passes through this filter before validation runs:
 
 ```php
 $effective_level = apply_filters(
-    'validation_api_check_level',
+    'wp_validation_check_level',
     $registered_level,
     $context
 );
@@ -95,7 +97,7 @@ This is the core architectural decision: the Validation API has no settings stor
 ### Override a Specific Check
 
 ```php
-add_filter( 'validation_api_check_level', function( $level, $context ) {
+add_filter( 'wp_validation_check_level', function( $level, $context ) {
     // Downgrade image alt text from error to warning
     if ( $context['scope'] === 'block'
         && $context['block_type'] === 'core/image'
@@ -110,7 +112,7 @@ add_filter( 'validation_api_check_level', function( $level, $context ) {
 ### Disable a Check
 
 ```php
-add_filter( 'validation_api_check_level', function( $level, $context ) {
+add_filter( 'wp_validation_check_level', function( $level, $context ) {
     // Disable heading hierarchy check entirely
     if ( $context['check_name'] === 'heading_hierarchy' ) {
         return 'none';
@@ -122,7 +124,7 @@ add_filter( 'validation_api_check_level', function( $level, $context ) {
 ### Override All Checks from a Scope
 
 ```php
-add_filter( 'validation_api_check_level', function( $level, $context ) {
+add_filter( 'wp_validation_check_level', function( $level, $context ) {
     // Make all editor checks warnings instead of errors
     if ( $context['scope'] === 'editor' && $level === 'error' ) {
         return 'warning';
@@ -134,7 +136,7 @@ add_filter( 'validation_api_check_level', function( $level, $context ) {
 ### Override Based on Environment
 
 ```php
-add_filter( 'validation_api_check_level', function( $level, $context ) {
+add_filter( 'wp_validation_check_level', function( $level, $context ) {
     // In staging, downgrade all errors to warnings
     if ( wp_get_environment_type() === 'staging' && $level === 'error' ) {
         return 'warning';
@@ -145,11 +147,11 @@ add_filter( 'validation_api_check_level', function( $level, $context ) {
 
 ## How the Companion Settings Package Uses This
 
-The [validation-api-settings](https://github.com/troychaplin/validation-api-settings) companion plugin provides an admin UI for overriding check severity. Under the hood, it stores overrides in `wp_options` and hooks into `validation_api_check_level`:
+The [validation-api-settings](https://github.com/troychaplin/validation-api-settings) companion plugin provides an admin UI for overriding check severity. Under the hood, it stores overrides in `wp_options` and hooks into `wp_validation_check_level`:
 
 ```php
 // This is what the companion does internally:
-add_filter( 'validation_api_check_level', function( $level, $context ) {
+add_filter( 'wp_validation_check_level', function( $level, $context ) {
     $options = get_option( 'validation_api_settings', [] );
     $key     = $context['block_type'] . '_' . $context['check_name'];
     return $options[ $key ] ?? $level;
