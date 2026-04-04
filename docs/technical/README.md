@@ -30,11 +30,11 @@ The Validation API is a two-layer system: PHP registries that collect check defi
 │         │                 │                  │             │
 │         └────────┬────────┴──────────────────┘             │
 │                  │                                          │
-│           ┌──────┴──────┐                                  │
-│           │ Coordinator │                                  │
-│           │ (lock/unlock│                                  │
-│           │  publishing)│                                  │
-│           └──────┬──────┘                                  │
+│          ┌───────┴────────┐                                │
+│          │ Data Store     │                                │
+│          │ (validation-   │                                │
+│          │  api)          │                                │
+│          └───────┬────────┘                                │
 │                  │                                          │
 │     ┌────────────┼────────────┐                            │
 │     │            │            │                            │
@@ -109,24 +109,64 @@ Three runners, one per scope. Each subscribes to relevant store changes and re-r
 - **Meta Runner** (`validateMeta.js`) — Watches for post meta changes. For each meta key with registered checks, fires the `validation_api_validate_meta` filter.
 - **Editor Runner** (`validateEditor.js`) — Watches for block list changes. Fires the `validation_api_validate_editor` filter with the full blocks array.
 
+### Data Store
+
+All validation state is centralized in a custom `@wordpress/data` store registered under the `validation-api` namespace. This eliminates duplicate computation and gives all consumers reactive access via selectors.
+
+**Producers:**
+
+- **ValidationProvider** — Renderless component that calls the three validation hooks and dispatches results into the store. This is the single place where block, meta, and editor validation is computed.
+- **withErrorHandling HOC** — Dispatches per-block validation results into the store's `blockValidation` slice for CSS class application.
+
+**State shape:**
+
+```js
+{
+  blocks: [],           // Invalid block results from GetInvalidBlocks
+  meta: [],             // Invalid meta results from GetInvalidMeta
+  editor: [],           // Editor check issues from GetInvalidEditorChecks
+  blockValidation: {},  // Per-block results keyed by clientId
+}
+```
+
+**Selectors:**
+
+| Selector | Returns |
+|----------|---------|
+| `getInvalidBlocks()` | All invalid block validation results |
+| `getInvalidMeta()` | All invalid meta validation results |
+| `getInvalidEditorChecks()` | All editor-level validation issues |
+| `getBlockValidation(clientId)` | Per-block validation result |
+| `hasErrors()` | True if any error exists across all types |
+| `hasWarnings()` | True if any warning exists (and no errors) |
+
+Consumers can query the store from the browser console:
+
+```js
+wp.data.select('validation-api').getInvalidBlocks()
+wp.data.select('validation-api').hasErrors()
+```
+
 ### Coordinator
 
-The `ValidationAPI` coordinator aggregates results from all three runners and manages publish locking:
+The `ValidationAPI` component reads from the data store and manages publish locking:
 
 - If any check fails at `error` level → `wp.data.dispatch('core/editor').lockPostSaving('validation-api')`
 - When all errors resolve → `wp.data.dispatch('core/editor').unlockPostSaving('validation-api')`
 
 ### UI Components
 
-- **BlockIndicator** — Higher-order component (via `editor.BlockEdit` filter) that wraps blocks with red/yellow borders based on validation state
-- **ValidationSidebar** — PluginSidebar panel that lists all issues, grouped by severity, with click-to-navigate to the offending block
+- **withErrorHandling** — Higher-order component (via `editor.BlockEdit` filter) that runs per-block validation and renders a toolbar button when issues exist
+- **withBlockValidationClasses** — Higher-order component (via `editor.BlockListBlock` filter) that reads per-block validation from the store and applies CSS classes for red/yellow borders
+- **ValidationSidebar** — PluginSidebar panel that reads from the store and lists all issues, grouped by severity, with click-to-navigate to the offending block
 - **Meta Field Components** — UI elements for displaying meta validation status
 
 ### Registration
 
-The JS entry point (`register.js`) hooks into:
-- `blocks.registerBlockType` — Adds validation category support
-- `editor.BlockEdit` — Wraps block components with `withErrorHandling` HOC
+The JS entry point (`register.js`) renders:
+- `ValidationProvider` — Computes validation and populates the data store
+- `ValidationAPI` — Reads from the store and manages save locking and body classes
+- `ValidationSidebar` — Reads from the store and renders the sidebar UI
 
 ## Key Design Properties
 

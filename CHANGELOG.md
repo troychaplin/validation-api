@@ -17,7 +17,38 @@ Prefix the change with one of these keywords:
 
 ## [Unreleased]
 
-## [1.0.0] — Validation API (new direction)
+### Added
+
+- Custom `@wordpress/data` store (`validation-api`) centralizing all validation state with reactive selectors
+- `ValidationProvider` component as single source of validation computation
+- Store selectors: `getInvalidBlocks()`, `getInvalidMeta()`, `getInvalidEditorChecks()`, `getBlockValidation()`, `hasErrors()`, `hasWarnings()`
+- Console-queryable validation state via `wp.data.select('validation-api')`
+
+### Changed
+
+- Switched package manager from npm to pnpm
+- Editor context detection scoped to post editor only (`post-editor`, `post-editor-template`)
+- Sidebar now hidden when no validation issues are present, including its toolbar icon
+- Block indicators refactored from wrapping `<div>` elements to native `wrapperProps` via `editor.BlockListBlock` filter, eliminating extra DOM nodes
+- `withBlockValidationClasses` now reads from the data store via `useSelect` instead of a module-scoped Map, providing proper reactive subscriptions
+- `ValidationAPI` and `ValidationSidebar` now read from the centralized data store instead of independently calling validation hooks
+- `withErrorHandling` dispatches per-block results to the data store instead of a module-scoped Map
+- CSS class prefix updated from `has-meta-validation-` to `has-validation-` for body classes
+- GitHub Actions workflows and issue templates updated
+
+### Improved
+
+- Validation computed once by `ValidationProvider` instead of independently by each consumer, eliminating duplicate computation on every editor change
+- Cleaner block DOM structure without extra wrapper divs for validation indicators
+
+### Removed
+
+- `blockValidationStore.js` module-scoped Map store (replaced by `@wordpress/data` store)
+- Unused SVG assets, SCSS files, and barrel exports cleaned up
+- Unused `src/editor/validation/index.js` and `src/editor/hoc/index.js` barrel files
+- Legacy SCSS variables replaced by direct values
+
+## Validation API (new direction)
 
 This release marks a complete change of direction. The plugin has been rebuilt from the ground up as **Validation API** — a pure validation framework for the WordPress block editor — and the version has been reset to 1.0.0 to reflect the new identity and API surface.
 

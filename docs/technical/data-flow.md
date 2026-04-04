@@ -143,19 +143,29 @@ for ( const [ checkName, rule ] of Object.entries( checks ) ) {
 }
 ```
 
-### 9. Result Aggregation
+### 9. Data Store Dispatch
 
-The Coordinator collects results from all three runners and determines:
-- Which blocks have issues (and at what severity)
-- Whether any error-level failures exist
-- The complete list of issues for the sidebar
+The `ValidationProvider` component calls all three validation hooks and dispatches results into the `validation-api` data store:
+
+```javascript
+const invalidBlocks = GetInvalidBlocks();
+dispatch( 'validation-api' ).setInvalidBlocks( invalidBlocks );
+```
+
+This is the single place where validation is computed. All downstream consumers read from the store via selectors, eliminating duplicate computation.
+
+Additionally, the `withErrorHandling` HOC dispatches per-block validation results into the store's `blockValidation` slice for CSS class application on individual blocks.
 
 ## UI Phase (JS → DOM)
 
 ### 10. Publish Locking
 
+The `ValidationAPI` component reads from the store and manages save locking:
+
 ```javascript
-if ( hasErrors ) {
+const hasBlockErrors = select( 'validation-api' ).hasErrors();
+
+if ( hasBlockErrors ) {
     dispatch( 'core/editor' ).lockPostSaving( 'validation-api' );
 } else {
     dispatch( 'core/editor' ).unlockPostSaving( 'validation-api' );
@@ -164,15 +174,17 @@ if ( hasErrors ) {
 
 ### 11. Block Indicators
 
-The `withErrorHandling` HOC (registered via `editor.BlockEdit` filter) wraps each block's edit component. It reads the validation state for the block's `clientId` and renders a colored border:
+Two HOCs work together for block-level feedback:
 
-- Red border → at least one error-level failure
-- Yellow border → warning-level failures only (no errors)
-- No border → all checks pass
+- **`withErrorHandling`** (via `editor.BlockEdit` filter) — Runs per-block validation with debouncing, dispatches results to the store, and renders a toolbar button when issues exist
+- **`withBlockValidationClasses`** (via `editor.BlockListBlock` filter) — Reads per-block validation from the store via `useSelect` and applies CSS classes:
+  - `validation-api-block-error` → at least one error-level failure
+  - `validation-api-block-warning` → warning-level failures only (no errors)
+  - No class → all checks pass
 
 ### 12. Sidebar Panel
 
-The ValidationSidebar reads the aggregated results and renders:
+The `ValidationSidebar` reads from the store and renders:
 - Issues grouped by severity (errors first, then warnings)
 - Each issue shows the message from `error_msg` or `warning_msg` based on level
 - Click-to-navigate: clicking an issue selects and scrolls to the block
@@ -190,10 +202,10 @@ PHP registration
 JS validation
   → wp.data change detection
   → validation_api_validate_block filter (or _meta / _editor)
-  → Result aggregation
+  → ValidationProvider dispatches to validation-api store
 
-UI rendering
-  → lockPostSaving / unlockPostSaving
-  → Block border indicators
-  → Sidebar panel
+UI rendering (all read from the store)
+  → ValidationAPI: lockPostSaving / unlockPostSaving, body classes
+  → withBlockValidationClasses: block border indicators
+  → ValidationSidebar: sidebar panel
 ```

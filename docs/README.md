@@ -16,7 +16,7 @@ For plugin authors integrating with the Validation API.
 
 For contributors and the WordPress core team reviewing this plugin.
 
-- **[Architecture](technical/README.md)** — System design, registries, coordinator, and UI components
+- **[Architecture](technical/README.md)** — System design, registries, data store, and UI components
 - **[Data Flow](technical/data-flow.md)** — How checks move from PHP registration through to JS validation and UI
 - **[Hooks Reference](technical/hooks.md)** — Every PHP action/filter and JS filter with signatures
 - **[API Reference](technical/api.md)** — All public functions, registry methods, and contracts
