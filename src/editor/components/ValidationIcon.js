@@ -10,7 +10,7 @@
 export function ValidationIcon({ fill = 'currentColor' }) {
 	return (
 		<svg
-			viewBox="-2.12 -2.12 28.24 28.24"
+			viewBox="-0.81 -0.81 25.62 25.62"
 			xmlns="http://www.w3.org/2000/svg"
 			className="validation-api-sidebar-icon"
 		>

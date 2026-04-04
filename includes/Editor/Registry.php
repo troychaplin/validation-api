@@ -78,18 +78,13 @@ class Registry {
 	public function register_editor_check( string $post_type, string $check_name, array $check_args ): bool {
 		try {
 			// Validate input parameters.
-			if ( empty( $post_type ) || ! is_string( $post_type ) ) {
+			if ( empty( $post_type ) ) {
 				$this->log_error( "Invalid post type provided: {$post_type}" );
 				return false;
 			}
 
-			if ( empty( $check_name ) || ! is_string( $check_name ) ) {
+			if ( empty( $check_name ) ) {
 				$this->log_error( "Invalid check name provided: {$check_name}" );
-				return false;
-			}
-
-			if ( ! is_array( $check_args ) ) {
-				$this->log_error( "Check arguments must be an array for {$post_type}/{$check_name}" );
 				return false;
 			}
 

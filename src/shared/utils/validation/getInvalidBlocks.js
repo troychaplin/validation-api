@@ -141,5 +141,5 @@ export function GetInvalidBlocks() {
 
 	// Return the array of invalid block validation results
 	// Note: getInvalidBlocksRecursive already filters to only invalid blocks
-	return invalidBlocks.filter(result => !result.isValid);
+	return invalidBlocks;
 }

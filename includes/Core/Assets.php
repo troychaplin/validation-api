@@ -140,29 +140,6 @@ class Assets {
 			array(),
 			VALIDATION_API_VERSION
 		);
-
-		// Dynamically generate the SVG URLs.
-		$warning_icon_url = plugins_url( 'src/assets/universal-access-warning.svg', $this->plugin_file );
-		$error_icon_url   = plugins_url( 'src/assets/universal-access-error.svg', $this->plugin_file );
-
-		// Add the SVG URLs and color variables for the editor.
-		$inline_css = sprintf(
-			":root {
-				--a11y-red: #d82000;
-				--a11y-light-red: #ffe4e0;
-				--a11y-dark-red: #a21800;
-				--a11y-yellow: #dbc900;
-				--a11y-light-yellow: #fffde2;
-				--a11y-dark-yellow: #807500;
-				--a11y-border-width: 3px solid;
-				--a11y-warning-icon: url('%s');
-				--a11y-error-icon: url('%s');
-			}",
-			esc_url( $warning_icon_url ),
-			esc_url( $error_icon_url )
-		);
-
-		wp_add_inline_style( 'validation-api-style', $inline_css );
 	}
 
 	/**

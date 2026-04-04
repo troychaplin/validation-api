@@ -1,4 +1,9 @@
 /**
+ * WordPress dependencies
+ */
+import { addFilter } from '@wordpress/hooks';
+
+/**
  * Internal dependencies
  */
 import { getBlockValidation } from '../store';
@@ -36,7 +41,7 @@ function withBlockValidationClasses(BlockListBlock) {
 	};
 }
 
-wp.hooks.addFilter(
+addFilter(
 	'editor.BlockListBlock',
 	'validation-api/with-block-validation-classes',
 	withBlockValidationClasses

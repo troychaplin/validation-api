@@ -2,6 +2,10 @@
     fill: #fff;
 }
 
+.validation-api-sidebar-icon {
+    padding: 2px 0;
+}
+
 // Colored circle in PanelBody titles (Errors / Warnings)
 .validation-api-errors-panel > .components-panel__body-title button::before,
 .validation-api-warnings-panel > .components-panel__body-title button::before {

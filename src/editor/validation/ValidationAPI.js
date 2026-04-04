@@ -160,29 +160,23 @@ export function ValidationAPI() {
 
 		// Apply error class if errors exist
 		if (hasAnyErrors) {
-			document.body.classList.add('has-meta-validation-errors');
-			document.body.classList.remove('has-meta-validation-warnings');
+			document.body.classList.add('has-validation-errors');
+			document.body.classList.remove('has-validation-warnings');
 		}
 		// Apply warning class only if no errors but warnings exist
 		else if (hasAnyWarnings) {
-			document.body.classList.add('has-meta-validation-warnings');
-			document.body.classList.remove('has-meta-validation-errors');
+			document.body.classList.add('has-validation-warnings');
+			document.body.classList.remove('has-validation-errors');
 		}
 		// Remove both classes if no issues
 		else {
-			document.body.classList.remove(
-				'has-meta-validation-errors',
-				'has-meta-validation-warnings'
-			);
+			document.body.classList.remove('has-validation-errors', 'has-validation-warnings');
 		}
 
 		// Cleanup: Remove classes when component unmounts
 		return () => {
 			if (document.body) {
-				document.body.classList.remove(
-					'has-meta-validation-errors',
-					'has-meta-validation-warnings'
-				);
+				document.body.classList.remove('has-validation-errors', 'has-validation-warnings');
 			}
 		};
 	}, [invalidBlocks, invalidMeta, invalidEditorChecks, isValidContext, editorContext]);

@@ -64,8 +64,6 @@ export function validateEditor(postType, blocks) {
 		if (!isValid) {
 			// Create issue object with all relevant information
 			const issue = createIssue(rule, checkName);
-			// Ensure checkName is included (createIssue uses 'check' as primary key)
-			issue.checkName = checkName;
 			issues.push(issue);
 		}
 	}

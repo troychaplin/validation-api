@@ -35,7 +35,7 @@ export function ValidationToolbarButton({ issues }) {
 	const icon = hasBlockErrors ? (
 		<ValidationIcon fill="#d82000" />
 	) : (
-		<ValidationIcon fill="#d8c600" />
+		<ValidationIcon fill="#dbc900" />
 	);
 
 	const openModal = () => setIsModalOpen(true);

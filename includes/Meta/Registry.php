@@ -79,23 +79,18 @@ class Registry {
 	public function register_meta_check( string $post_type, string $meta_key, string $check_name, array $check_args ): bool {
 		try {
 			// Validate input parameters.
-			if ( empty( $post_type ) || ! is_string( $post_type ) ) {
+			if ( empty( $post_type ) ) {
 				$this->log_error( "Invalid post type provided: {$post_type}" );
 				return false;
 			}
 
-			if ( empty( $meta_key ) || ! is_string( $meta_key ) ) {
+			if ( empty( $meta_key ) ) {
 				$this->log_error( "Invalid meta key provided: {$meta_key}" );
 				return false;
 			}
 
-			if ( empty( $check_name ) || ! is_string( $check_name ) ) {
+			if ( empty( $check_name ) ) {
 				$this->log_error( "Invalid check name provided: {$check_name}" );
-				return false;
-			}
-
-			if ( ! is_array( $check_args ) ) {
-				$this->log_error( "Check arguments must be an array for {$post_type}/{$meta_key}/{$check_name}" );
 				return false;
 			}
 

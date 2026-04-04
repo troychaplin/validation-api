@@ -6,7 +6,6 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { blockChecksArray } from '../../register';
 import {
 	isCheckEnabled,
 	createIssue,
@@ -32,7 +31,7 @@ export const validateBlock = block => {
 	const issues = [];
 
 	// All checks come from PHP-registered rules via wp_localize_script.
-	const checks = blockChecksArray[blockType] || {};
+	const checks = window.ValidationAPI?.validationRules?.[blockType] || {};
 
 	// No checks registered for this block type - return valid.
 	if (Object.keys(checks).length === 0) {
