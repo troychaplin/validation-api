@@ -14,11 +14,11 @@
 }
 
 .validation-api-indicator-errors .validation-api-indicator-section-title-circle {
-    background-color: var(--a11y-red);
+    background-color: var(--validaion-api-red);
 }
 
 .validation-api-indicator-warnings .validation-api-indicator-section-title-circle {
-    background-color: var(--a11y-yellow);
+    background-color: var(--validaion-api-yellow);
 }
 
 .validation-api-indicator-section + .validation-api-indicator-section {
