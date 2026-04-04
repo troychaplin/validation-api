@@ -11,6 +11,7 @@ import { getBlockType } from '@wordpress/blocks';
 /**
  * Internal dependencies
  */
+import { ValidationIcon } from './ValidationIcon';
 import {
 	GetInvalidBlocks,
 	GetInvalidMeta,
@@ -159,8 +160,8 @@ function deduplicateEditorIssues(issues, severity) {
  * and source type. Users can click on issues to navigate directly to the relevant
  * block or field in the editor.
  *
- * The sidebar only renders when validation issues exist and displays an icon
- * that changes color based on the highest severity issue present.
+ * The sidebar and its toolbar icon are only rendered when validation issues exist.
+ * The icon color reflects the highest severity issue present (red for errors, yellow for warnings).
  */
 export function ValidationSidebar() {
 	// Retrieve validation results from all sources
@@ -208,22 +209,8 @@ export function ValidationSidebar() {
 		iconColor = '#dbc900';
 	}
 
-	// Accessibility icon SVG that changes color based on validation severity
-	const sidebarIcon = (
-		<svg
-			width="16"
-			height="16"
-			viewBox="0 0 16 16"
-			fill={iconColor}
-			className="validation-api-sidebar-icon"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M8 0C9.77663 0 11.4175 0.57979 12.7451 1.55957L11.5498 2.75488C10.5372 2.06824 9.3156 1.66699 8 1.66699C4.5022 1.66699 1.66699 4.5022 1.66699 8C1.66699 11.4978 4.5022 14.333 8 14.333C11.2302 14.333 13.8933 11.9148 14.2822 8.79004L10.2256 12.8477C10.0614 13.0117 9.84597 13.0923 9.63086 13.0908C9.41575 13.0923 9.20031 13.0117 9.03613 12.8477L3.75586 7.56738C3.43077 7.24201 3.43077 6.71502 3.75586 6.38965C4.0813 6.06421 4.60913 6.06421 4.93457 6.38965L7.40137 8.85645L13.6689 2.58887C13.9944 2.26363 14.5223 2.26361 14.8477 2.58887C15.173 2.91425 15.1729 3.44213 14.8477 3.76758L8.58008 10.0352L9.63086 11.0859L14.3271 6.38965C14.3588 6.35799 14.3926 6.32921 14.4277 6.30371L15.5059 5.22656C15.8253 6.09066 16 7.0249 16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C2.2549e-07 3.58172 3.58172 2.25497e-07 8 0Z"
-				fill={iconColor}
-			/>
-		</svg>
-	);
+	// Icon that changes colour based on validation severity
+	const sidebarIcon = <ValidationIcon fill={iconColor} />;
 
 	/**
 	 * Handle clicking on a block validation issue
@@ -303,8 +290,11 @@ export function ValidationSidebar() {
 		};
 	}, []);
 
-	// Always render the sidebar to maintain consistent icon position
-	// This ensures the icon appears in the same location regardless of validation state
+	// No issues — don't render the sidebar or its toolbar icon
+	if (totalErrors === 0 && totalWarnings === 0) {
+		return null;
+	}
+
 	return (
 		<PluginSidebar
 			name="validation-sidebar"

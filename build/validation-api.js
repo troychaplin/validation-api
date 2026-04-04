@@ -85,7 +85,7 @@
 		s = function (e) {
 			return c(e, 'warning');
 		},
-		d = function (e) {
+		f = function (e) {
 			return e.some(function (e) {
 				return 'error' === e.type;
 			});
@@ -95,7 +95,7 @@
 				return 'warning' === e.type;
 			});
 		},
-		f = function (e) {
+		d = function (e) {
 			return null != e && !1 !== e.enabled;
 		},
 		p = function (e, t) {
@@ -121,7 +121,7 @@
 		},
 		v = function (e) {
 			var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-			return o({ isValid: 0 === e.length, issues: e, hasErrors: d(e), hasWarnings: m(e) }, t);
+			return o({ isValid: 0 === e.length, issues: e, hasErrors: f(e), hasWarnings: m(e) }, t);
 		};
 	function y(e, t) {
 		(null == t || t > e.length) && (t = e.length);
@@ -208,16 +208,16 @@
 							})()),
 					u = c[0],
 					s = c[1];
-				if (f(s)) {
-					var d = !0;
-					('function' == typeof s.validator && (d = s.validator(n, e)),
-						(d = (0, t.applyFilters)('validation_api_validate_block', d, r, n, u, e)) ||
+				if (d(s)) {
+					var f = !0;
+					('function' == typeof s.validator && (f = s.validator(n, e)),
+						(f = (0, t.applyFilters)('validation_api_validate_block', f, r, n, u, e)) ||
 							a.push(p(s, u)));
 				}
 			});
 			var o = 'none';
 			return (
-				d(a) ? (o = 'error') : m(a) && (o = 'warning'),
+				f(a) ? (o = 'error') : m(a) && (o = 'warning'),
 				v(a, { mode: o, clientId: e.clientId, name: r })
 			);
 		};
@@ -448,7 +448,7 @@
 				null === (i = k[e]) || void 0 === i || null === (i = i[r]) || void 0 === i
 					? void 0
 					: i[a];
-		if (!f(o)) return !0;
+		if (!d(o)) return !0;
 		var l = !0;
 		return (
 			'required' === a && (l = '' !== n && null != n),
@@ -464,7 +464,7 @@
 			var l = S(o[i], 2),
 				c = l[0],
 				u = l[1];
-			if (f(u) && !A(e, t, r, c)) {
+			if (d(u) && !A(e, t, r, c)) {
 				var s = p(u, c, { metaKey: t });
 				((s.checkName = c), a.push(s));
 			}
@@ -506,7 +506,7 @@
 			var r = null != arguments[t] ? arguments[t] : {};
 			t % 2
 				? I(Object(r), !0).forEach(function (t) {
-						V(e, t, r[t]);
+						L(e, t, r[t]);
 					})
 				: Object.getOwnPropertyDescriptors
 					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
@@ -516,7 +516,7 @@
 		}
 		return e;
 	}
-	function V(e, t, r) {
+	function L(e, t, r) {
 		return (
 			(t = (function (e) {
 				var t = (function (e) {
@@ -541,7 +541,7 @@
 			e
 		);
 	}
-	function T() {
+	function V() {
 		for (
 			var e,
 				t = (0, r.useSelect)(function (e) {
@@ -569,7 +569,7 @@
 		}
 		return o;
 	}
-	function B(e, t) {
+	function T(e, t) {
 		return (
 			(function (e) {
 				if (Array.isArray(e)) return e;
@@ -612,7 +612,7 @@
 			})(e, t) ||
 			(function (e, t) {
 				if (e) {
-					if ('string' == typeof e) return M(e, t);
+					if ('string' == typeof e) return B(e, t);
 					var r = {}.toString.call(e).slice(8, -1);
 					return (
 						'Object' === r && e.constructor && (r = e.constructor.name),
@@ -620,7 +620,7 @@
 							? Array.from(e)
 							: 'Arguments' === r ||
 								  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-								? M(e, t)
+								? B(e, t)
 								: void 0
 					);
 				}
@@ -632,12 +632,12 @@
 			})()
 		);
 	}
-	function M(e, t) {
+	function B(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	var x =
+	var M =
 		(null === (P = window.ValidationAPI) || void 0 === P ? void 0 : P.editorValidationRules) ||
 		{};
 	function D() {
@@ -654,12 +654,12 @@
 			a = e.postType;
 		if (!a || !n) return [];
 		var i = (function (e, r) {
-			for (var n = x[e] || {}, a = [], i = 0, o = Object.entries(n); i < o.length; i++) {
-				var l = B(o[i], 2),
+			for (var n = M[e] || {}, a = [], i = 0, o = Object.entries(n); i < o.length; i++) {
+				var l = T(o[i], 2),
 					c = l[0],
 					u = l[1];
 				if (
-					f(u) &&
+					d(u) &&
 					!(0, t.applyFilters)('validation_api_validate_editor', !0, r, e, c, u)
 				) {
 					var s = p(u, c);
@@ -675,7 +675,7 @@
 		})(a, n);
 		return i.issues;
 	}
-	function L() {
+	function x() {
 		var e,
 			t =
 				(null === (e = window.ValidationAPI) || void 0 === e ? void 0 : e.editorContext) ||
@@ -685,15 +685,15 @@
 			o = (0, r.useDispatch)(i),
 			l = wp.data && wp.data.select && wp.data.select(i),
 			c = R(),
-			u = T(),
+			u = V(),
 			s = D(),
-			f = o || {},
-			p = f.lockPostSaving,
-			v = f.unlockPostSaving,
-			y = f.lockPostAutosaving,
-			b = f.unlockPostAutosaving,
-			g = f.disablePublishSidebar,
-			w = f.enablePublishSidebar;
+			d = o || {},
+			p = d.lockPostSaving,
+			v = d.unlockPostSaving,
+			y = d.lockPostAutosaving,
+			b = d.unlockPostAutosaving,
+			g = d.disablePublishSidebar,
+			w = d.enablePublishSidebar;
 		return (
 			(0, n.useEffect)(
 				function () {
@@ -704,7 +704,7 @@
 							r = u.some(function (e) {
 								return e.hasErrors;
 							}),
-							n = d(s);
+							n = f(s);
 						e || r || n
 							? (p('validation-api'), y && y('validation-api'), g && g())
 							: (v('validation-api'), b && b('validation-api'), w && w());
@@ -727,12 +727,12 @@
 							i = u.some(function (e) {
 								return e.hasWarnings && !e.hasErrors;
 							}),
-							o = d(s),
+							o = f(s),
 							l = m(s),
-							f = e || n || o,
-							p = !f && (r || i || l);
+							d = e || n || o,
+							p = !d && (r || i || l);
 						return (
-							f
+							d
 								? (document.body.classList.add('has-meta-validation-errors'),
 									document.body.classList.remove('has-meta-validation-warnings'))
 								: p
@@ -761,9 +761,29 @@
 	}
 	const W = window.wp.editor,
 		F = window.wp.components,
-		Z = window.wp.i18n,
-		U = window.wp.blocks;
-	function $(e, t) {
+		U = window.wp.i18n,
+		$ = window.wp.blocks;
+	function q(e) {
+		var t = e.fill,
+			r = void 0 === t ? 'currentColor' : t;
+		return React.createElement(
+			'svg',
+			{
+				viewBox: '-2.12 -2.12 28.24 28.24',
+				xmlns: 'http://www.w3.org/2000/svg',
+				className: 'validation-api-sidebar-icon',
+			},
+			React.createElement('path', {
+				fill: r,
+				d: 'M21.77205 2.96949V9.22968L24 11.49539L21.41025 14.12373C20.18445 17.59455 17.82645 19.4559 16.5927 20.1609C15.7053 20.66805 13.45103 22.0566 12.42537 22.69365L12 22.9578L11.57463 22.69365C10.54898 22.0566 8.2947 20.66805 7.4073 20.1609C6.17361 19.4559 3.81545 17.59455 2.58966 14.12373L0 11.49539L2.22791 9.22968V2.96949L10.16957 0L10.73433 1.51038L3.84047 4.08809V9.88976L2.26275 11.49425L3.99707 13.25445L4.05633 13.4307C5.10714 16.5531 7.20452 18.1878 8.2074 18.7608C9.01367 19.2216 10.87026 20.36115 12 21.06C13.12974 20.36115 14.98634 19.2216 15.7926 18.7608C16.7955 18.1878 18.8928 16.5531 19.9437 13.4307L20.00295 13.25445L21.73725 11.49425L20.15955 9.88976V4.08809L13.26567 1.51038L13.83044 0L21.77205 2.96949Z',
+			}),
+			React.createElement('path', {
+				fill: r,
+				d: 'M16.95615 8.74307L10.64529 15.05385L7.23707 11.64567L8.37732 10.50542L10.64529 12.77339L15.81585 7.60281L16.95615 8.74307Z',
+			})
+		);
+	}
+	function K(e, t) {
 		var r = new Map();
 		return (
 			e.forEach(function (e) {
@@ -776,7 +796,7 @@
 						r.set(l, {
 							blockName:
 								((a = e.name),
-								(i = (0, U.getBlockType)(a)),
+								(i = (0, $.getBlockType)(a)),
 								i && i.title
 									? i.title
 									: (a.split('/')[1] || a)
@@ -797,7 +817,7 @@
 			Array.from(r.values())
 		);
 	}
-	function q(e, t) {
+	function H(e, t) {
 		var r = new Map();
 		return (
 			e.forEach(function (e) {
@@ -810,7 +830,7 @@
 			Array.from(r.values())
 		);
 	}
-	function K(e, t) {
+	function Z(e, t) {
 		var r = new Map();
 		return (
 			e.forEach(function (e) {
@@ -824,39 +844,25 @@
 			Array.from(r.values())
 		);
 	}
-	function H() {
+	function z() {
 		var e = R() || [],
-			t = T() || [],
+			t = V() || [],
 			a = D() || [],
 			i = (0, r.useDispatch)('core/block-editor').selectBlock,
 			o = (0, n.useRef)(null),
 			l = c(a, 'error'),
 			u = c(a, 'warning'),
-			s = $(e, 'error'),
-			d = $(e, 'warning'),
-			m = q(t, 'error'),
-			f = q(t, 'warning'),
-			p = K(l, 'error'),
-			v = K(u, 'warning'),
+			s = K(e, 'error'),
+			f = K(e, 'warning'),
+			m = H(t, 'error'),
+			d = H(t, 'warning'),
+			p = Z(l, 'error'),
+			v = Z(u, 'warning'),
 			y = s.length + m.length + p.length,
-			b = d.length + f.length + v.length,
+			b = f.length + d.length + v.length,
 			g = 'currentColor';
 		y > 0 ? (g = '#d82000') : b > 0 && (g = '#dbc900');
-		var w = React.createElement(
-				'svg',
-				{
-					width: '16',
-					height: '16',
-					viewBox: '0 0 16 16',
-					fill: g,
-					className: 'validation-api-sidebar-icon',
-					xmlns: 'http://www.w3.org/2000/svg',
-				},
-				React.createElement('path', {
-					d: 'M8 0C9.77663 0 11.4175 0.57979 12.7451 1.55957L11.5498 2.75488C10.5372 2.06824 9.3156 1.66699 8 1.66699C4.5022 1.66699 1.66699 4.5022 1.66699 8C1.66699 11.4978 4.5022 14.333 8 14.333C11.2302 14.333 13.8933 11.9148 14.2822 8.79004L10.2256 12.8477C10.0614 13.0117 9.84597 13.0923 9.63086 13.0908C9.41575 13.0923 9.20031 13.0117 9.03613 12.8477L3.75586 7.56738C3.43077 7.24201 3.43077 6.71502 3.75586 6.38965C4.0813 6.06421 4.60913 6.06421 4.93457 6.38965L7.40137 8.85645L13.6689 2.58887C13.9944 2.26363 14.5223 2.26361 14.8477 2.58887C15.173 2.91425 15.1729 3.44213 14.8477 3.76758L8.58008 10.0352L9.63086 11.0859L14.3271 6.38965C14.3588 6.35799 14.3926 6.32921 14.4277 6.30371L15.5059 5.22656C15.8253 6.09066 16 7.0249 16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C2.2549e-07 3.58172 3.58172 2.25497e-07 8 0Z',
-					fill: g,
-				})
-			),
+		var w = React.createElement(q, { fill: g }),
 			h = function (e) {
 				e &&
 					(i(e),
@@ -880,263 +886,273 @@
 					o.current && clearTimeout(o.current);
 				};
 			}, []),
-			React.createElement(
-				W.PluginSidebar,
-				{
-					name: 'validation-sidebar',
-					title: (0, Z.__)('Validation', 'validation-api'),
-					icon: w,
-					className: 'validation-api-validation-sidebar',
-				},
-				y > 0 &&
-					React.createElement(
-						F.PanelBody,
+			0 === y && 0 === b
+				? null
+				: React.createElement(
+						W.PluginSidebar,
 						{
-							title: (0, Z.sprintf)(
-								/* translators: %d: number of errors */ /* translators: %d: number of errors */
-								(0, Z.__)('Errors (%d)', 'validation-api'),
-								y
-							),
-							initialOpen: !0,
-							className: 'validation-api-errors-panel',
+							name: 'validation-sidebar',
+							title: (0, U.__)('Validation', 'validation-api'),
+							icon: w,
+							className: 'validation-api-validation-sidebar',
 						},
-						s.length > 0 &&
+						y > 0 &&
 							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Block Errors', 'validation-api')
-										)
+								F.PanelBody,
+								{
+									title: (0, U.sprintf)(
+										/* translators: %d: number of errors */ /* translators: %d: number of errors */
+										(0, U.__)('Errors (%d)', 'validation-api'),
+										y
 									),
+									initialOpen: !0,
+									className: 'validation-api-errors-panel',
+								},
+								s.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										s.map(function (e, t) {
-											var r = e.clientIds.length,
-												n = r > 1 ? ' (x'.concat(r, ')') : '';
-											return React.createElement(
-												'li',
-												{ key: 'block-error-'.concat(t) },
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
 												React.createElement(
-													'button',
-													{
-														type: 'button',
-														className: 'validation-api-issue-link',
-														onClick: function () {
-															return h(e.clientIds[0]);
-														},
-													},
-													e.blockName
-												),
-												': ',
-												e.message,
-												n
-											);
-										})
-									)
-								)
-							),
-						m.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Meta Errors', 'validation-api')
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Block Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												s.map(function (e, t) {
+													var r = e.clientIds.length,
+														n = r > 1 ? ' (x'.concat(r, ')') : '';
+													return React.createElement(
+														'li',
+														{ key: 'block-error-'.concat(t) },
+														React.createElement(
+															'button',
+															{
+																type: 'button',
+																className:
+																	'validation-api-issue-link',
+																onClick: function () {
+																	return h(e.clientIds[0]);
+																},
+															},
+															e.blockName
+														),
+														': ',
+														e.message,
+														n
+													);
+												})
+											)
 										)
 									),
+								m.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										m.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'meta-error-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							),
-						p.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
+										F.PanelRow,
+										null,
 										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Editor Errors', 'validation-api')
-										)
-									),
-									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										p.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'editor-error-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							)
-					),
-				b > 0 &&
-					React.createElement(
-						F.PanelBody,
-						{
-							title: (0, Z.sprintf)(
-								/* translators: %d: number of warnings */ /* translators: %d: number of warnings */
-								(0, Z.__)('Warnings (%d)', 'validation-api'),
-								b
-							),
-							initialOpen: !0,
-							className: 'validation-api-warnings-panel',
-						},
-						d.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Block Warnings', 'validation-api')
-										)
-									),
-									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										d.map(function (e, t) {
-											var r = e.clientIds.length,
-												n = r > 1 ? ' (x'.concat(r, ')') : '';
-											return React.createElement(
-												'li',
-												{ key: 'block-warning-'.concat(t) },
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
 												React.createElement(
-													'button',
-													{
-														type: 'button',
-														className: 'validation-api-issue-link',
-														onClick: function () {
-															return h(e.clientIds[0]);
-														},
-													},
-													e.blockName
-												),
-												': ',
-												e.message,
-												n
-											);
-										})
-									)
-								)
-							),
-						f.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Meta Warnings', 'validation-api')
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Meta Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												m.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'meta-error-'.concat(t) },
+														e.message
+													);
+												})
+											)
 										)
 									),
+								p.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										f.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'meta-warning-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							),
-						v.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
+										F.PanelRow,
+										null,
 										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Editor Warnings', 'validation-api')
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Editor Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												p.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'editor-error-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
+									)
+							),
+						b > 0 &&
+							React.createElement(
+								F.PanelBody,
+								{
+									title: (0, U.sprintf)(
+										/* translators: %d: number of warnings */ /* translators: %d: number of warnings */
+										(0, U.__)('Warnings (%d)', 'validation-api'),
+										b
+									),
+									initialOpen: !0,
+									className: 'validation-api-warnings-panel',
+								},
+								f.length > 0 &&
+									React.createElement(
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Block Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												f.map(function (e, t) {
+													var r = e.clientIds.length,
+														n = r > 1 ? ' (x'.concat(r, ')') : '';
+													return React.createElement(
+														'li',
+														{ key: 'block-warning-'.concat(t) },
+														React.createElement(
+															'button',
+															{
+																type: 'button',
+																className:
+																	'validation-api-issue-link',
+																onClick: function () {
+																	return h(e.clientIds[0]);
+																},
+															},
+															e.blockName
+														),
+														': ',
+														e.message,
+														n
+													);
+												})
+											)
 										)
 									),
+								d.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										v.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'editor-warning-'.concat(t) },
-												e.message
-											);
-										})
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Meta Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												d.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'meta-warning-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
+									),
+								v.length > 0 &&
+									React.createElement(
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, U.__)('Editor Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												v.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'editor-warning-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
 									)
-								)
 							)
 					)
-			)
 		);
 	}
 	(0, t.addFilter)(
@@ -1155,43 +1171,12 @@
 			},
 		}
 	);
-	(0, e.registerPlugin)('validation-api', {
-		render: function () {
-			return React.createElement(
-				React.Fragment,
-				null,
-				React.createElement(L, null),
-				React.createElement(H, null)
-			);
-		},
-	});
-	const J = window.wp.compose,
-		X = window.wp.primitives,
-		z = window.ReactJSXRuntime;
-	var Q = (0, z.jsx)(X.SVG, {
-			xmlns: 'http://www.w3.org/2000/svg',
-			viewBox: '0 0 24 24',
-			children: (0, z.jsx)(X.Path, {
-				fillRule: 'evenodd',
-				clipRule: 'evenodd',
-				d: 'M12.218 5.377a.25.25 0 0 0-.436 0l-7.29 12.96a.25.25 0 0 0 .218.373h14.58a.25.25 0 0 0 .218-.372l-7.29-12.96Zm-1.743-.735c.669-1.19 2.381-1.19 3.05 0l7.29 12.96a1.75 1.75 0 0 1-1.525 2.608H4.71a1.75 1.75 0 0 1-1.525-2.608l7.29-12.96ZM12.75 17.46h-1.5v-1.5h1.5v1.5Zm-1.5-3h1.5v-5h-1.5v5Z',
-			}),
-		}),
-		Y = (0, z.jsx)(X.SVG, {
-			xmlns: 'http://www.w3.org/2000/svg',
-			viewBox: '0 0 24 24',
-			children: (0, z.jsx)(X.Path, {
-				fillRule: 'evenodd',
-				clipRule: 'evenodd',
-				d: 'M5.5 12a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0ZM12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm-.75 12v-1.5h1.5V16h-1.5Zm0-8v5h1.5V8h-1.5Z',
-			}),
-		});
-	function ee(e, t) {
+	function J(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	function te(e) {
+	function Q(e) {
 		var t,
 			r,
 			a = e.issues,
@@ -1245,7 +1230,7 @@
 					})(t, r) ||
 					(function (e, t) {
 						if (e) {
-							if ('string' == typeof e) return ee(e, t);
+							if ('string' == typeof e) return J(e, t);
 							var r = {}.toString.call(e).slice(8, -1);
 							return (
 								'Object' === r && e.constructor && (r = e.constructor.name),
@@ -1253,7 +1238,7 @@
 									? Array.from(e)
 									: 'Arguments' === r ||
 										  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-										? ee(e, t)
+										? J(e, t)
 										: void 0
 							);
 						}
@@ -1266,10 +1251,12 @@
 			o = i[0],
 			l = i[1];
 		if (!a || 0 === a.length) return null;
-		var c = d(a),
+		var c = f(a),
 			m = u(a),
-			f = s(a),
-			p = c ? Q : Y,
+			d = s(a),
+			p = c
+				? React.createElement(q, { fill: '#d82000' })
+				: React.createElement(q, { fill: '#dbc900' }),
 			v = c
 				? 'validation-api-block-indicator validation-api-block-indicator--error'
 				: 'validation-api-block-indicator validation-api-block-indicator--warning';
@@ -1285,14 +1272,14 @@
 						return l(!0);
 					},
 					className: 'validation-api-block-indicator-button',
-					'aria-label': (0, Z.__)('View block issues or concerns', 'validation-api'),
+					'aria-label': (0, U.__)('View block issues or concerns', 'validation-api'),
 				})
 			),
 			o &&
 				React.createElement(
 					F.Modal,
 					{
-						title: (0, Z.__)('Issues or Concerns', 'validation-api'),
+						title: (0, U.__)('Issues or Concerns', 'validation-api'),
 						onRequestClose: function () {
 							return l(!1);
 						},
@@ -1318,7 +1305,7 @@
 											className:
 												'validation-api-indicator-section-title-circle',
 										}),
-										(0, Z.__)('Errors', 'validation-api')
+										(0, U.__)('Errors', 'validation-api')
 									)
 								),
 								React.createElement(
@@ -1333,7 +1320,7 @@
 									})
 								)
 							),
-						f.length > 0 &&
+						d.length > 0 &&
 							React.createElement(
 								'div',
 								{
@@ -1350,13 +1337,13 @@
 											className:
 												'validation-api-indicator-section-title-circle',
 										}),
-										(0, Z.__)('Warnings', 'validation-api')
+										(0, U.__)('Warnings', 'validation-api')
 									)
 								),
 								React.createElement(
 									'ul',
 									null,
-									f.map(function (e, t) {
+									d.map(function (e, t) {
 										return React.createElement(
 											'li',
 											{ key: 'warning-'.concat(t) },
@@ -1369,14 +1356,14 @@
 				)
 		);
 	}
-	function re(e, t) {
+	function X(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	function ne(e) {
+	function Y(e) {
 		return (
-			(ne =
+			(Y =
 				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
 					? function (e) {
 							return typeof e;
@@ -1389,10 +1376,10 @@
 								? 'symbol'
 								: typeof e;
 						}),
-			ne(e)
+			Y(e)
 		);
 	}
-	function ae(e, t) {
+	function ee(e, t) {
 		var r = Object.keys(e);
 		if (Object.getOwnPropertySymbols) {
 			var n = Object.getOwnPropertySymbols(e);
@@ -1404,35 +1391,35 @@
 		}
 		return r;
 	}
-	function ie(e) {
+	function te(e) {
 		for (var t = 1; t < arguments.length; t++) {
 			var r = null != arguments[t] ? arguments[t] : {};
 			t % 2
-				? ae(Object(r), !0).forEach(function (t) {
-						oe(e, t, r[t]);
+				? ee(Object(r), !0).forEach(function (t) {
+						re(e, t, r[t]);
 					})
 				: Object.getOwnPropertyDescriptors
 					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
-					: ae(Object(r)).forEach(function (t) {
+					: ee(Object(r)).forEach(function (t) {
 							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
 						});
 		}
 		return e;
 	}
-	function oe(e, t, r) {
+	function re(e, t, r) {
 		return (
 			(t = (function (e) {
 				var t = (function (e) {
-					if ('object' != ne(e) || !e) return e;
+					if ('object' != Y(e) || !e) return e;
 					var t = e[Symbol.toPrimitive];
 					if (void 0 !== t) {
 						var r = t.call(e, 'string');
-						if ('object' != ne(r)) return r;
+						if ('object' != Y(r)) return r;
 						throw new TypeError('@@toPrimitive must return a primitive value.');
 					}
 					return String(e);
 				})(e);
-				return 'symbol' == ne(t) ? t : t + '';
+				return 'symbol' == Y(t) ? t : t + '';
 			})(t)) in e
 				? Object.defineProperty(e, t, {
 						value: r,
@@ -1444,7 +1431,17 @@
 			e
 		);
 	}
-	var le = (0, J.createHigherOrderComponent)(function (e) {
+	(0, e.registerPlugin)('validation-api', {
+		render: function () {
+			return React.createElement(
+				React.Fragment,
+				null,
+				React.createElement(x, null),
+				React.createElement(z, null)
+			);
+		},
+	});
+	var ne = (0, window.wp.compose.createHigherOrderComponent)(function (e) {
 		return function (t) {
 			var a = t.clientId,
 				i = t.attributes,
@@ -1513,7 +1510,7 @@
 								})(r, a) ||
 								(function (e, t) {
 									if (e) {
-										if ('string' == typeof e) return re(e, t);
+										if ('string' == typeof e) return X(e, t);
 										var r = {}.toString.call(e).slice(8, -1);
 										return (
 											'Object' === r &&
@@ -1525,7 +1522,7 @@
 													  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
 															r
 													  )
-													? re(e, t)
+													? X(e, t)
 													: void 0
 										);
 									}
@@ -1538,11 +1535,11 @@
 						c = l[0],
 						u = l[1],
 						s = (0, n.useRef)(null),
-						d = (0, n.useRef)(!0);
+						f = (0, n.useRef)(!0);
 					return (
 						(0, n.useEffect)(function () {
-							return d.current
-								? ((d.current = !1), void u(e()))
+							return f.current
+								? ((f.current = !1), void u(e()))
 								: (s.current && clearTimeout(s.current),
 									(s.current = setTimeout(function () {
 										u(e());
@@ -1556,7 +1553,7 @@
 				})(
 					function () {
 						if (!o) return { isValid: !0, issues: [], mode: 'none' };
-						var e = ie(ie({}, o), {}, { attributes: i || o.attributes });
+						var e = te(te({}, o), {}, { attributes: i || o.attributes });
 						return g(e);
 					},
 					[o, i],
@@ -1572,11 +1569,81 @@
 					'div',
 					{ className: c },
 					React.createElement(e, t),
-					!l.isValid && React.createElement(te, { mode: l.mode, issues: l.issues })
+					!l.isValid && React.createElement(Q, { mode: l.mode, issues: l.issues })
 				)
 			);
 		};
 	}, 'withErrorHandling');
+	function ae(e) {
+		return (
+			(ae =
+				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+					? function (e) {
+							return typeof e;
+						}
+					: function (e) {
+							return e &&
+								'function' == typeof Symbol &&
+								e.constructor === Symbol &&
+								e !== Symbol.prototype
+								? 'symbol'
+								: typeof e;
+						}),
+			ae(e)
+		);
+	}
+	function ie(e, t) {
+		var r = Object.keys(e);
+		if (Object.getOwnPropertySymbols) {
+			var n = Object.getOwnPropertySymbols(e);
+			(t &&
+				(n = n.filter(function (t) {
+					return Object.getOwnPropertyDescriptor(e, t).enumerable;
+				})),
+				r.push.apply(r, n));
+		}
+		return r;
+	}
+	function oe(e) {
+		for (var t = 1; t < arguments.length; t++) {
+			var r = null != arguments[t] ? arguments[t] : {};
+			t % 2
+				? ie(Object(r), !0).forEach(function (t) {
+						le(e, t, r[t]);
+					})
+				: Object.getOwnPropertyDescriptors
+					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
+					: ie(Object(r)).forEach(function (t) {
+							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
+						});
+		}
+		return e;
+	}
+	function le(e, t, r) {
+		return (
+			(t = (function (e) {
+				var t = (function (e) {
+					if ('object' != ae(e) || !e) return e;
+					var t = e[Symbol.toPrimitive];
+					if (void 0 !== t) {
+						var r = t.call(e, 'string');
+						if ('object' != ae(r)) return r;
+						throw new TypeError('@@toPrimitive must return a primitive value.');
+					}
+					return String(e);
+				})(e);
+				return 'symbol' == ae(t) ? t : t + '';
+			})(t)) in e
+				? Object.defineProperty(e, t, {
+						value: r,
+						enumerable: !0,
+						configurable: !0,
+						writable: !0,
+					})
+				: (e[t] = r),
+			e
+		);
+	}
 	function ce(e) {
 		return (
 			(ce =
@@ -1595,77 +1662,7 @@
 			ce(e)
 		);
 	}
-	function ue(e, t) {
-		var r = Object.keys(e);
-		if (Object.getOwnPropertySymbols) {
-			var n = Object.getOwnPropertySymbols(e);
-			(t &&
-				(n = n.filter(function (t) {
-					return Object.getOwnPropertyDescriptor(e, t).enumerable;
-				})),
-				r.push.apply(r, n));
-		}
-		return r;
-	}
-	function se(e) {
-		for (var t = 1; t < arguments.length; t++) {
-			var r = null != arguments[t] ? arguments[t] : {};
-			t % 2
-				? ue(Object(r), !0).forEach(function (t) {
-						de(e, t, r[t]);
-					})
-				: Object.getOwnPropertyDescriptors
-					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
-					: ue(Object(r)).forEach(function (t) {
-							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
-						});
-		}
-		return e;
-	}
-	function de(e, t, r) {
-		return (
-			(t = (function (e) {
-				var t = (function (e) {
-					if ('object' != ce(e) || !e) return e;
-					var t = e[Symbol.toPrimitive];
-					if (void 0 !== t) {
-						var r = t.call(e, 'string');
-						if ('object' != ce(r)) return r;
-						throw new TypeError('@@toPrimitive must return a primitive value.');
-					}
-					return String(e);
-				})(e);
-				return 'symbol' == ce(t) ? t : t + '';
-			})(t)) in e
-				? Object.defineProperty(e, t, {
-						value: r,
-						enumerable: !0,
-						configurable: !0,
-						writable: !0,
-					})
-				: (e[t] = r),
-			e
-		);
-	}
-	function me(e) {
-		return (
-			(me =
-				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
-					? function (e) {
-							return typeof e;
-						}
-					: function (e) {
-							return e &&
-								'function' == typeof Symbol &&
-								e.constructor === Symbol &&
-								e !== Symbol.prototype
-								? 'symbol'
-								: typeof e;
-						}),
-			me(e)
-		);
-	}
-	(wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', le),
+	(wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', ne),
 		void 0 === window.ValidationAPI && (window.ValidationAPI = {}),
 		(window.ValidationAPI.useMetaField = function (e) {
 			var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : '',
@@ -1691,7 +1688,7 @@
 								l.hasErrors
 									? (c = 'validation-api-meta-error')
 									: l.hasWarnings && (c = 'validation-api-meta-warning'),
-								se(se({}, l), {}, { wrapperClassName: c })
+								oe(oe({}, l), {}, { wrapperClassName: c })
 							);
 						},
 						[e]
@@ -1736,18 +1733,18 @@
 								(a = t),
 								(n = (function (e) {
 									var t = (function (e) {
-										if ('object' != me(e) || !e) return e;
+										if ('object' != ce(e) || !e) return e;
 										var t = e[Symbol.toPrimitive];
 										if (void 0 !== t) {
 											var r = t.call(e, 'string');
-											if ('object' != me(r)) return r;
+											if ('object' != ce(r)) return r;
 											throw new TypeError(
 												'@@toPrimitive must return a primitive value.'
 											);
 										}
 										return String(e);
 									})(e);
-									return 'symbol' == me(t) ? t : t + '';
+									return 'symbol' == ce(t) ? t : t + '';
 								})(n)) in r
 									? Object.defineProperty(r, n, {
 											value: a,

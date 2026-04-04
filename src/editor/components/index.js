@@ -5,4 +5,5 @@
  */
 
 export { BlockIndicator } from './BlockIndicator';
+export { ValidationIcon } from './ValidationIcon';
 export { ValidationSidebar } from './ValidationSidebar';

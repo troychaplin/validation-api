@@ -4,11 +4,11 @@
 import { useState } from '@wordpress/element';
 import { Modal, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { error, caution } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
+import { ValidationIcon } from './ValidationIcon';
 import { hasErrors, getErrors, getWarnings } from '../../shared/utils/validation';
 
 /**
@@ -38,7 +38,11 @@ export function BlockIndicator({ issues }) {
 	const warnings = getWarnings(issues);
 
 	// Set icon and CSS classes based on severity (errors take precedence)
-	const icon = hasBlockErrors ? error : caution;
+	const icon = hasBlockErrors ? (
+		<ValidationIcon fill="#d82000" />
+	) : (
+		<ValidationIcon fill="#dbc900" />
+	);
 	const className = hasBlockErrors
 		? 'validation-api-block-indicator validation-api-block-indicator--error'
 		: 'validation-api-block-indicator validation-api-block-indicator--warning';
