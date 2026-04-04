@@ -1,11 +1,33 @@
-// Block wrapper needs relative positioning for absolute indicator
+// Block validation indicator — CSS-only colored dot
+// Classes are applied to the block's own element via editor.BlockListBlock wrapperProps
 .validation-api-block-error,
 .validation-api-block-warning {
 	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: -8px;
+		left: 0;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		z-index: 20;
+		pointer-events: none;
+	}
 }
 
-// Inline block and meta field indicators
-.validation-api-block-indicator,
+.validation-api-block-error::before {
+	background-color: var(--validaion-api-red);
+	border: 3px solid var(--validaion-api-white);
+}
+
+.validation-api-block-warning::before {
+	background-color: var(--validaion-api-yellow);
+	border: 2px solid var(--validaion-api-light-yellow);
+}
+
+// Inline meta field indicators
 .validation-api-meta-indicator {
 	position: absolute;
 	top: -2px;
@@ -16,8 +38,7 @@
 	pointer-events: none;
 }
 
-// Inline block and meta field indicator buttons
-.validation-api-block-indicator-button.components-button.has-icon,
+// Inline meta field indicator buttons
 .validation-api-meta-indicator-button.components-button.has-icon {
 	pointer-events: all;
 	position: absolute;
@@ -45,8 +66,7 @@
 	}
 }
 
-// Inline block and meta field warning buttons
-.validation-api-block-indicator--warning .validation-api-block-indicator-button.components-button,
+// Inline meta field warning buttons
 .validation-api-meta-indicator--warning .validation-api-meta-indicator-button.components-button {
 	background-color: var(--validaion-api-light-yellow);
 	border-color: var(--validaion-api-yellow);
