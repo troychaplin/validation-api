@@ -6,6 +6,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
+import { ValidationProvider } from './components/ValidationProvider';
 import { ValidationAPI } from './validation/ValidationAPI';
 import { ValidationSidebar } from './components/ValidationSidebar';
 
@@ -20,6 +21,7 @@ import { ValidationSidebar } from './components/ValidationSidebar';
 registerPlugin('validation-api', {
 	render: () => (
 		<>
+			<ValidationProvider />
 			<ValidationAPI />
 			<ValidationSidebar />
 		</>

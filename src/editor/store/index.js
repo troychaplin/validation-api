@@ -1,11 +1,43 @@
 /**
- * Store
- *
- * Barrel export for editor store utilities.
+ * WordPress dependencies
  */
+import { createReduxStore, register } from '@wordpress/data';
 
+/**
+ * Internal dependencies
+ */
+import { STORE_NAME } from './constants';
+import { reducer } from './reducer';
+import * as selectors from './selectors';
+import * as actions from './actions';
+
+/**
+ * Validation API data store.
+ *
+ * Centralizes all validation state (blocks, meta, editor checks, per-block results)
+ * so that multiple consumers can subscribe via useSelect without duplicating computation.
+ */
+const store = createReduxStore(STORE_NAME, {
+	reducer,
+	selectors,
+	actions,
+});
+
+register(store);
+
+export { STORE_NAME } from './constants';
 export {
+	setInvalidBlocks,
+	setInvalidMeta,
+	setInvalidEditorChecks,
 	setBlockValidation,
-	getBlockValidation,
 	clearBlockValidation,
-} from './blockValidationStore';
+} from './actions';
+export {
+	getInvalidBlocks,
+	getInvalidMeta,
+	getInvalidEditorChecks,
+	getBlockValidation,
+	hasErrors,
+	hasWarnings,
+} from './selectors';
