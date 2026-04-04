@@ -32,7 +32,7 @@ export function useMetaField(metaKey, originalHelp = '') {
 	const { value } = useSelect(
 		select => {
 			const editor = select('core/editor');
-			// Guard against editor not being available (e.g., in site editor)
+			// Guard against editor not being available
 			if (!editor) {
 				return { value: '' };
 			}

@@ -175,8 +175,8 @@ class Plugin {
 				// enqueue_block_editor_assets: Loads in the main editor window (post editor).
 				\add_action( 'enqueue_block_editor_assets', array( $scripts_styles, 'enqueue_block_assets' ) );
 
-				// enqueue_block_assets: Loads in the editor iframe (site editor) and frontend.
-				// The is_admin() check inside the method prevents loading on frontend.
+				// enqueue_block_assets: Loads in the editor iframe and frontend.
+				// The should_load_validation() check inside the method limits this to the post editor only.
 				\add_action( 'enqueue_block_assets', array( $scripts_styles, 'enqueue_block_assets' ) );
 
 			} else {
