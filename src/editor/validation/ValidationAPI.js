@@ -11,6 +11,7 @@ import { STORE_NAME } from '../store';
 import {
 	hasErrors as issueHasErrors,
 	hasWarnings as issueHasWarnings,
+	getEditorContext,
 } from '../../shared/utils/validation';
 
 /**
@@ -28,8 +29,8 @@ import {
  * This component doesn't render any UI but manages validation state and editor behavior.
  */
 export function ValidationAPI() {
-	// Get the editor context from PHP
-	const editorContext = window.ValidationAPI?.editorContext || 'none';
+	// Get the editor context from editor settings
+	const editorContext = getEditorContext();
 
 	// Check if we're in a supported editor context (post editor only)
 	const isValidContext =
@@ -92,18 +93,18 @@ export function ValidationAPI() {
 
 		// Lock saving if any validation errors exist
 		if (hasBlockErrors || hasMetaErrors || hasEditorErrors) {
-			lockPostSaving('validation-api');
+			lockPostSaving('core/validation');
 			if (lockPostAutosaving) {
-				lockPostAutosaving('validation-api');
+				lockPostAutosaving('core/validation');
 			}
 			if (disablePublishSidebar) {
 				disablePublishSidebar();
 			}
 		} else {
 			// Re-enable saving when all errors are resolved
-			unlockPostSaving('validation-api');
+			unlockPostSaving('core/validation');
 			if (unlockPostAutosaving) {
-				unlockPostAutosaving('validation-api');
+				unlockPostAutosaving('core/validation');
 			}
 			if (enablePublishSidebar) {
 				enablePublishSidebar();

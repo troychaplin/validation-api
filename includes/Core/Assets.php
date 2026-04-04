@@ -69,6 +69,9 @@ class Assets {
 	public function __construct( string $plugin_file, I18n $translations ) {
 		$this->plugin_file  = $plugin_file;
 		$this->translations = $translations;
+
+		// Inject validation config into editor settings instead of using wp_localize_script.
+		add_filter( 'block_editor_settings_all', array( $this, 'inject_editor_settings' ), 10, 2 );
 	}
 
 	/**
@@ -104,8 +107,27 @@ class Assets {
 			VALIDATION_API_VERSION,
 			true
 		);
+	}
 
-		// Get the registries to expose validation rules to JavaScript.
+	/**
+	 * Inject validation configuration into the block editor settings.
+	 *
+	 * Uses the `block_editor_settings_all` filter to pass validation rules
+	 * and editor context through Gutenberg's standard editor settings mechanism,
+	 * replacing the previous `wp_localize_script` approach.
+	 *
+	 * The config is available in JS via:
+	 * `select('core/editor').getEditorSettings().validationApi`
+	 *
+	 * @param array                    $settings The editor settings array.
+	 * @param \WP_Block_Editor_Context $context  The block editor context.
+	 * @return array Modified editor settings with validation config.
+	 */
+	public function inject_editor_settings( array $settings, $context ): array {
+		if ( ! $this->should_load_validation() ) {
+			return $settings;
+		}
+
 		$registry                = BlockRegistry::get_instance();
 		$meta_registry           = MetaRegistry::get_instance();
 		$editor_registry         = EditorRegistry::get_instance();
@@ -114,17 +136,15 @@ class Assets {
 		$editor_validation_rules = $this->prepare_editor_validation_rules_for_js( $editor_registry );
 		$registered_block_types  = $registry->get_registered_block_types();
 
-		\wp_localize_script(
-			self::VALIDATION_SCRIPT_HANDLE,
-			'ValidationAPI',
-			array(
-				'editorContext'         => $this->get_editor_context(),
-				'validationRules'       => $validation_rules,
-				'metaValidationRules'   => $meta_validation_rules,
-				'editorValidationRules' => $editor_validation_rules,
-				'registeredBlockTypes'  => $registered_block_types,
-			)
+		$settings['validationApi'] = array(
+			'editorContext'         => $this->get_editor_context(),
+			'validationRules'       => $validation_rules,
+			'metaValidationRules'   => $meta_validation_rules,
+			'editorValidationRules' => $editor_validation_rules,
+			'registeredBlockTypes'  => $registered_block_types,
 		);
+
+		return $settings;
 	}
 
 	/**

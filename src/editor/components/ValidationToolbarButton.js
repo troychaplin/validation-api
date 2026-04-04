@@ -65,7 +65,7 @@ export function ValidationToolbarButton({ issues }) {
 								</h2>
 								<ul>
 									{errors.map((issue, index) => (
-										<li key={`error-${index}`}>{issue.error_msg}</li>
+										<li key={`error-${index}`}>{issue.errorMsg}</li>
 									))}
 								</ul>
 							</div>
@@ -80,7 +80,7 @@ export function ValidationToolbarButton({ issues }) {
 								<ul>
 									{warnings.map((warning, index) => (
 										<li key={`warning-${index}`}>
-											{warning.warning_msg || warning.error_msg}
+											{warning.warningMsg || warning.errorMsg}
 										</li>
 									))}
 								</ul>

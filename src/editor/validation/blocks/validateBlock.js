@@ -12,15 +12,15 @@ import {
 	hasErrors,
 	hasWarnings,
 	createValidationResult,
+	getValidationRules,
 } from '../../../shared/utils/validation';
 
 /**
  * Validates a block against all PHP-registered checks.
  *
- * Checks are registered server-side via PHP and exposed through
- * window.ValidationAPI.validationRules. External plugins provide
- * validation logic either via a `validator` function on the check config or
- * via the `validation_api_validate_block` JS filter.
+ * Checks are registered server-side via PHP and exposed through editor settings.
+ * External plugins provide validation logic either via a `validator` function
+ * on the check config or via the `editor.validateBlock` JS filter.
  *
  * @param {Object} block - The block object containing name, attributes, clientId, etc.
  * @return {Object} Validation result with isValid, issues array, severity mode, clientId, and block name.
@@ -30,8 +30,8 @@ export const validateBlock = block => {
 	const attributes = block.attributes;
 	const issues = [];
 
-	// All checks come from PHP-registered rules via wp_localize_script.
-	const checks = window.ValidationAPI?.validationRules?.[blockType] || {};
+	// All checks come from PHP-registered rules via editor settings.
+	const checks = getValidationRules()[blockType] || {};
 
 	// No checks registered for this block type - return valid.
 	if (Object.keys(checks).length === 0) {
@@ -60,14 +60,14 @@ export const validateBlock = block => {
 		}
 
 		/**
-		 * Filter: validation_api_validate_block
+		 * Filter: editor.validateBlock
 		 *
 		 * Primary extension point for block validation logic. External plugins
 		 * hook here to implement their check logic and return true (valid) or
 		 * false (invalid).
 		 */
 		isValid = applyFilters(
-			'validation_api_validate_block',
+			'editor.validateBlock',
 			isValid,
 			blockType,
 			attributes,

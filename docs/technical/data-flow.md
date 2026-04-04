@@ -8,29 +8,18 @@ This document traces how a registered check moves from PHP registration through 
 
 ```php
 add_action( 'init', function() {
-    validation_api_register_plugin(
-        [ 'name' => 'My Rules' ],
-        function() {
-            validation_api_register_block_check( 'core/image', [
-                'name'      => 'alt_text',
-                'level'     => 'error',
-                'error_msg' => 'Missing alt text.',
-            ] );
-        }
-    );
+    wp_register_block_validation_check( 'core/image', [
+        'namespace' => 'my-rules',
+        'name'      => 'alt_text',
+        'level'     => 'error',
+        'error_msg' => 'Missing alt text.',
+    ] );
 } );
 ```
 
-### 2. PluginContext Scoping
+### 2. Namespace Attribution
 
-`validation_api_register_plugin()` wraps the callback in a context scope:
-
-```
-PluginContext::set( [ 'name' => 'My Rules' ] )
-  → callback executes
-  → validation_api_register_block_check() called
-PluginContext::clear()
-```
+The `namespace` field in the check args identifies which plugin registered the check. All checks sharing the same `namespace` are grouped together in the REST API and companion settings.
 
 ### 3. Registry Storage
 
@@ -44,15 +33,15 @@ $this->checks['core/image']['alt_text'] = [
     'priority'    => 10,
     'enabled'     => true,
     'description' => '',
-    '_plugin'     => [ 'name' => 'My Rules' ],
+    '_namespace'  => 'my-rules',
 ];
 ```
 
 Before storage, two filters fire:
-- `validation_api_check_args` — allows modifying the check config
-- `validation_api_should_register_check` — allows preventing registration
+- `wp_validation_check_args` — allows modifying the check config
+- `wp_validation_should_register_check` — allows preventing registration
 
-After storage, the `validation_api_check_registered` action fires.
+After storage, the `wp_validation_check_registered` action fires.
 
 ### 4. Effective Level Resolution
 
@@ -60,7 +49,7 @@ When the Assets class exports data, each check's level is resolved through:
 
 ```php
 $effective_level = apply_filters(
-    'validation_api_check_level',
+    'wp_validation_check_level',
     $registered_level,
     [
         'scope'      => 'block',
@@ -74,19 +63,20 @@ If the companion settings package (or any filter) overrides the level, the expor
 
 ## Export Phase (PHP → JS)
 
-### 5. wp_localize_script
+### 5. Editor Settings via block_editor_settings_all
 
-On `enqueue_block_editor_assets`, the Assets class exports all registry data to `window.ValidationAPI`:
+On `block_editor_settings_all`, the Assets class exports all registry data to editor settings, accessible via `select('core/editor').getEditorSettings().validationApi`:
 
 ```javascript
-window.ValidationAPI = {
+// editorSettings.validationApi
+{
     editorContext: 'post-editor',
 
     validationRules: {
         'core/image': {
             'alt_text': {
-                error_msg: 'Missing alt text.',
-                warning_msg: 'Missing alt text.',
+                errorMsg: 'Missing alt text.',
+                warningMsg: 'Missing alt text.',
                 level: 'error',         // effective level after filters
                 priority: 10,
                 enabled: true,
@@ -98,7 +88,7 @@ window.ValidationAPI = {
     metaValidationRules: { /* post_type → meta_key → check_name → config */ },
     editorValidationRules: { /* post_type → check_name → config */ },
     registeredBlockTypes: [ 'core/image' ],
-};
+}
 ```
 
 This is a one-time export. The JS layer reads this data and uses it for the entire editing session.
@@ -107,7 +97,7 @@ This is a one-time export. The JS layer reads this data and uses it for the enti
 
 ### 6. Runner Initialization
 
-When the editor loads, each runner reads its rules from `window.ValidationAPI`:
+When the editor loads, each runner reads its rules from the editor settings:
 
 - Block Runner reads `validationRules`
 - Meta Runner reads `metaValidationRules`
@@ -131,7 +121,7 @@ for ( const [ checkName, rule ] of Object.entries( checks ) ) {
     if ( rule.level === 'none' || ! rule.enabled ) continue;
 
     const isValid = applyFilters(
-        'validation_api_validate_block',
+        'editor.validateBlock',
         true,           // default: valid
         blockType,      // e.g., 'core/image'
         attributes,     // block's current attributes
@@ -145,11 +135,11 @@ for ( const [ checkName, rule ] of Object.entries( checks ) ) {
 
 ### 9. Data Store Dispatch
 
-The `ValidationProvider` component calls all three validation hooks and dispatches results into the `validation-api` data store:
+The `ValidationProvider` component calls all three validation hooks and dispatches results into the `core/validation` data store:
 
 ```javascript
 const invalidBlocks = GetInvalidBlocks();
-dispatch( 'validation-api' ).setInvalidBlocks( invalidBlocks );
+dispatch( 'core/validation' ).setInvalidBlocks( invalidBlocks );
 ```
 
 This is the single place where validation is computed. All downstream consumers read from the store via selectors, eliminating duplicate computation.
@@ -163,12 +153,12 @@ Additionally, the `withErrorHandling` HOC dispatches per-block validation result
 The `ValidationAPI` component reads from the store and manages save locking:
 
 ```javascript
-const hasBlockErrors = select( 'validation-api' ).hasErrors();
+const hasBlockErrors = select( 'core/validation' ).hasErrors();
 
 if ( hasBlockErrors ) {
-    dispatch( 'core/editor' ).lockPostSaving( 'validation-api' );
+    dispatch( 'core/editor' ).lockPostSaving( 'core-validation' );
 } else {
-    dispatch( 'core/editor' ).unlockPostSaving( 'validation-api' );
+    dispatch( 'core/editor' ).unlockPostSaving( 'core-validation' );
 }
 ```
 
@@ -186,23 +176,23 @@ Two HOCs work together for block-level feedback:
 
 The `ValidationSidebar` reads from the store and renders:
 - Issues grouped by severity (errors first, then warnings)
-- Each issue shows the message from `error_msg` or `warning_msg` based on level
+- Each issue shows the message from `errorMsg` or `warningMsg` based on level
 - Click-to-navigate: clicking an issue selects and scrolls to the block
 
 ## Summary: The Full Path
 
 ```
 PHP registration
-  → validation_api_check_args filter
-  → validation_api_should_register_check filter
+  → wp_validation_check_args filter
+  → wp_validation_should_register_check filter
   → Registry storage
-  → validation_api_check_level filter (on export)
-  → wp_localize_script → window.ValidationAPI
+  → wp_validation_check_level filter (on export)
+  → block_editor_settings_all → editorSettings.validationApi
 
 JS validation
   → wp.data change detection
-  → validation_api_validate_block filter (or _meta / _editor)
-  → ValidationProvider dispatches to validation-api store
+  → editor.validateBlock filter (or .validateMeta / .validateEditor)
+  → ValidationProvider dispatches to core/validation store
 
 UI rendering (all read from the store)
   → ValidationAPI: lockPostSaving / unlockPostSaving, body classes

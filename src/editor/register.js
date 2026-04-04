@@ -18,7 +18,7 @@ import { ValidationSidebar } from './components/ValidationSidebar';
  * and the ValidationSidebar (which displays validation results to users).
  * Both components are rendered together to provide a complete validation experience.
  */
-registerPlugin('validation-api', {
+registerPlugin('core-validation', {
 	render: () => (
 		<>
 			<ValidationProvider />

@@ -78,13 +78,13 @@ class Plugin {
 			$this->init_rest_api();
 
 			// Allow other plugins to hook into our initialization.
-			\do_action( 'validation_api_initialized', $this );
+			\do_action( 'wp_validation_initialized', $this );
 
 			// Allow developers to access the registry and add custom checks.
-			\do_action( 'validation_api_ready', $this->get_service( 'block_checks_registry' ), $this );
+			\do_action( 'wp_validation_ready', $this->get_service( 'block_checks_registry' ), $this );
 
 			// Allow developers to register editor checks.
-			\do_action( 'validation_api_editor_checks_ready', $this->get_service( 'editor_checks_registry' ), $this );
+			\do_action( 'wp_validation_editor_checks_ready', $this->get_service( 'editor_checks_registry' ), $this );
 
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize plugin: ' . $e->getMessage() );

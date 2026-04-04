@@ -1,6 +1,6 @@
 # CheckProvider Pattern
 
-For plugins with more than a handful of checks, the `CheckProvider` interface lets you organize registrations across multiple classes. Each class handles one concern — image checks, heading checks, meta checks — and they're all wired together through `validation_api_register_plugin()`.
+For plugins with more than a handful of checks, the `CheckProvider` interface lets you organize registrations across multiple classes. Each class handles one concern — image checks, heading checks, meta checks — and they're all wired together through a shared `namespace`.
 
 ## The Interface
 
@@ -21,7 +21,8 @@ use ValidationAPI\Contracts\CheckProvider;
 
 class ImageChecks implements CheckProvider {
     public function register(): void {
-        validation_api_register_block_check( 'core/image', [
+        wp_register_block_validation_check( 'core/image', [
+            'namespace'   => 'enterprise-content-rules',
             'name'        => 'alt_text',
             'level'       => 'error',
             'description' => 'Images must have alt text',
@@ -29,7 +30,8 @@ class ImageChecks implements CheckProvider {
             'warning_msg' => 'Consider adding alt text to this image.',
         ] );
 
-        validation_api_register_block_check( 'core/image', [
+        wp_register_block_validation_check( 'core/image', [
+            'namespace'   => 'enterprise-content-rules',
             'name'        => 'file_size',
             'level'       => 'warning',
             'description' => 'Images should be optimized',
@@ -42,28 +44,29 @@ class ImageChecks implements CheckProvider {
 
 ## Registering Providers
 
-Pass an array of class names to `validation_api_register_plugin()`:
+Instantiate each provider and call `register()`:
 
 ```php
 add_action( 'init', function() {
-    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
+    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
         return;
     }
 
-    validation_api_register_plugin(
-        [ 'name' => 'Enterprise Content Rules' ],
-        [
-            ImageChecks::class,
-            HeadingChecks::class,
-            ButtonChecks::class,
-            MetaChecks::class,
-            EditorChecks::class,
-        ]
-    );
+    $providers = [
+        new ImageChecks(),
+        new HeadingChecks(),
+        new ButtonChecks(),
+        new MetaChecks(),
+        new EditorChecks(),
+    ];
+
+    foreach ( $providers as $provider ) {
+        $provider->register();
+    }
 } );
 ```
 
-The framework instantiates each class and calls `register()`. All checks are automatically attributed to "Enterprise Content Rules" in the REST API and companion settings.
+All checks use the same `namespace` value (e.g., `'enterprise-content-rules'`) to group them together in the REST API and companion settings.
 
 ## Mixing Scopes
 
@@ -73,21 +76,24 @@ A single provider can register checks across all three scopes:
 class AccessibilityChecks implements CheckProvider {
     public function register(): void {
         // Block check
-        validation_api_register_block_check( 'core/image', [
+        wp_register_block_validation_check( 'core/image', [
+            'namespace' => 'accessibility',
             'name'      => 'alt_text',
             'level'     => 'error',
             'error_msg' => 'Images must have alt text.',
         ] );
 
         // Editor check
-        validation_api_register_editor_check( 'post', [
+        wp_register_editor_validation_check( 'post', [
+            'namespace' => 'accessibility',
             'name'      => 'heading_hierarchy',
             'level'     => 'warning',
             'error_msg' => 'Heading hierarchy is broken.',
         ] );
 
         // Meta check
-        validation_api_register_meta_check( 'post', [
+        wp_register_meta_validation_check( 'post', [
+            'namespace' => 'accessibility',
             'name'      => 'required',
             'meta_key'  => 'seo_description',
             'level'     => 'error',
@@ -105,7 +111,7 @@ A typical enterprise structure:
 
 ```
 my-validation-plugin/
-├── my-validation-plugin.php    ← Bootstrap: guard + register_plugin
+├── my-validation-plugin.php    ← Bootstrap: guard + register providers
 ├── src/
 │   ├── Checks/
 │   │   ├── ImageChecks.php     ← CheckProvider for core/image
@@ -127,19 +133,20 @@ my-validation-plugin/
  */
 
 add_action( 'init', function() {
-    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
+    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
         return;
     }
 
-    validation_api_register_plugin(
-        [ 'name' => 'My Validation Rules' ],
-        [
-            \MyPlugin\Checks\ImageChecks::class,
-            \MyPlugin\Checks\ButtonChecks::class,
-            \MyPlugin\Checks\HeadingChecks::class,
-            \MyPlugin\Checks\SeoMetaChecks::class,
-        ]
-    );
+    $providers = [
+        new \MyPlugin\Checks\ImageChecks(),
+        new \MyPlugin\Checks\ButtonChecks(),
+        new \MyPlugin\Checks\HeadingChecks(),
+        new \MyPlugin\Checks\SeoMetaChecks(),
+    ];
+
+    foreach ( $providers as $provider ) {
+        $provider->register();
+    }
 } );
 
 add_action( 'enqueue_block_editor_assets', function() {
@@ -153,33 +160,38 @@ add_action( 'enqueue_block_editor_assets', function() {
 } );
 ```
 
-## CheckProvider vs. Callback
+## CheckProvider vs. Inline Registration
 
 Both approaches are supported. Use whichever fits your plugin:
 
-**Callback** — best for small integrations with a few checks:
+**Inline** — best for small integrations with a few checks:
 
 ```php
-validation_api_register_plugin(
-    [ 'name' => 'Simple Rules' ],
-    function() {
-        validation_api_register_block_check( 'core/image', [ ... ] );
-        validation_api_register_block_check( 'core/button', [ ... ] );
-    }
-);
+wp_register_block_validation_check( 'core/image', [
+    'namespace' => 'simple-rules',
+    'name'      => 'alt_text',
+    'error_msg' => 'Alt text required.',
+] );
+
+wp_register_block_validation_check( 'core/button', [
+    'namespace' => 'simple-rules',
+    'name'      => 'has_link',
+    'error_msg' => 'Button needs a link.',
+] );
 ```
 
 **CheckProvider** — best for larger integrations where you want separation of concerns, testability, and organized file structure:
 
 ```php
-validation_api_register_plugin(
-    [ 'name' => 'Enterprise Rules' ],
-    [
-        ImageChecks::class,
-        ButtonChecks::class,
-        HeadingChecks::class,
-    ]
-);
+$providers = [
+    new ImageChecks(),
+    new ButtonChecks(),
+    new HeadingChecks(),
+];
+
+foreach ( $providers as $provider ) {
+    $provider->register();
+}
 ```
 
 ## Error Handling

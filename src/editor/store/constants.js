@@ -1,8 +1,8 @@
 /**
- * Store constants for the validation-api data store.
+ * Store constants for the core/validation data store.
  */
 
-export const STORE_NAME = 'validation-api';
+export const STORE_NAME = 'core/validation';
 
 export const SET_INVALID_BLOCKS = 'SET_INVALID_BLOCKS';
 export const SET_INVALID_META = 'SET_INVALID_META';

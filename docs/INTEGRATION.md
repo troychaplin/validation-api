@@ -1,6 +1,6 @@
 # Gutenberg Integration Strategy
 
-This document analyzes how the Validation API plugin maps to Gutenberg's architecture and outlines a strategy for proposing this framework upstream.
+This document analyzes how the Validation API plugin maps to Gutenberg's architecture and outlines a strategy for proposing this framework upstream. The plugin's naming and API surface have already been aligned with Gutenberg conventions to minimize the diff when contributing upstream.
 
 ## Gutenberg's Current Validation Landscape
 
@@ -43,8 +43,8 @@ How the Validation API's components map to Gutenberg's architecture:
 
 | Validation API | Gutenberg | Notes |
 |---|---|---|
-| `lockPostSaving('validation-api')` | `core/editor` action | Already uses the Gutenberg API directly |
-| `unlockPostSaving('validation-api')` | `core/editor` action | Already uses the Gutenberg API directly |
+| `lockPostSaving('validation')` | `core/editor` action | Already uses the Gutenberg API directly |
+| `unlockPostSaving('validation')` | `core/editor` action | Already uses the Gutenberg API directly |
 | `disablePublishSidebar()` | `core/editor` action | Already uses the Gutenberg API directly |
 | `@wordpress/hooks` filters | `@wordpress/hooks` package | `addFilter`/`applyFilters` used for all validation execution |
 | `PluginSidebar` usage | `@wordpress/editor` slot/fill | Sidebar renders via standard slot system |
@@ -52,18 +52,20 @@ How the Validation API's components map to Gutenberg's architecture:
 | `editor.BlockListBlock` filter | `@wordpress/block-editor` filter | Used for per-block CSS class injection |
 | `useSelect` / `useDispatch` | `@wordpress/data` hooks | Store reads/writes use standard data APIs |
 
-### Needs Adaptation for Core
+### Already Aligned with Core Conventions
 
-| Validation API | Current Approach | Core Approach |
+These items were adapted from plugin conventions to core conventions and are now complete:
+
+| Component | Status | Details |
 |---|---|---|
-| Store name `validation-api` | Standalone store | Rename to `core/validation` |
-| `window.ValidationAPI` config | `wp_localize_script()` | Pass through editor settings via `setupEditor()` |
-| `PluginContext` wrapper | `validation_api_register_plugin()` | Replace with `namespace` field in check args |
-| PHP singleton registries | `Block\Registry::get_instance()` | Aligns with `WP_Block_Type_Registry` pattern |
-| `registerPlugin('validation-api')` | Plugin-based initialization | Integrate into `ExperimentalEditorProvider` flow |
-| Function names `validation_api_*` | Plugin namespace | Rename to `wp_*` prefix |
-| JS filter names `validation_api_*` | Plugin namespace | Rename to `editor.*` or `validation.*` namespace |
-| Dual camelCase/snake_case in issues | Compatibility layer | Standardize: snake_case in PHP, camelCase in JS |
+| Store name `core/validation` | Done | Renamed from `validation-api` |
+| Editor settings config | Done | Replaced `window.ValidationAPI` with `block_editor_settings_all` filter |
+| `namespace` field in check args | Done | Replaced `PluginContext` / `validation_api_register_plugin()` |
+| PHP singleton registries | Done | Follows `WP_Block_Type_Registry` pattern |
+| Function names `wp_register_*_validation_check()` | Done | Renamed from `validation_api_*` prefix |
+| JS filter names `editor.validate*` | Done | Renamed from `validation_api_validate_*` |
+| camelCase-only issue model in JS | Done | Removed dual camelCase/snake_case compatibility layer |
+| REST endpoint `wp/v2/validation-checks` | Done | Renamed from `validation-api/v1/checks` |
 
 ### New to Gutenberg (No Equivalent)
 
@@ -75,9 +77,9 @@ How the Validation API's components map to Gutenberg's architecture:
 | `ValidationSidebar` | Consolidated validation results panel |
 | `ValidationToolbarButton` | Per-block validation toolbar UI |
 | Block/Meta/Editor registries | Declarative check registration |
-| `validation_api_check_level` filter | Runtime severity override |
+| `wp_validation_check_level` filter | Runtime severity override |
 | `Validator::required()` helper | Bridge between client and server meta validation |
-| REST `/validation-api/v1/checks` | Check introspection for admin tooling |
+| REST `wp/v2/validation-checks` | Check introspection for admin tooling |
 
 ## Packages Affected
 
@@ -87,12 +89,12 @@ This is where the bulk of the integration lives:
 
 - **Store**: Register `core/validation` store alongside `core/editor`
 - **Components**: `ValidationProvider`, `ValidationSidebar`, `ValidationAPI` integrated into editor initialization via `ExperimentalEditorProvider`
-- **Editor settings**: Pass validation config from PHP through the settings object that `setupEditor()` receives, replacing `wp_localize_script`
+- **Editor settings**: Validation config passed from PHP through the settings object that `setupEditor()` receives, via the `block_editor_settings_all` filter
 
 ### `@wordpress/block-editor`
 
-- **`editor.BlockListBlock` filter**: Already used by the plugin for CSS class injection (`validation-api-block-error`, `validation-api-block-warning`)
-- **`editor.BlockEdit` filter**: Already used for per-block validation toolbar button
+- **`editor.BlockListBlock` filter**: Used for CSS class injection (`validation-block-error`, `validation-block-warning`)
+- **`editor.BlockEdit` filter**: Used for per-block validation toolbar button
 - No store changes needed -- per-block validation state lives in `core/validation`, not `core/block-editor`
 
 ### `@wordpress/blocks`
@@ -109,9 +111,11 @@ This is where the bulk of the integration lives:
 - New file (e.g., `wp-includes/validation.php`) or extend `wp-includes/blocks.php`
 - Registration functions: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
 - Registry classes following the `WP_Block_Type_Registry` singleton pattern
-- Config export integrated into the editor settings bootstrap
+- Config export integrated into the editor settings bootstrap via `block_editor_settings_all`
 
-## Phased Approach
+## Current State and Upstream Strategy
+
+The naming alignment refactor is complete. The plugin now uses core-style names for all public API surfaces. The remaining work is the actual Gutenberg contribution, structured as follows:
 
 ### Phase 1: RFC and Data Foundation
 
@@ -139,7 +143,7 @@ This is where the bulk of the integration lives:
 - `wp_register_editor_validation_check( $post_type, $args )` -- Register checks for document state
 - `wp_validation_check_level` filter for runtime severity override
 - `wp_validation_check_args` filter for check modification before registration
-- Validation config passed to JS via editor settings (not `wp_localize_script`)
+- Validation config passed to JS via `block_editor_settings_all` filter
 
 **Check args structure**:
 ```php
@@ -195,39 +199,52 @@ This is where the bulk of the integration lives:
 - `block.json` declarative validation rules
 - Default check bundles
 
-## API Surface Changes for Core
+## Completed API Alignment
 
-### Naming
+The following naming changes have been applied throughout the codebase. These reflect the current state of the plugin and the names that will be used in the Gutenberg PR.
 
-| Current (Plugin) | Proposed (Core) |
+### PHP
+
+| Old (Plugin) | Current |
 |---|---|
-| `validation_api_register_plugin()` | Drop; use `namespace` field in check args |
+| `validation_api_register_plugin()` | Removed; `namespace` field in check args |
 | `validation_api_register_block_check()` | `wp_register_block_validation_check()` |
 | `validation_api_register_meta_check()` | `wp_register_meta_validation_check()` |
 | `validation_api_register_editor_check()` | `wp_register_editor_validation_check()` |
 | `validation_api_check_level` filter | `wp_validation_check_level` |
 | `validation_api_check_args` filter | `wp_validation_check_args` |
-| `validation_api_validate_block` JS filter | `editor.validateBlock` |
-| `validation_api_validate_meta` JS filter | `editor.validateMeta` |
-| `validation_api_validate_editor` JS filter | `editor.validateEditor` |
+
+### JavaScript
+
+| Old (Plugin) | Current |
+|---|---|
+| `validation_api_validate_block` filter | `editor.validateBlock` |
+| `validation_api_validate_meta` filter | `editor.validateMeta` |
+| `validation_api_validate_editor` filter | `editor.validateEditor` |
 | Store: `validation-api` | `core/validation` |
-| `window.ValidationAPI` | Editor settings object |
+| `window.ValidationAPI` | Config via `block_editor_settings_all` filter / editor settings |
 
-### Simplifications
+### REST API
 
-1. **Drop `PluginContext`/`validation_api_register_plugin()`** -- Replace with a required `namespace` field in check registration args. Simpler, matches block registration pattern.
+| Old (Plugin) | Current |
+|---|---|
+| `validation-api/v1/checks` | `wp/v2/validation-checks` |
 
-2. **Drop `CheckProvider` interface** -- Useful for plugin organization but not needed in core API surface. Plugins can structure their own code.
+### Structural
 
-3. **Standardize issue model** -- Pick one convention: snake_case for PHP, camelCase for JS runtime. No dual-format compatibility layer.
+1. **`PluginContext` / `validation_api_register_plugin()` removed** -- Replaced with a required `namespace` field in check registration args. Simpler, matches block registration pattern.
 
-4. **Drop `window.ValidationAPI` global** -- Pass config through editor settings, which Gutenberg already handles via `ExperimentalEditorProvider`.
+2. **`CheckProvider` interface dropped from public API** -- Useful for plugin organization but not needed in core API surface. Plugins can structure their own code.
+
+3. **Issue model standardized** -- snake_case in PHP, camelCase in JS. No dual-format compatibility layer.
+
+4. **`window.ValidationAPI` global removed** -- Config passed through editor settings via the `block_editor_settings_all` filter, which Gutenberg already handles via `ExperimentalEditorProvider`.
 
 ## Risks
 
 1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current debouncing (300ms) and `ValidationProvider` single-computation pattern help, but core demands higher standards.
 
-2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. Getting the naming right in Phases 1-2 is critical.
+2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The current naming has been chosen to align with existing core conventions.
 
 3. **Scope creep** -- Discussions may pull in content linting, accessibility auditing, or editorial workflows. The framework/rules boundary must hold.
 

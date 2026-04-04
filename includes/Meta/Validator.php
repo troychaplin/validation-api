@@ -79,7 +79,7 @@ class Validator {
 
 			// Run validation through filter system.
 			$is_valid = \apply_filters(
-				'validation_api_validate_meta',
+				'wp_validation_validate_meta',
 				true,
 				$value,
 				$post_type,
@@ -96,7 +96,7 @@ class Validator {
 			// Return error only if validation fails and level is 'error'.
 			if ( ! $is_valid && 'error' === $level ) {
 				return new \WP_Error(
-					'validation_api_validation_failed',
+					'wp_validation_failed',
 					$config['error_msg'],
 					array( 'status' => 400 )
 				);

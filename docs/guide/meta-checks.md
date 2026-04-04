@@ -6,10 +6,11 @@ Meta checks have a unique advantage: they integrate with WordPress's `register_p
 
 ## Registration (PHP)
 
-Register a meta check inside your `validation_api_register_plugin()` callback:
+Register a meta check with the `namespace` field to identify your plugin:
 
 ```php
-validation_api_register_meta_check( 'post', [
+wp_register_meta_validation_check( 'post', [
+    'namespace'   => 'my-plugin',
     'name'        => 'required',
     'meta_key'    => 'seo_description',
     'level'       => 'error',
@@ -27,6 +28,7 @@ The second argument is an array of check configuration:
 
 | Key | Type | Required | Default | Description |
 |---|---|---|---|---|
+| `namespace` | `string` | Yes | — | Identifier for the plugin registering this check |
 | `name` | `string` | Yes | — | Unique identifier for this check |
 | `meta_key` | `string` | Yes | — | The post meta key to validate |
 | `error_msg` | `string` | Yes | — | Message shown when the check fails at error level |
@@ -42,7 +44,8 @@ Register the same check for multiple post types by calling the function for each
 
 ```php
 foreach ( [ 'post', 'page' ] as $post_type ) {
-    validation_api_register_meta_check( $post_type, [
+    wp_register_meta_validation_check( $post_type, [
+        'namespace' => 'my-plugin',
         'name'      => 'required',
         'meta_key'  => 'seo_description',
         'level'     => 'error',
@@ -53,13 +56,13 @@ foreach ( [ 'post', 'page' ] as $post_type ) {
 
 ## Validation Logic (JavaScript)
 
-Use the `validation_api_validate_meta` filter:
+Use the `editor.validateMeta` filter:
 
 ```javascript
 import { addFilter } from '@wordpress/hooks';
 
 addFilter(
-    'validation_api_validate_meta',
+    'editor.validateMeta',
     'my-plugin/seo-description',
     ( isValid, value, postType, metaKey, checkName ) => {
         if ( metaKey === 'seo_description' && checkName === 'required' ) {
@@ -131,7 +134,7 @@ Validator::required( string $post_type, string $meta_key, array $args = [] ): ca
 
 Use `Validator::required()` when you're already calling `register_post_meta()` and want both client and server validation in one step.
 
-Use `validation_api_register_meta_check()` directly when:
+Use `wp_register_meta_validation_check()` directly when:
 - You don't need server-side enforcement
 - You need a custom validation rule beyond "required"
 - You're validating meta that's registered elsewhere
@@ -140,8 +143,8 @@ Use `validation_api_register_meta_check()` directly when:
 
 The meta validation path differs from block validation because meta values come from the post's metadata, not block attributes:
 
-1. The Validation API reads registered meta checks from `window.ValidationAPI.metaValidationRules`
+1. The Validation API reads registered meta checks from editor settings (`select('core/editor').getEditorSettings().validationApi.metaValidationRules`)
 2. For each meta key with checks, the runner reads the current meta value via `wp.data`
-3. The `validation_api_validate_meta` filter fires with the current value
+3. The `editor.validateMeta` filter fires with the current value
 4. Your callback returns pass/fail
 5. Failed checks appear in the sidebar and contribute to publish locking

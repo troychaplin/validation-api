@@ -4,24 +4,24 @@ Complete list of PHP actions, PHP filters, and JavaScript filters provided by th
 
 ## PHP Actions
 
-### validation_api_initialized
+### wp_validation_initialized
 
 Fires after plugin initialization completes.
 
 ```php
-do_action( 'validation_api_initialized', Plugin $plugin );
+do_action( 'wp_validation_initialized', Plugin $plugin );
 ```
 
 | Parameter | Type | Description |
 |---|---|---|
 | `$plugin` | `ValidationAPI\Core\Plugin` | The plugin instance |
 
-### validation_api_ready
+### wp_validation_ready
 
-Fires after the Block Registry is ready. Use this to interact with the block registry directly (most integrations should use `validation_api_register_plugin()` instead).
+Fires after the Block Registry is ready. Use this to interact with the block registry directly (most integrations should use `wp_register_block_validation_check()` instead).
 
 ```php
-do_action( 'validation_api_ready', BlockChecksRegistry $registry, Plugin $plugin );
+do_action( 'wp_validation_ready', BlockChecksRegistry $registry, Plugin $plugin );
 ```
 
 | Parameter | Type | Description |
@@ -29,12 +29,12 @@ do_action( 'validation_api_ready', BlockChecksRegistry $registry, Plugin $plugin
 | `$registry` | `ValidationAPI\Block\Registry` | The block checks registry |
 | `$plugin` | `ValidationAPI\Core\Plugin` | The plugin instance |
 
-### validation_api_editor_checks_ready
+### wp_validation_editor_checks_ready
 
 Fires after the Editor Registry is ready.
 
 ```php
-do_action( 'validation_api_editor_checks_ready', EditorChecksRegistry $registry, Plugin $plugin );
+do_action( 'wp_validation_editor_checks_ready', EditorChecksRegistry $registry, Plugin $plugin );
 ```
 
 | Parameter | Type | Description |
@@ -42,12 +42,12 @@ do_action( 'validation_api_editor_checks_ready', EditorChecksRegistry $registry,
 | `$registry` | `ValidationAPI\Editor\Registry` | The editor checks registry |
 | `$plugin` | `ValidationAPI\Core\Plugin` | The plugin instance |
 
-### validation_api_check_registered
+### wp_validation_check_registered
 
 Fires when a block check is successfully registered.
 
 ```php
-do_action( 'validation_api_check_registered', string $block_type, string $check_name, array $check_args );
+do_action( 'wp_validation_check_registered', string $block_type, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -56,12 +56,12 @@ do_action( 'validation_api_check_registered', string $block_type, string $check_
 | `$check_name` | `string` | Check identifier |
 | `$check_args` | `array` | The final check configuration |
 
-### validation_api_check_unregistered
+### wp_validation_check_unregistered
 
 Fires when a block check is unregistered.
 
 ```php
-do_action( 'validation_api_check_unregistered', string $block_type, string $check_name );
+do_action( 'wp_validation_check_unregistered', string $block_type, string $check_name );
 ```
 
 | Parameter | Type | Description |
@@ -69,12 +69,12 @@ do_action( 'validation_api_check_unregistered', string $block_type, string $chec
 | `$block_type` | `string` | Block type name |
 | `$check_name` | `string` | Check identifier |
 
-### validation_api_check_toggled
+### wp_validation_check_toggled
 
 Fires when a block check is enabled or disabled.
 
 ```php
-do_action( 'validation_api_check_toggled', string $block_type, string $check_name, bool $enabled );
+do_action( 'wp_validation_check_toggled', string $block_type, string $check_name, bool $enabled );
 ```
 
 | Parameter | Type | Description |
@@ -83,12 +83,12 @@ do_action( 'validation_api_check_toggled', string $block_type, string $check_nam
 | `$check_name` | `string` | Check identifier |
 | `$enabled` | `bool` | Whether the check is now enabled |
 
-### validation_api_editor_check_registered
+### wp_validation_editor_check_registered
 
 Fires when an editor check is successfully registered.
 
 ```php
-do_action( 'validation_api_editor_check_registered', string $post_type, string $check_name, array $check_args );
+do_action( 'wp_validation_editor_check_registered', string $post_type, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -97,12 +97,12 @@ do_action( 'validation_api_editor_check_registered', string $post_type, string $
 | `$check_name` | `string` | Check identifier |
 | `$check_args` | `array` | The final check configuration |
 
-### validation_api_meta_check_registered
+### wp_validation_meta_check_registered
 
 Fires when a meta check is successfully registered.
 
 ```php
-do_action( 'validation_api_meta_check_registered', string $post_type, string $meta_key, string $check_name, array $check_args );
+do_action( 'wp_validation_meta_check_registered', string $post_type, string $meta_key, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -114,12 +114,12 @@ do_action( 'validation_api_meta_check_registered', string $post_type, string $me
 
 ## PHP Filters
 
-### validation_api_check_args
+### wp_validation_check_args
 
 Modify block check arguments before registration.
 
 ```php
-$check_args = apply_filters( 'validation_api_check_args', array $check_args, string $block_type, string $check_name );
+$check_args = apply_filters( 'wp_validation_check_args', array $check_args, string $block_type, string $check_name );
 ```
 
 | Parameter | Type | Description |
@@ -130,12 +130,12 @@ $check_args = apply_filters( 'validation_api_check_args', array $check_args, str
 
 **Return:** `array` — Modified check arguments.
 
-### validation_api_editor_check_args
+### wp_validation_editor_check_args
 
 Modify editor check arguments before registration.
 
 ```php
-$check_args = apply_filters( 'validation_api_editor_check_args', array $check_args, string $post_type, string $check_name );
+$check_args = apply_filters( 'wp_validation_editor_check_args', array $check_args, string $post_type, string $check_name );
 ```
 
 | Parameter | Type | Description |
@@ -146,12 +146,12 @@ $check_args = apply_filters( 'validation_api_editor_check_args', array $check_ar
 
 **Return:** `array` — Modified check arguments.
 
-### validation_api_meta_check_args
+### wp_validation_meta_check_args
 
 Modify meta check arguments before registration.
 
 ```php
-$check_args = apply_filters( 'validation_api_meta_check_args', array $check_args, string $post_type, string $meta_key, string $check_name );
+$check_args = apply_filters( 'wp_validation_meta_check_args', array $check_args, string $post_type, string $meta_key, string $check_name );
 ```
 
 | Parameter | Type | Description |
@@ -163,12 +163,12 @@ $check_args = apply_filters( 'validation_api_meta_check_args', array $check_args
 
 **Return:** `array` — Modified check arguments.
 
-### validation_api_should_register_check
+### wp_validation_should_register_check
 
 Prevent a block check from being registered.
 
 ```php
-$should = apply_filters( 'validation_api_should_register_check', bool $should, string $block_type, string $check_name, array $check_args );
+$should = apply_filters( 'wp_validation_should_register_check', bool $should, string $block_type, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -180,12 +180,12 @@ $should = apply_filters( 'validation_api_should_register_check', bool $should, s
 
 **Return:** `bool` — `false` to prevent registration.
 
-### validation_api_should_register_editor_check
+### wp_validation_should_register_editor_check
 
 Prevent an editor check from being registered.
 
 ```php
-$should = apply_filters( 'validation_api_should_register_editor_check', bool $should, string $post_type, string $check_name, array $check_args );
+$should = apply_filters( 'wp_validation_should_register_editor_check', bool $should, string $post_type, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -197,12 +197,12 @@ $should = apply_filters( 'validation_api_should_register_editor_check', bool $sh
 
 **Return:** `bool` — `false` to prevent registration.
 
-### validation_api_should_register_meta_check
+### wp_validation_should_register_meta_check
 
 Prevent a meta check from being registered.
 
 ```php
-$should = apply_filters( 'validation_api_should_register_meta_check', bool $should, string $post_type, string $meta_key, string $check_name, array $check_args );
+$should = apply_filters( 'wp_validation_should_register_meta_check', bool $should, string $post_type, string $meta_key, string $check_name, array $check_args );
 ```
 
 | Parameter | Type | Description |
@@ -215,12 +215,12 @@ $should = apply_filters( 'validation_api_should_register_meta_check', bool $shou
 
 **Return:** `bool` — `false` to prevent registration.
 
-### validation_api_check_level
+### wp_validation_check_level
 
 Override the effective severity level of any check at runtime. This is the central configuration mechanism.
 
 ```php
-$level = apply_filters( 'validation_api_check_level', string $level, array $context );
+$level = apply_filters( 'wp_validation_check_level', string $level, array $context );
 ```
 
 | Parameter | Type | Description |
@@ -245,12 +245,12 @@ $level = apply_filters( 'validation_api_check_level', string $level, array $cont
 [ 'scope' => 'editor', 'post_type' => 'post', 'check_name' => 'heading_hierarchy' ]
 ```
 
-### validation_api_validate_meta
+### wp_validation_validate_meta
 
 Server-side meta validation filter. Fires during `register_post_meta()` validate_callback when using `Validator::required()`.
 
 ```php
-$is_valid = apply_filters( 'validation_api_validate_meta', bool $is_valid, mixed $value, string $post_type, string $meta_key, string $check_name, array $config );
+$is_valid = apply_filters( 'wp_validation_validate_meta', bool $is_valid, mixed $value, string $post_type, string $meta_key, string $check_name, array $config );
 ```
 
 | Parameter | Type | Description |
@@ -268,13 +268,13 @@ $is_valid = apply_filters( 'validation_api_validate_meta', bool $is_valid, mixed
 
 All JS filters use `@wordpress/hooks` (`wp.hooks`). Register with `addFilter()`, imported from `@wordpress/hooks`.
 
-### validation_api_validate_block
+### editor.validateBlock
 
 Validate a block's attributes against a registered check.
 
 ```javascript
 const isValid = applyFilters(
-    'validation_api_validate_block',
+    'editor.validateBlock',
     true,
     blockType,
     attributes,
@@ -293,13 +293,13 @@ const isValid = applyFilters(
 
 **Return:** `boolean` — `true` if valid, `false` if invalid.
 
-### validation_api_validate_meta
+### editor.validateMeta
 
 Validate a post meta value against a registered check.
 
 ```javascript
 const isValid = applyFilters(
-    'validation_api_validate_meta',
+    'editor.validateMeta',
     true,
     value,
     postType,
@@ -318,13 +318,13 @@ const isValid = applyFilters(
 
 **Return:** `boolean` — `true` if valid, `false` if invalid.
 
-### validation_api_validate_editor
+### editor.validateEditor
 
 Validate the editor's block content against a registered check.
 
 ```javascript
 const isValid = applyFilters(
-    'validation_api_validate_editor',
+    'editor.validateEditor',
     true,
     blocks,
     postType,

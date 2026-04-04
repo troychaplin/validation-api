@@ -1,74 +1,47 @@
 # API Reference
 
-All public functions, registry methods, and contracts.
+All public registration functions, registry methods, and contracts.
 
 ## Global Functions
 
-### validation_api_register_plugin()
-
-Register a plugin and its validation checks with the Validation API.
-
-```php
-validation_api_register_plugin( array $plugin_info, callable|array $checks ): void
-```
-
-| Parameter | Type | Description |
-|---|---|---|
-| `$plugin_info` | `array` | Plugin metadata. Required key: `'name'` (string). |
-| `$checks` | `callable\|array` | A callable that registers checks, or an array of fully qualified `CheckProvider` class names. |
-
-Sets up the plugin context, executes check registration, then clears the context. All checks registered inside the callback or providers are attributed to the plugin.
-
-Triggers `_doing_it_wrong()` if:
-- `$plugin_info` is missing the `'name'` key
-- `$checks` is neither callable nor array
-- A CheckProvider class doesn't exist
-- A class doesn't implement `CheckProvider`
-
-### validation_api_register_block_check()
+### wp_register_block_validation_check()
 
 Register a validation check for a block type.
 
 ```php
-validation_api_register_block_check( string $block_type, array $args ): void
+wp_register_block_validation_check( string $block_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
 |---|---|---|
 | `$block_type` | `string` | Block type name (e.g., `'core/image'`). |
-| `$args` | `array` | Check configuration (see [Check Arguments](#check-arguments)). |
+| `$args` | `array` | Check configuration (see [Check Arguments](#check-arguments)). Must include `'namespace'`. |
 
-Must be called within a `validation_api_register_plugin()` context.
-
-### validation_api_register_meta_check()
+### wp_register_meta_validation_check()
 
 Register a validation check for a post meta field.
 
 ```php
-validation_api_register_meta_check( string $post_type, array $args ): void
+wp_register_meta_validation_check( string $post_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
 |---|---|---|
 | `$post_type` | `string` | Post type (e.g., `'post'`, `'page'`). |
-| `$args` | `array` | Check configuration. Must include `'meta_key'`. See [Check Arguments](#check-arguments). |
+| `$args` | `array` | Check configuration. Must include `'namespace'` and `'meta_key'`. See [Check Arguments](#check-arguments). |
 
-Must be called within a `validation_api_register_plugin()` context.
-
-### validation_api_register_editor_check()
+### wp_register_editor_validation_check()
 
 Register a validation check for the editor (document-level).
 
 ```php
-validation_api_register_editor_check( string $post_type, array $args ): void
+wp_register_editor_validation_check( string $post_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
 |---|---|---|
 | `$post_type` | `string` | Post type (e.g., `'post'`, `'page'`). |
-| `$args` | `array` | Check configuration (see [Check Arguments](#check-arguments)). |
-
-Must be called within a `validation_api_register_plugin()` context.
+| `$args` | `array` | Check configuration (see [Check Arguments](#check-arguments)). Must include `'namespace'`. |
 
 ### validation_api_init_plugin()
 
@@ -84,6 +57,7 @@ All registration functions accept an `$args` array with the following keys:
 
 | Key | Type | Required | Default | Description |
 |---|---|---|---|---|
+| `namespace` | `string` | Yes | — | Identifier for the plugin registering this check |
 | `name` | `string` | Yes | — | Unique identifier for this check within its scope |
 | `error_msg` | `string` | Yes | — | Message shown when the check fails at error level |
 | `warning_msg` | `string` | No | Same as `error_msg` | Message shown at warning level |
@@ -116,7 +90,7 @@ interface CheckProvider {
 }
 ```
 
-Implementations call global registration functions (`validation_api_register_block_check()`, etc.) inside `register()`. All checks are attributed to the parent plugin passed to `validation_api_register_plugin()`.
+Implementations call global registration functions (`wp_register_block_validation_check()`, etc.) inside `register()`. All checks use the same `namespace` value to group them together.
 
 ## Registry Classes
 
@@ -186,7 +160,7 @@ Returns a `callable` for use as the `validate_callback` parameter in `register_p
 
 ## REST API
 
-### GET /validation-api/v1/checks
+### GET /wp/v2/validation-checks
 
 Returns all registered checks across all three scopes.
 
@@ -205,9 +179,7 @@ Returns all registered checks across all three scopes.
                 "warning_msg": "Consider adding alt text.",
                 "priority": 10,
                 "enabled": true,
-                "_plugin": {
-                    "name": "My Rules"
-                }
+                "_namespace": "my-rules"
             }
         }
     },

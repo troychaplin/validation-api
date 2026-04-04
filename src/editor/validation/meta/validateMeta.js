@@ -10,24 +10,15 @@ import {
 	isCheckEnabled,
 	createIssue,
 	createValidationResult,
+	getMetaValidationRules,
 } from '../../../shared/utils/validation';
-
-/**
- * Meta validation rules configuration from PHP
- *
- * Contains validation rules registered server-side for meta field validation.
- * Rules are organized by post type, then by meta key, then by check name.
- * These rules are exposed via the window object by PHP and define what
- * validation checks should run for each meta field.
- */
-const metaValidationRules = window.ValidationAPI?.metaValidationRules || {};
 
 /**
  * Validates a single meta field against a specific validation check.
  *
  * Runs a single validation rule (e.g., 'required', 'min_length') for a meta field.
  * Supports built-in checks and allows external plugins to extend validation via
- * the 'validation_api_validate_meta' filter hook. Returns true if validation passes.
+ * the 'editor.validateMeta' filter hook. Returns true if validation passes.
  *
  * @param {string} postType  - The post type (e.g., 'post', 'page').
  * @param {string} metaKey   - The meta key to validate (e.g., '_wp_page_template').
@@ -37,7 +28,7 @@ const metaValidationRules = window.ValidationAPI?.metaValidationRules || {};
  */
 export function validateMetaField(postType, metaKey, value, checkName) {
 	// Look up the specific validation rule for this post type, meta key, and check
-	const rules = metaValidationRules[postType]?.[metaKey]?.[checkName];
+	const rules = getMetaValidationRules()[postType]?.[metaKey]?.[checkName];
 
 	// Return valid if rule doesn't exist or is disabled
 	if (!isCheckEnabled(rules)) {
@@ -54,19 +45,12 @@ export function validateMetaField(postType, metaKey, value, checkName) {
 	// Additional built-in check types can be added here as needed
 
 	/**
-	 * Filter: validation_api_validate_meta
+	 * Filter: editor.validateMeta
 	 *
 	 * Allows external plugins to modify or extend validation logic for meta fields.
 	 * Plugins should return false if validation fails, true if it passes.
 	 */
-	isValid = applyFilters(
-		'validation_api_validate_meta',
-		isValid,
-		value,
-		postType,
-		metaKey,
-		checkName
-	);
+	isValid = applyFilters('editor.validateMeta', isValid, value, postType, metaKey, checkName);
 
 	return isValid;
 }
@@ -90,7 +74,8 @@ export function validateMetaField(postType, metaKey, value, checkName) {
  */
 export function validateAllMetaChecks(postType, metaKey, value) {
 	// Get validation rules for this post type and meta key
-	const postTypeRules = metaValidationRules[postType] || {};
+	const allRules = getMetaValidationRules();
+	const postTypeRules = allRules[postType] || {};
 	const metaRules = postTypeRules[metaKey] || {};
 	const issues = [];
 
