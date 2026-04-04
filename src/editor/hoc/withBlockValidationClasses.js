@@ -2,11 +2,12 @@
  * WordPress dependencies
  */
 import { addFilter } from '@wordpress/hooks';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { getBlockValidation } from '../store';
+import { STORE_NAME } from '../store';
 
 /**
  * Adds validation CSS classes to the block's own wrapper element.
@@ -15,12 +16,18 @@ import { getBlockValidation } from '../store';
  * classes directly onto the block's native DOM element, avoiding
  * the need for an extra wrapper div.
  *
+ * Reads per-block validation state from the data store, giving it
+ * proper reactive subscriptions so classes update when validation changes.
+ *
  * @param {Function} BlockListBlock The original BlockListBlock component.
  * @return {Function} Wrapped component with validation classes.
  */
 function withBlockValidationClasses(BlockListBlock) {
 	return props => {
-		const validation = getBlockValidation(props.clientId);
+		const validation = useSelect(
+			select => select(STORE_NAME).getBlockValidation(props.clientId),
+			[props.clientId]
+		);
 
 		if (validation.mode === 'none') {
 			return <BlockListBlock {...props} />;

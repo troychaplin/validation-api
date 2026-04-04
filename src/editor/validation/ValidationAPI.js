@@ -1,18 +1,16 @@
 /**
  * WordPress dependencies
  */
-import { useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { STORE_NAME } from '../store';
 import {
-	GetInvalidBlocks,
-	GetInvalidMeta,
-	GetInvalidEditorChecks,
-	hasErrors,
-	hasWarnings,
+	hasErrors as issueHasErrors,
+	hasWarnings as issueHasWarnings,
 } from '../../shared/utils/validation';
 
 /**
@@ -46,11 +44,15 @@ export function ValidationAPI() {
 	// Verify the store exists before using it
 	const storeExists = wp.data && wp.data.select && wp.data.select(editorStore);
 
-	// Retrieve validation results from all validation sources
-	// Called unconditionally to avoid unused variable lint errors
-	const invalidBlocks = GetInvalidBlocks();
-	const invalidMeta = GetInvalidMeta();
-	const invalidEditorChecks = GetInvalidEditorChecks();
+	// Read validation results from the centralized store
+	const { invalidBlocks, invalidMeta, invalidEditorChecks } = useSelect(select => {
+		const store = select(STORE_NAME);
+		return {
+			invalidBlocks: store.getInvalidBlocks(),
+			invalidMeta: store.getInvalidMeta(),
+			invalidEditorChecks: store.getInvalidEditorChecks(),
+		};
+	}, []);
 
 	// Destructure functions - these exist in core/editor for both contexts
 	const {
@@ -86,7 +88,7 @@ export function ValidationAPI() {
 		// Check for errors across all validation types
 		const hasBlockErrors = invalidBlocks.some(block => block.mode === 'error');
 		const hasMetaErrors = invalidMeta.some(meta => meta.hasErrors);
-		const hasEditorErrors = hasErrors(invalidEditorChecks);
+		const hasEditorErrors = issueHasErrors(invalidEditorChecks);
 
 		// Lock saving if any validation errors exist
 		if (hasBlockErrors || hasMetaErrors || hasEditorErrors) {
@@ -148,8 +150,8 @@ export function ValidationAPI() {
 		const hasBlockWarnings = invalidBlocks.some(block => block.mode === 'warning');
 		const hasMetaErrors = invalidMeta.some(meta => meta.hasErrors);
 		const hasMetaWarnings = invalidMeta.some(meta => meta.hasWarnings && !meta.hasErrors);
-		const hasEditorErrors = hasErrors(invalidEditorChecks);
-		const hasEditorWarnings = hasWarnings(invalidEditorChecks);
+		const hasEditorErrors = issueHasErrors(invalidEditorChecks);
+		const hasEditorWarnings = issueHasWarnings(invalidEditorChecks);
 
 		// Check for overall errors first (blocks, meta, or editor)
 		const hasAnyErrors = hasBlockErrors || hasMetaErrors || hasEditorErrors;

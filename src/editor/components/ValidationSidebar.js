@@ -4,7 +4,7 @@
 import { PluginSidebar } from '@wordpress/editor';
 import { PanelBody, PanelRow } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
 import { getBlockType } from '@wordpress/blocks';
 
@@ -12,14 +12,8 @@ import { getBlockType } from '@wordpress/blocks';
  * Internal dependencies
  */
 import { ValidationIcon } from './ValidationIcon';
-import {
-	GetInvalidBlocks,
-	GetInvalidMeta,
-	GetInvalidEditorChecks,
-	filterIssuesByType,
-	getErrors,
-	getWarnings,
-} from '../../shared/utils/validation';
+import { STORE_NAME } from '../store';
+import { filterIssuesByType, getErrors, getWarnings } from '../../shared/utils/validation';
 
 /**
  * Get display name for a block type
@@ -164,10 +158,15 @@ function deduplicateEditorIssues(issues, severity) {
  * The icon color reflects the highest severity issue present (red for errors, yellow for warnings).
  */
 export function ValidationSidebar() {
-	// Retrieve validation results from all sources
-	const invalidBlocks = GetInvalidBlocks() || [];
-	const invalidMeta = GetInvalidMeta() || [];
-	const invalidEditorChecks = GetInvalidEditorChecks() || [];
+	// Read validation results from the centralized store
+	const { invalidBlocks, invalidMeta, invalidEditorChecks } = useSelect(select => {
+		const store = select(STORE_NAME);
+		return {
+			invalidBlocks: store.getInvalidBlocks(),
+			invalidMeta: store.getInvalidMeta(),
+			invalidEditorChecks: store.getInvalidEditorChecks(),
+		};
+	}, []);
 
 	// Get dispatch function to select blocks when user clicks on issues
 	const { selectBlock } = useDispatch('core/block-editor');

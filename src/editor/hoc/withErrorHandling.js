@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { BlockControls } from '@wordpress/block-editor';
 
@@ -12,7 +12,7 @@ import { BlockControls } from '@wordpress/block-editor';
 import { validateBlock } from '../validation/blocks';
 import { ValidationToolbarButton } from '../components/ValidationToolbarButton';
 import { useDebouncedValidation } from '../../shared/hooks';
-import { setBlockValidation, clearBlockValidation } from '../store';
+import { STORE_NAME } from '../store';
 
 /**
  * Higher-order component that adds validation indicators to blocks.
@@ -34,6 +34,8 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 			[clientId]
 		);
 
+		const { setBlockValidation, clearBlockValidation } = useDispatch(STORE_NAME);
+
 		const validationResult = useDebouncedValidation(
 			() => {
 				if (!block) {
@@ -49,12 +51,12 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 			{ delay: 300 }
 		);
 
-		// Sync validation state to the shared store so the
+		// Sync validation state to the data store so the
 		// editor.BlockListBlock filter can read it for CSS classes.
 		useEffect(() => {
 			setBlockValidation(clientId, validationResult);
 			return () => clearBlockValidation(clientId);
-		}, [clientId, validationResult]);
+		}, [clientId, validationResult, setBlockValidation, clearBlockValidation]);
 
 		return (
 			<>
