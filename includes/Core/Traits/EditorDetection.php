@@ -21,6 +21,15 @@ namespace ValidationAPI\Core\Traits;
 trait EditorDetection {
 
 	/**
+	 * Get the post types that belong to the Site Editor context.
+	 *
+	 * @return array
+	 */
+	private function get_site_editor_post_types(): array {
+		return array( 'wp_template', 'wp_template_part' );
+	}
+
+	/**
 	 * Get the current editor context.
 	 *
 	 * Determines which editor environment we're currently in. This affects how
@@ -36,9 +45,6 @@ trait EditorDetection {
 
 		global $pagenow;
 
-		// Site Editor post types.
-		$site_editor_post_types = array( 'wp_template', 'wp_template_part' );
-
 		// Check if we're in the Site Editor.
 		if ( $this->is_site_editor_context() ) {
 			return 'site-editor';
@@ -52,14 +58,14 @@ trait EditorDetection {
 				$post_id = intval( $_GET['post'] );
 				if ( $post_id > 0 ) {
 					$post_type = \get_post_type( $post_id );
-					if ( $post_type && ! in_array( $post_type, $site_editor_post_types, true ) ) {
+					if ( $post_type && ! in_array( $post_type, $this->get_site_editor_post_types(), true ) ) {
 						// For now, return 'post-editor' - JavaScript will determine if template is shown.
 						return 'post-editor';
 					}
 				}
 			} elseif ( isset( $_GET['post_type'] ) ) {
 				$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ) );
-				if ( ! in_array( $post_type, $site_editor_post_types, true ) ) {
+				if ( ! in_array( $post_type, $this->get_site_editor_post_types(), true ) ) {
 					return 'post-editor';
 				}
 			} else {
@@ -73,7 +79,7 @@ trait EditorDetection {
 		if ( function_exists( 'get_current_screen' ) ) {
 			$current_screen = \get_current_screen();
 			if ( $current_screen && isset( $current_screen->post_type ) ) {
-				if ( ! in_array( $current_screen->post_type, $site_editor_post_types, true ) ) {
+				if ( ! in_array( $current_screen->post_type, $this->get_site_editor_post_types(), true ) ) {
 					return 'post-editor';
 				}
 			}
@@ -112,7 +118,7 @@ trait EditorDetection {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Context detection only.
 		if ( isset( $_GET['postType'] ) ) {
 			$post_type = sanitize_text_field( wp_unslash( $_GET['postType'] ) );
-			if ( in_array( $post_type, array( 'wp_template', 'wp_template_part' ), true ) ) {
+			if ( in_array( $post_type, $this->get_site_editor_post_types(), true ) ) {
 				return true;
 			}
 		}

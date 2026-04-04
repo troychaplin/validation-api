@@ -108,8 +108,6 @@ export function validateAllMetaChecks(postType, metaKey, value) {
 		if (!isValid) {
 			// Create issue object with all relevant information
 			const issue = createIssue(rule, checkName, { metaKey });
-			// Ensure checkName is included (createIssue uses 'check' as primary key)
-			issue.checkName = checkName;
 			issues.push(issue);
 		}
 	}

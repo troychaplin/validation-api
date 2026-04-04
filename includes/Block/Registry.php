@@ -65,18 +65,13 @@ class Registry {
 	public function register_check( string $block_type, string $check_name, array $check_args ): bool {
 		try {
 			// Validate input parameters.
-			if ( empty( $block_type ) || ! is_string( $block_type ) ) {
+			if ( empty( $block_type ) ) {
 				$this->log_error( "Invalid block type provided: {$block_type}" );
 				return false;
 			}
 
-			if ( empty( $check_name ) || ! is_string( $check_name ) ) {
+			if ( empty( $check_name ) ) {
 				$this->log_error( "Invalid check name provided: {$check_name}" );
-				return false;
-			}
-
-			if ( ! is_array( $check_args ) ) {
-				$this->log_error( "Check arguments must be an array for {$block_type}/{$check_name}" );
 				return false;
 			}
 

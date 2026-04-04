@@ -261,22 +261,6 @@ export function ValidationSidebar() {
 	};
 
 	/**
-	 * Handle clicking on a meta field validation issue
-	 *
-	 * Placeholder for future enhancement. Meta fields are typically in document
-	 * settings panels that aren't directly scrollable. Users must navigate to
-	 * the appropriate settings panel manually.
-	 *
-	 * @param {string} metaKey - The meta key of the field with the issue (reserved for future use).
-	 */
-	// eslint-disable-next-line no-unused-vars
-	const handleMetaClick = metaKey => {
-		// Meta fields are in document settings panels that can't be directly scrolled to
-		// Users should navigate to the appropriate settings panel manually
-		// Future: Use metaKey to open/focus the relevant settings panel
-	};
-
-	/**
 	 * Cleanup scroll timeout on component unmount
 	 *
 	 * Prevents memory leaks by clearing any pending scroll timeouts when
