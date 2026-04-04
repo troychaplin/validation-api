@@ -2,11 +2,11 @@
 
 ## Summary
 
-This proposal introduces the concept of a **Validation API** for the WordPress block editor -- a standardized, declarative framework for registering, executing, and displaying content validation checks in real time. The API would enable theme and plugin developers to define validation rules for block attributes, post meta fields, and editor-wide document structure, providing immediate feedback to content creators and optionally preventing publication when critical issues are unresolved.
+This proposal introduces a **Validation API** for the WordPress block editor -- a declarative framework for registering, executing, and displaying content validation checks in real time. The API enables theme and plugin developers to define validation rules for block attributes, post meta fields, and editor-wide document structure, providing immediate feedback to content creators and optionally preventing publication when critical issues are unresolved.
 
-The [Validation API](https://github.com/troychaplin/validation-api) plugin serves as a working reference implementation of this concept. It demonstrates the full lifecycle of a validation system built entirely on existing WordPress and Gutenberg APIs, with a clean separation between the framework (core-mergeable) and the rules (plugin territory).
+The [Validation API](https://github.com/troychaplin/validation-api) plugin is a working reference implementation. It demonstrates the full lifecycle -- PHP registration, JavaScript execution via filters, centralized state management through a `@wordpress/data` store, and standardized editor UI -- built entirely on existing WordPress and Gutenberg APIs.
 
-**This proposal advocates for the Validation API framework only** -- not specific validation checks, settings UI, or other features. Those remain the domain of plugins. What belongs in core is the underlying system that makes declarative content validation possible for the entire ecosystem.
+**This proposal advocates for the framework only** -- not specific validation checks, settings UI, or opinionated rules. Those remain the domain of plugins. What belongs in core is the infrastructure that makes declarative content validation possible for the entire ecosystem.
 
 ## The Problem
 
@@ -26,20 +26,21 @@ The result is that most plugins simply don't validate content at all, and those 
 
 ## Existing Primitives in Core
 
-A Validation API would not introduce new low-level mechanisms. Instead, it would provide a cohesive layer on top of existing, stable WordPress and Gutenberg APIs:
+A Validation API would not introduce new low-level mechanisms. Instead, it provides a cohesive layer on top of existing, stable WordPress and Gutenberg APIs:
 
 | Primitive | Current Use | Role in a Validation API |
 |---|---|---|
 | [`@wordpress/hooks`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-hooks/) | General-purpose JS event system | Execute validation logic via filters |
+| [`@wordpress/data`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-data/) | Redux-like state management | Centralized validation state via dedicated store |
 | [`lockPostSaving`](https://developer.wordpress.org/block-editor/reference-guides/data/data-core-editor/) | Binary save prevention | Enforce error-level validation failures |
-| [`editor.BlockEdit`](https://developer.wordpress.org/block-editor/reference-guides/filters/block-filters/) | Wrap block edit components via HOC | Display per-block validation indicators |
+| [`editor.BlockEdit`](https://developer.wordpress.org/block-editor/reference-guides/filters/block-filters/) | Wrap block edit components via HOC | Display per-block validation toolbar and indicators |
+| [`editor.BlockListBlock`](https://developer.wordpress.org/block-editor/reference-guides/filters/block-filters/) | Wrap block list items | Apply validation CSS classes to block wrappers |
 | [`PluginPrePublishPanel`](https://developer.wordpress.org/block-editor/reference-guides/slotfills/plugin-pre-publish-panel/) | Inject content into pre-publish panel | Show validation summary before publishing |
 | [`PluginSidebar`](https://developer.wordpress.org/block-editor/reference-guides/slotfills/plugin-sidebar/) | Custom editor sidebars | Consolidated validation results panel |
 | [`editor.preSavePost`](https://github.com/WordPress/gutenberg/pull/64198) | Async save interception (WP 6.7+) | Final validation gate before saving |
 | [`register_post_meta`](https://developer.wordpress.org/reference/functions/register_post_meta/) | Meta field registration with REST validation | Server-side meta validation via `validate_callback` |
-| `wp_localize_script` / `wp_add_inline_script` | Pass PHP data to JS | Export validation configuration to the editor |
 
-These are all stable, public APIs. A Validation API would standardize how they are used together for content validation.
+These are all stable, public APIs. A Validation API standardizes how they are used together for content validation.
 
 ## Prior Art and Related Discussions
 
@@ -61,13 +62,13 @@ The common thread is that developers have repeatedly asked for a standardized wa
 1. **PHP for registration, JavaScript for validation** -- Follow the existing block API pattern where PHP declares configuration and JavaScript handles runtime behavior.
 2. **Declarative check registration** -- Developers register checks with metadata (messages, severity, descriptions). The framework handles execution, UI, and save-locking.
 3. **Three validation scopes** -- Block attributes, post meta fields, and editor-wide document state each have distinct registration and execution patterns, but share a unified results model.
-4. **Filter-first severity** -- Every check passes through a filter that can override its level at runtime. No storage opinions in the framework.
-5. **Extensible via hooks** -- All validation logic runs through WordPress filters, allowing any plugin to add, modify, or override checks.
-6. **Scoped plugin identity** -- Plugins declare their identity once and register checks within that scope, enabling attribution and organized settings.
+4. **Centralized state via `@wordpress/data`** -- All validation results flow through a dedicated Redux store, enabling any component to read validation state without duplicate computation.
+5. **Filter-first severity** -- Every check passes through a filter that can override its level at runtime. No storage opinions in the framework.
+6. **Extensible via hooks** -- All validation logic runs through WordPress filters, allowing any plugin to add, modify, or override checks.
 
 ### Registration Pattern
 
-All checks are registered through a scoped plugin wrapper. This pattern declares the plugin identity, guards against the API being absent, and attributes all checks to the registering plugin:
+Checks are registered through a scoped plugin wrapper. This pattern declares the plugin identity, guards against the API being absent, and attributes all checks to the registering plugin:
 
 ```php
 add_action( 'init', function() {
@@ -85,6 +86,27 @@ add_action( 'init', function() {
 ```
 
 The `function_exists` guard ensures integrating plugins work correctly whether or not the Validation API is active.
+
+For larger integrations, the API provides a `CheckProvider` interface for class-based registration:
+
+```php
+use ValidationAPI\Contracts\CheckProvider;
+
+class ImageChecks implements CheckProvider {
+    public function register(): void {
+        validation_api_register_block_check( 'core/image', [
+            'name'      => 'alt_text',
+            'level'     => 'error',
+            'error_msg' => __( 'Images must have alt text.', 'my-plugin' ),
+        ] );
+    }
+}
+
+validation_api_register_plugin(
+    [ 'name' => 'Enterprise Content Rules' ],
+    [ ImageChecks::class, HeadingChecks::class ]
+);
+```
 
 ### The Three Validation Scopes
 
@@ -126,20 +148,9 @@ addFilter(
 
 #### 2. Post Meta Validation
 
-Validate WordPress post meta fields with real-time client-side feedback. Meta field registration and validation check registration are separate concerns -- the meta field is registered via `register_post_meta()` as usual, and the validation check is registered through the Validation API:
+Validate WordPress post meta fields with real-time client-side feedback. The meta field is registered via `register_post_meta()` as usual, and the validation check is registered through the Validation API:
 
-**PHP Registration (meta field):**
-
-```php
-register_post_meta( 'post', 'seo_description', [
-    'single'            => true,
-    'type'              => 'string',
-    'show_in_rest'      => true,
-    'sanitize_callback' => 'sanitize_text_field',
-] );
-```
-
-**PHP Registration (validation check):**
+**PHP Registration:**
 
 ```php
 validation_api_register_meta_check( 'post', [
@@ -167,7 +178,7 @@ addFilter(
 );
 ```
 
-For cases that also need server-side enforcement on save, the API provides a `Validator` helper that registers both the client-side check and a `validate_callback` for `register_post_meta()` in one call:
+For server-side enforcement on save, the API provides a `Validator` helper that registers both the client-side check and a `validate_callback` for `register_post_meta()`:
 
 ```php
 use ValidationAPI\Meta\Validator;
@@ -242,72 +253,83 @@ This means the framework has **no storage opinions**. The filter is the settings
 
 When any check fails at the `error` level, the API uses `lockPostSaving` to prevent publication and provides clear messaging about what needs to be resolved.
 
-### Enterprise Registration (CheckProvider)
+### State Management
 
-For larger integrations, the API provides a `CheckProvider` interface for class-based registration. Each class handles one concern and is wired together through the plugin scope:
+Validation results are managed through a dedicated `@wordpress/data` store. A single `ValidationProvider` component computes all validation and dispatches results to the store. All other components read from the store -- no duplicate computation.
 
-```php
-use ValidationAPI\Contracts\CheckProvider;
+**Store structure:**
 
-class ImageChecks implements CheckProvider {
-    public function register(): void {
-        validation_api_register_block_check( 'core/image', [
-            'name'      => 'alt_text',
-            'level'     => 'error',
-            'error_msg' => __( 'Images must have alt text.', 'my-plugin' ),
-        ] );
-    }
+```javascript
+{
+    blocks: [],              // Invalid block results
+    meta: [],                // Invalid meta results
+    editor: [],              // Invalid editor check issues
+    blockValidation: {}      // Per-block state: { [clientId]: { mode, issues } }
 }
-
-// In the plugin bootstrap:
-validation_api_register_plugin(
-    [ 'name' => 'Enterprise Content Rules' ],
-    [
-        ImageChecks::class,
-        HeadingChecks::class,
-        MetaChecks::class,
-    ]
-);
 ```
+
+**Key selectors:**
+
+- `getInvalidBlocks()` -- All blocks with validation failures
+- `getInvalidMeta()` -- All meta fields with validation failures
+- `getInvalidEditorChecks()` -- All editor check failures
+- `getBlockValidation( clientId )` -- Validation state for a specific block
+- `hasErrors()` -- Whether any error-level failures exist
+- `hasWarnings()` -- Whether warning-level failures exist (and no errors)
+
+This architecture separates concerns cleanly: `ValidationProvider` handles computation, `ValidationAPI` handles side effects (save-locking, body CSS classes), and UI components like `ValidationSidebar` handle display.
 
 ### Validation Results UI
 
-The framework would provide standardized UI patterns rather than requiring each plugin to build its own:
+The framework provides standardized UI patterns:
 
-- **Block-level indicators** -- Visual markers on blocks with validation issues, showing severity and details on interaction
-- **Consolidated sidebar** -- A unified panel listing all validation issues across blocks, meta, and editor checks
-- **Header summary** -- A toolbar indicator showing the total count of issues
+- **Block-level indicators** -- CSS classes (`validation-api-block-error`, `validation-api-block-warning`) applied to block wrappers via `editor.BlockListBlock`, plus a toolbar button with issue details via `editor.BlockEdit`
+- **Consolidated sidebar** -- A unified panel listing all validation issues across blocks, meta, and editor checks, with click-to-select for block issues
+- **Debounced per-block validation** -- Validation runs are debounced (300ms default) to prevent performance issues during rapid editing
 
-These patterns are already implemented and tested in the reference implementation.
+### Editor Context Scoping
+
+The API detects the current editor context and loads validation only where appropriate:
+
+| Context | Validation Active | Details |
+|---|---|---|
+| Post editor | Yes | Standard post/page editing |
+| Post editor with template | Yes | Validates content blocks within `core/post-content` only |
+| Site editor | No | Template/global styles editing -- excluded |
 
 ## Reference Implementation
 
-The [Validation API](https://github.com/troychaplin/validation-api) plugin demonstrates this framework in production. Key implementation details:
+The [Validation API](https://github.com/troychaplin/validation-api) plugin demonstrates this framework. Key implementation details:
 
 ### Architecture
 
-- **PHP Registries** -- Singleton pattern registries ([`Block\Registry`](https://github.com/troychaplin/validation-api/blob/main/includes/Block/Registry.php), [`Meta\Registry`](https://github.com/troychaplin/validation-api/blob/main/includes/Meta/Registry.php), [`Editor\Registry`](https://github.com/troychaplin/validation-api/blob/main/includes/Editor/Registry.php)) manage check registration, configuration, and data export.
-- **JavaScript Validation** -- Validation logic runs entirely in JavaScript via WordPress filters ([`validateBlock.js`](https://github.com/troychaplin/validation-api/blob/main/src/editor/validation/blocks/validateBlock.js), [`validateMeta.js`](https://github.com/troychaplin/validation-api/blob/main/src/editor/validation/meta/validateMeta.js), [`validateEditor.js`](https://github.com/troychaplin/validation-api/blob/main/src/editor/validation/editor/validateEditor.js)).
-- **Configuration Export** -- PHP configuration is passed to JavaScript via `wp_localize_script`, creating a global `window.ValidationAPI` object.
-- **Post Locking** -- The [`ValidationAPI`](https://github.com/troychaplin/validation-api/blob/main/src/editor/validation/ValidationAPI.js) coordinator component aggregates validation results and manages `lockPostSaving`/`unlockPostSaving`.
+- **PHP Registries** -- Singleton registries (`Block\Registry`, `Meta\Registry`, `Editor\Registry`) manage check registration, configuration, and data export via filters and actions.
+- **`@wordpress/data` Store** -- A dedicated Redux store (`validation-api`) centralizes all validation state with actions, selectors, and a reducer.
+- **`ValidationProvider`** -- A renderless component that serves as the single computation point. Calls validation hooks for blocks, meta, and editor checks, then dispatches results to the store.
+- **`ValidationAPI`** -- A renderless component that manages side effects: `lockPostSaving`/`unlockPostSaving`, `lockPostAutosaving`/`unlockPostAutosaving`, `disablePublishSidebar`/`enablePublishSidebar`, and body CSS classes.
+- **JavaScript Validation** -- Validation logic runs entirely in JavaScript via WordPress filters (`validation_api_validate_block`, `validation_api_validate_meta`, `validation_api_validate_editor`).
+- **Configuration Export** -- PHP configuration is passed to JavaScript via `wp_localize_script`, creating a global `window.ValidationAPI` object with validation rules and editor context.
 - **Plugin Attribution** -- The `PluginContext` system tracks which plugin registers which checks, enabling organized settings and REST API attribution.
+
+### REST API
+
+A read-only endpoint (`GET /validation-api/v1/checks`) exposes all registered checks grouped by scope (block, meta, editor). This enables admin tooling and companion packages to read the validation configuration without parsing PHP internals.
 
 ### External Plugin Integration
 
-The API is designed for external integration. Plugins register checks using `validation_api_register_plugin()` with a `function_exists` guard, and validation logic is added via JavaScript filters.
+Plugins register checks using `validation_api_register_plugin()` with a `function_exists` guard, and validation logic is added via JavaScript filters:
 
 - [Integration Example Plugin](https://github.com/troychaplin/validation-api-integration-example) -- A complete example demonstrating block, meta, and editor checks using the CheckProvider pattern.
-- [Developer Guide](docs/guide/README.md) -- Getting started with check registration.
 
 ### Companion Settings Package
 
-The [validation-api-settings](https://github.com/troychaplin/validation-api-settings) companion plugin provides an admin settings page built on WordPress DataForm. It reads registered checks from the REST API and lets admins override severity levels globally -- no code required. The companion hooks into `validation_api_check_level` and stores overrides in `wp_options`.
+The [validation-api-settings](https://github.com/troychaplin/validation-api-settings) companion plugin provides an admin settings page built on WordPress DataForm. It reads registered checks from the REST API and lets admins override severity levels globally via the `validation_api_check_level` filter.
 
 This separation is intentional: the core framework has no settings UI and no storage, making it suitable for core merge. The companion stays in plugin-land.
 
 ## What Would Be Included in Core
 
-The proposal is specifically for the **Validation API framework** -- the infrastructure that enables declarative content validation. This includes:
+The proposal is specifically for the **Validation API framework** -- the infrastructure that enables declarative content validation.
 
 **Included:**
 
@@ -315,11 +337,12 @@ The proposal is specifically for the **Validation API framework** -- the infrast
 - Global registration functions (`validation_api_register_plugin()`, `validation_api_register_block_check()`, `validation_api_register_meta_check()`, `validation_api_register_editor_check()`)
 - CheckProvider interface for class-based registration
 - JavaScript validation filter hooks (`validation_api_validate_block`, `validation_api_validate_meta`, `validation_api_validate_editor`)
+- Dedicated `@wordpress/data` store for validation state
 - Severity model with runtime override via `validation_api_check_level` filter
 - Validation result model (severity levels, issue reporting, standardized result objects)
 - Post-locking integration (automatic `lockPostSaving` based on error-level failures)
-- Standardized UI components (block indicators, validation sidebar)
-- Configuration export (PHP-to-JS data flow via `wp_localize_script`)
+- Standardized UI components (block indicators, validation sidebar, toolbar button)
+- Editor context scoping (post editor only, content blocks within templates)
 - PHP action hooks for lifecycle events (`validation_api_initialized`, `validation_api_ready`, `validation_api_editor_checks_ready`)
 - PHP filter hooks for check modification (`validation_api_check_args`, `validation_api_should_register_check`, `validation_api_check_level`)
 - REST API endpoint (`GET /validation-api/v1/checks`) for admin tooling
@@ -334,32 +357,11 @@ The proposal is specifically for the **Validation API framework** -- the infrast
 
 The distinction is important: the API provides the *capability* to validate; plugins and themes provide the *rules*.
 
-## Use Cases Enabled
-
-A Validation API in core would enable a wide range of applications beyond accessibility:
-
-- **Accessibility compliance** -- Plugins could enforce WCAG requirements (alt text, heading hierarchy, color contrast, link text quality)
-- **Editorial standards** -- Publishers could enforce style guides (content length, required sections, brand guidelines)
-- **SEO requirements** -- SEO plugins could validate meta descriptions, heading structure, and content quality
-- **Legal compliance** -- Organizations could enforce required disclosures, copyright notices, or content warnings
-- **Content governance** -- Enterprise teams could enforce content templates, required fields, and approval workflows
-- **Educational platforms** -- Course builders could validate lesson structure, required elements, and content formatting
-- **E-commerce** -- Product blocks could enforce required attributes (price, description, images with alt text)
-
-## Benefits to the WordPress Ecosystem
-
-1. **Consistent UX** -- All validation, regardless of source, would use the same UI patterns and severity model. Users learn one system.
-2. **Reduced plugin conflicts** -- A standardized API prevents plugins from competing for the same UI space or conflicting with each other's save-locking.
-3. **Lower barrier to entry** -- Plugin developers get validation capabilities "for free" through a simple registration API instead of building infrastructure.
-4. **Accessibility by default** -- With the infrastructure in core, accessibility-focused plugins become trivial to build, encouraging an ecosystem of content quality tools.
-5. **Performance optimization** -- Centralized validation can be optimized once (debouncing, memoization, efficient re-rendering) rather than every plugin solving these problems independently.
-
 ## Open Questions
 
-1. **Data store** -- Should validation results live in a dedicated `@wordpress/data` store (e.g., `core/validation`) for better state management and cross-plugin coordination?
-2. **Async validation** -- Should the filter hooks support async validation for server-side checks (e.g., link checking, content analysis)?
-3. **Block.json integration** -- Could validation rules be declared in `block.json` for simple checks (e.g., `"required": true` on attributes), with JavaScript filters for complex logic?
-4. **Core checks** -- Should WordPress ship with any default validation checks (e.g., image alt text), or should all checks come from plugins?
+1. **Async validation** -- Should the filter hooks support async validation for server-side checks (e.g., link checking, content analysis)?
+2. **Block.json integration** -- Could validation rules be declared in `block.json` for simple checks (e.g., `"required": true` on attributes), with JavaScript filters for complex logic?
+3. **Core checks** -- Should WordPress ship with any default validation checks (e.g., image alt text), or should all checks come from plugins?
 
 ## Next Steps
 
