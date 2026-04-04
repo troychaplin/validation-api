@@ -159,8 +159,8 @@ function deduplicateEditorIssues(issues, severity) {
  * and source type. Users can click on issues to navigate directly to the relevant
  * block or field in the editor.
  *
- * The sidebar only renders when validation issues exist and displays an icon
- * that changes color based on the highest severity issue present.
+ * The sidebar and its toolbar icon are only rendered when validation issues exist.
+ * The icon color reflects the highest severity issue present (red for errors, yellow for warnings).
  */
 export function ValidationSidebar() {
 	// Retrieve validation results from all sources
@@ -303,8 +303,11 @@ export function ValidationSidebar() {
 		};
 	}, []);
 
-	// Always render the sidebar to maintain consistent icon position
-	// This ensures the icon appears in the same location regardless of validation state
+	// No issues — don't render the sidebar or its toolbar icon
+	if (totalErrors === 0 && totalWarnings === 0) {
+		return null;
+	}
+
 	return (
 		<PluginSidebar
 			name="validation-sidebar"

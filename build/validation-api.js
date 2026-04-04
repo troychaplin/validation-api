@@ -880,263 +880,273 @@
 					o.current && clearTimeout(o.current);
 				};
 			}, []),
-			React.createElement(
-				W.PluginSidebar,
-				{
-					name: 'validation-sidebar',
-					title: (0, Z.__)('Validation', 'validation-api'),
-					icon: w,
-					className: 'validation-api-validation-sidebar',
-				},
-				y > 0 &&
-					React.createElement(
-						F.PanelBody,
+			0 === y && 0 === b
+				? null
+				: React.createElement(
+						W.PluginSidebar,
 						{
-							title: (0, Z.sprintf)(
-								/* translators: %d: number of errors */ /* translators: %d: number of errors */
-								(0, Z.__)('Errors (%d)', 'validation-api'),
-								y
-							),
-							initialOpen: !0,
-							className: 'validation-api-errors-panel',
+							name: 'validation-sidebar',
+							title: (0, Z.__)('Validation', 'validation-api'),
+							icon: w,
+							className: 'validation-api-validation-sidebar',
 						},
-						s.length > 0 &&
+						y > 0 &&
 							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Block Errors', 'validation-api')
-										)
+								F.PanelBody,
+								{
+									title: (0, Z.sprintf)(
+										/* translators: %d: number of errors */ /* translators: %d: number of errors */
+										(0, Z.__)('Errors (%d)', 'validation-api'),
+										y
 									),
+									initialOpen: !0,
+									className: 'validation-api-errors-panel',
+								},
+								s.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										s.map(function (e, t) {
-											var r = e.clientIds.length,
-												n = r > 1 ? ' (x'.concat(r, ')') : '';
-											return React.createElement(
-												'li',
-												{ key: 'block-error-'.concat(t) },
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
 												React.createElement(
-													'button',
-													{
-														type: 'button',
-														className: 'validation-api-issue-link',
-														onClick: function () {
-															return h(e.clientIds[0]);
-														},
-													},
-													e.blockName
-												),
-												': ',
-												e.message,
-												n
-											);
-										})
-									)
-								)
-							),
-						m.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Meta Errors', 'validation-api')
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Block Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												s.map(function (e, t) {
+													var r = e.clientIds.length,
+														n = r > 1 ? ' (x'.concat(r, ')') : '';
+													return React.createElement(
+														'li',
+														{ key: 'block-error-'.concat(t) },
+														React.createElement(
+															'button',
+															{
+																type: 'button',
+																className:
+																	'validation-api-issue-link',
+																onClick: function () {
+																	return h(e.clientIds[0]);
+																},
+															},
+															e.blockName
+														),
+														': ',
+														e.message,
+														n
+													);
+												})
+											)
 										)
 									),
+								m.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										m.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'meta-error-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							),
-						p.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-error-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-error-subheading' },
+										F.PanelRow,
+										null,
 										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Editor Errors', 'validation-api')
-										)
-									),
-									React.createElement(
-										'ul',
-										{ className: 'validation-api-error-list' },
-										p.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'editor-error-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							)
-					),
-				b > 0 &&
-					React.createElement(
-						F.PanelBody,
-						{
-							title: (0, Z.sprintf)(
-								/* translators: %d: number of warnings */ /* translators: %d: number of warnings */
-								(0, Z.__)('Warnings (%d)', 'validation-api'),
-								b
-							),
-							initialOpen: !0,
-							className: 'validation-api-warnings-panel',
-						},
-						d.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Block Warnings', 'validation-api')
-										)
-									),
-									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										d.map(function (e, t) {
-											var r = e.clientIds.length,
-												n = r > 1 ? ' (x'.concat(r, ')') : '';
-											return React.createElement(
-												'li',
-												{ key: 'block-warning-'.concat(t) },
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
 												React.createElement(
-													'button',
-													{
-														type: 'button',
-														className: 'validation-api-issue-link',
-														onClick: function () {
-															return h(e.clientIds[0]);
-														},
-													},
-													e.blockName
-												),
-												': ',
-												e.message,
-												n
-											);
-										})
-									)
-								)
-							),
-						f.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
-										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Meta Warnings', 'validation-api')
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Meta Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												m.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'meta-error-'.concat(t) },
+														e.message
+													);
+												})
+											)
 										)
 									),
+								p.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										f.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'meta-warning-'.concat(t) },
-												e.message
-											);
-										})
-									)
-								)
-							),
-						v.length > 0 &&
-							React.createElement(
-								F.PanelRow,
-								null,
-								React.createElement(
-									'div',
-									{ className: 'validation-api-warning-group' },
-									React.createElement(
-										'p',
-										{ className: 'validation-api-warning-subheading' },
+										F.PanelRow,
+										null,
 										React.createElement(
-											'strong',
-											null,
-											React.createElement('span', {
-												className: 'validation-api-indicator-circle',
-											}),
-											(0, Z.__)('Editor Warnings', 'validation-api')
+											'div',
+											{ className: 'validation-api-error-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-error-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Editor Errors', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-error-list' },
+												p.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'editor-error-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
+									)
+							),
+						b > 0 &&
+							React.createElement(
+								F.PanelBody,
+								{
+									title: (0, Z.sprintf)(
+										/* translators: %d: number of warnings */ /* translators: %d: number of warnings */
+										(0, Z.__)('Warnings (%d)', 'validation-api'),
+										b
+									),
+									initialOpen: !0,
+									className: 'validation-api-warnings-panel',
+								},
+								d.length > 0 &&
+									React.createElement(
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Block Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												d.map(function (e, t) {
+													var r = e.clientIds.length,
+														n = r > 1 ? ' (x'.concat(r, ')') : '';
+													return React.createElement(
+														'li',
+														{ key: 'block-warning-'.concat(t) },
+														React.createElement(
+															'button',
+															{
+																type: 'button',
+																className:
+																	'validation-api-issue-link',
+																onClick: function () {
+																	return h(e.clientIds[0]);
+																},
+															},
+															e.blockName
+														),
+														': ',
+														e.message,
+														n
+													);
+												})
+											)
 										)
 									),
+								f.length > 0 &&
 									React.createElement(
-										'ul',
-										{ className: 'validation-api-warning-list' },
-										v.map(function (e, t) {
-											return React.createElement(
-												'li',
-												{ key: 'editor-warning-'.concat(t) },
-												e.message
-											);
-										})
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Meta Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												f.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'meta-warning-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
+									),
+								v.length > 0 &&
+									React.createElement(
+										F.PanelRow,
+										null,
+										React.createElement(
+											'div',
+											{ className: 'validation-api-warning-group' },
+											React.createElement(
+												'p',
+												{ className: 'validation-api-warning-subheading' },
+												React.createElement(
+													'strong',
+													null,
+													React.createElement('span', {
+														className:
+															'validation-api-indicator-circle',
+													}),
+													(0, Z.__)('Editor Warnings', 'validation-api')
+												)
+											),
+											React.createElement(
+												'ul',
+												{ className: 'validation-api-warning-list' },
+												v.map(function (e, t) {
+													return React.createElement(
+														'li',
+														{ key: 'editor-warning-'.concat(t) },
+														e.message
+													);
+												})
+											)
+										)
 									)
-								)
 							)
 					)
-			)
 		);
 	}
 	(0, t.addFilter)(
