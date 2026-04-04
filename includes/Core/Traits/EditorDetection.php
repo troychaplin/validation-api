@@ -3,7 +3,7 @@
  * Editor Detection Trait
  *
  * Provides shared functionality for detecting the current WordPress editor context,
- * including post editor (default and template views) and site editor.
+ * including post editor (default and template views).
  *
  * @package ValidationAPI
  * @since 1.0.0
@@ -14,10 +14,9 @@ namespace ValidationAPI\Core\Traits;
 /**
  * Editor Detection Trait
  *
- * Detects the current editor context to enable validation across multiple editing environments:
+ * Detects the current editor context to enable validation in the post editor:
  * - Post Editor (default view): Editing post/page content without template visible
  * - Post Editor (template view): Editing post/page with template blocks visible
- * - Site Editor: Editing templates and template parts directly
  */
 trait EditorDetection {
 
@@ -133,25 +132,15 @@ trait EditorDetection {
 	}
 
 	/**
-	 * Check if we're in the Site Editor.
-	 *
-	 * @return bool True if in site editor, false otherwise.
-	 */
-	private function is_site_editor(): bool {
-		return 'site-editor' === $this->get_editor_context();
-	}
-
-	/**
 	 * Check if validation assets should be loaded in the current context.
 	 *
-	 * Validation is supported in:
-	 * - Post editor (default and template views)
-	 * - Site editor
+	 * Validation is supported in the post editor only (default and template views).
+	 * The site editor is intentionally excluded.
 	 *
 	 * @return bool True if validation should be loaded, false otherwise.
 	 */
 	private function should_load_validation(): bool {
 		$context = $this->get_editor_context();
-		return in_array( $context, array( 'post-editor', 'post-editor-template', 'site-editor' ), true );
+		return in_array( $context, array( 'post-editor', 'post-editor-template' ), true );
 	}
 }

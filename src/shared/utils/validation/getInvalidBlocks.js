@@ -75,7 +75,6 @@ function findPostContentBlock(blocks) {
  * Updates automatically when blocks change due to useSelect reactivity.
  *
  * In post editor context, only validates content blocks (not template blocks).
- * In site editor context, validates all blocks including template parts.
  *
  * @return {Array} Array of validation results for all invalid blocks in the editor.
  */
@@ -84,7 +83,6 @@ export function GetInvalidBlocks() {
 	const editorContext = window.ValidationAPI?.editorContext || 'none';
 	const isPostEditor =
 		editorContext === 'post-editor' || editorContext === 'post-editor-template';
-	const isSiteEditor = editorContext === 'site-editor';
 
 	// Retrieve all top-level blocks from the editor store
 	const allBlocks = useSelect(
@@ -94,11 +92,6 @@ export function GetInvalidBlocks() {
 			// Get all blocks from the editor
 			// IMPORTANT: Calling getBlocks() subscribes to block changes
 			const blocks = blockEditorSelect.getBlocks();
-
-			// Site editor: validate all blocks including template parts
-			if (isSiteEditor) {
-				return blocks;
-			}
 
 			// Post editor: search for core/post-content block to determine if template is shown
 			if (isPostEditor) {
@@ -140,7 +133,7 @@ export function GetInvalidBlocks() {
 			// Fallback for unknown contexts
 			return blocks;
 		},
-		[isPostEditor, isSiteEditor]
+		[isPostEditor]
 	);
 
 	// Recursively validate all blocks and their innerBlocks, collecting failures

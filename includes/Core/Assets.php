@@ -74,17 +74,13 @@ class Assets {
 	/**
 	 * Enqueues the assets for the block editor.
 	 *
-	 * Runs in both editor contexts:
-	 * - enqueue_block_editor_assets: Main editor window
-	 * - enqueue_block_assets: Editor iframe (site editor) and frontend
-	 *
-	 * Only loads in admin/editor contexts, not on the frontend.
+	 * Only loads in post editor contexts (default and template views).
+	 * The site editor is intentionally excluded.
 	 *
 	 * @return void
 	 */
 	public function enqueue_block_assets() {
-		// Only load in admin/editor contexts, not on frontend.
-		if ( ! \is_admin() ) {
+		if ( ! $this->should_load_validation() ) {
 			return;
 		}
 
@@ -150,7 +146,6 @@ class Assets {
 		$error_icon_url   = plugins_url( 'src/assets/universal-access-error.svg', $this->plugin_file );
 
 		// Add the SVG URLs and color variables for the editor.
-		// Color variables are duplicated here to ensure they load in the site editor iframe.
 		$inline_css = sprintf(
 			":root {
 				--a11y-red: #d82000;
