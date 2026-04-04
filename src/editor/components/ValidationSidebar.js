@@ -318,10 +318,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-error-group">
 								<p className="validation-api-error-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Block Errors', 'validation-api')}
-									</strong>
+									{__('Block Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-error-list">
 									{deduplicatedBlockErrors.map((issue, index) => {
@@ -353,10 +350,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-error-group">
 								<p className="validation-api-error-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Meta Errors', 'validation-api')}
-									</strong>
+									{__('Field Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-error-list">
 									{deduplicatedMetaErrors.map((issue, index) => (
@@ -372,10 +366,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-error-group">
 								<p className="validation-api-error-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Editor Errors', 'validation-api')}
-									</strong>
+									{__('Editor Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-error-list">
 									{deduplicatedEditorErrors.map((issue, index) => (
@@ -404,10 +395,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-warning-group">
 								<p className="validation-api-warning-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Block Warnings', 'validation-api')}
-									</strong>
+									{__('Block Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-warning-list">
 									{deduplicatedBlockWarnings.map((issue, index) => {
@@ -439,10 +427,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-warning-group">
 								<p className="validation-api-warning-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Meta Warnings', 'validation-api')}
-									</strong>
+									{__('Field Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-warning-list">
 									{deduplicatedMetaWarnings.map((issue, index) => (
@@ -458,10 +443,7 @@ export function ValidationSidebar() {
 						<PanelRow>
 							<div className="validation-api-warning-group">
 								<p className="validation-api-warning-subheading">
-									<strong>
-										<span className="validation-api-indicator-circle"></span>
-										{__('Editor Warnings', 'validation-api')}
-									</strong>
+									{__('Editor Issues', 'validation-api')}
 								</p>
 								<ul className="validation-api-warning-list">
 									{deduplicatedEditorWarnings.map((issue, index) => (
