@@ -1,29 +1,27 @@
 .validation-api-meta-error .components-text-control__input,
 .validation-api-meta-error .components-textarea-control__input,
 .validation-api-meta-error .components-select-control__input {
-    border-left: 4px solid var(--validaion-api-red);
+    border-left: 3px solid var(--validation-api-red);
 }
 
 .validation-api-meta-warning .components-text-control__input,
 .validation-api-meta-warning .components-textarea-control__input,
 .validation-api-meta-warning .components-select-control__input {
-    border-left: 4px solid var(--validaion-api-yellow);
+    border-left: 3px solid var(--validation-api-yellow);
 }
 
 .validation-api-meta-error .components-text-control__input:focus,
 .validation-api-meta-error .components-textarea-control__input:focus,
 .validation-api-meta-error .components-select-control__input:focus {
     border: none;
-    border-left: 4px solid var(--validaion-api-red);
-    box-shadow: 0 0 0 1px var(--validaion-api-red);
+    border-left: 3px solid var(--validation-api-red);
 }
 
 .validation-api-meta-warning .components-text-control__input:focus,
 .validation-api-meta-warning .components-textarea-control__input:focus,
 .validation-api-meta-warning .components-select-control__input:focus {
     border: none;
-    border-left: 4px solid var(--validaion-api-yellow);
-    box-shadow: 0 0 0 1px var(--validaion-api-yellow);
+    border-left: 3px solid var(--validation-api-yellow);
 }
 
 .validation-api-error-text,
@@ -34,9 +32,9 @@
 }
 
 .validation-api-error-text {
-    color: var(--validaion-api-dark-red);
+    color: var(--validation-api-dark-red);
 }
 
 .validation-api-warning-text {
-    color: var(--validaion-api-dark-yellow); 
+    color: var(--validation-api-dark-yellow); 
 }

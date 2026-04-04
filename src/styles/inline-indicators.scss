@@ -1,70 +1,30 @@
-// Block wrapper needs relative positioning for absolute indicator
+// Block validation indicator — CSS-only colored dot
+// Classes are applied to the block's own element via editor.BlockListBlock wrapperProps
 .validation-api-block-error,
 .validation-api-block-warning {
 	position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 15px;
+        height: 15px;
+        clip-path: polygon(0 0, 100% 0, 0 100%);
+		z-index: 20;
+		pointer-events: none;
+    }
+
+    &::after {
+        box-shadow: 0 0 0 2px var(--validation-api-white);
+    }
 }
 
-// Inline block and meta field indicators
-.validation-api-block-indicator,
-.validation-api-meta-indicator {
-	position: absolute;
-	top: -2px;
-	left: -2px;
-	width: 24px;
-	height: 24px;
-	z-index: 20;
-	pointer-events: none;
+.validation-api-block-error::before {
+	background-color: var(--validation-api-red);
 }
 
-// Inline block and meta field indicator buttons
-.validation-api-block-indicator-button.components-button.has-icon,
-.validation-api-meta-indicator-button.components-button.has-icon {
-	pointer-events: all;
-	position: absolute;
-	min-width: 0;
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	background-color: var(--validaion-api-light-red);
-	border: 1px solid var(--validaion-api-red);
-	cursor: pointer;
-	transition: all 0.2s ease;
-
-	svg {
-		fill: var(--validaion-api-dark-red);
-		width: 18px;
-		height: 18px;
-	}
-
-	&:hover {
-		background-color: var(--validaion-api-red);
-
-		svg path {
-			fill: #fff;
-		}
-	}
-}
-
-// Inline block and meta field warning buttons
-.validation-api-block-indicator--warning .validation-api-block-indicator-button.components-button,
-.validation-api-meta-indicator--warning .validation-api-meta-indicator-button.components-button {
-	background-color: var(--validaion-api-light-yellow);
-	border-color: var(--validaion-api-yellow);
-	color: var(--validaion-api-yellow);
-
-	// stylelint-disable-next-line no-descending-specificity
-	svg {
-		fill: var(--validaion-api-dark-yellow);
-		width: 20px;
-		height: 20px;
-	}
-
-	&:hover {
-		background-color: var(--validaion-api-yellow);
-		border-color: 1px solid var(--validaion-api-yellow);
-
-		svg path {
-			fill: #fff;
-		}
-	}
+.validation-api-block-warning::before {
+	background-color: var(--validation-api-yellow);
 }

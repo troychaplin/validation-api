@@ -3,44 +3,42 @@
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
+import { BlockControls } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
  */
 import { validateBlock } from '../validation/blocks';
-import { BlockIndicator as Indicator } from '../components/BlockIndicator';
+import { ValidationToolbarButton } from '../components/ValidationToolbarButton';
 import { useDebouncedValidation } from '../../shared/hooks';
+import { setBlockValidation, clearBlockValidation } from '../store';
 
 /**
  * Higher-order component that adds validation indicators to blocks.
  *
- * Wraps the block editor component to display validation errors and warnings
- * based on registered block validation rules. Uses debounced validation to
- * prevent focus loss during typing. Always renders the same DOM structure
- * to avoid React unmount/remount cycles.
+ * Runs debounced validation on each block and:
+ * - Syncs the result to the shared validation store so the
+ *   editor.BlockListBlock filter can apply CSS classes.
+ * - Renders a toolbar button (via BlockControls) when issues exist,
+ *   allowing users to view the full issue list in a modal.
  */
 const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 	return props => {
 		const { clientId, attributes } = props;
 
-		// Get the block data from the store
-		// The block object is needed for validation, including name, innerBlocks, etc.
 		const block = useSelect(
 			select => {
 				return select('core/block-editor').getBlock(clientId);
 			},
-			[clientId] // Dependencies: only clientId needed as attributes from props trigger re-render
+			[clientId]
 		);
 
-		// Debounced validation prevents rapid re-renders during typing.
-		// Runs immediately on mount, then debounces subsequent changes.
 		const validationResult = useDebouncedValidation(
 			() => {
 				if (!block) {
 					return { isValid: true, issues: [], mode: 'none' };
 				}
-				// Use attributes from props for validation responsiveness.
-				// Props attributes update before the store.
 				const blockToValidate = {
 					...block,
 					attributes: attributes || block.attributes,
@@ -51,33 +49,24 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 			{ delay: 300 }
 		);
 
-		// Always render the same DOM structure to prevent focus loss.
-		// Toggling between <BlockEdit /> and <div><BlockEdit /></div> causes
-		// React to unmount and remount BlockEdit, stealing keyboard focus.
-		let wrapperClass = 'validation-api-block-wrapper';
-		if (!validationResult.isValid) {
-			if (validationResult.mode === 'error') {
-				wrapperClass += ' validation-api-block-error';
-			} else if (validationResult.mode === 'warning') {
-				wrapperClass += ' validation-api-block-warning';
-			}
-		}
+		// Sync validation state to the shared store so the
+		// editor.BlockListBlock filter can read it for CSS classes.
+		useEffect(() => {
+			setBlockValidation(clientId, validationResult);
+			return () => clearBlockValidation(clientId);
+		}, [clientId, validationResult]);
 
 		return (
-			<div className={wrapperClass}>
+			<>
 				<BlockEdit {...props} />
 				{!validationResult.isValid && (
-					<Indicator mode={validationResult.mode} issues={validationResult.issues} />
+					<BlockControls group="block">
+						<ValidationToolbarButton issues={validationResult.issues} />
+					</BlockControls>
 				)}
-			</div>
+			</>
 		);
 	};
 }, 'withErrorHandling');
 
-/**
- * Register the HOC with WordPress block editor
- *
- * This filter intercepts all block editor components and wraps them
- * with our validation and error handling functionality.
- */
 wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', withErrorHandling);

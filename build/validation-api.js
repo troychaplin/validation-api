@@ -240,7 +240,7 @@
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	function E(e) {
+	function O(e) {
 		return e.flatMap(function (e) {
 			var t,
 				r = g(e),
@@ -252,7 +252,7 @@
 							n,
 							(function (e) {
 								if (Array.isArray(e)) return h(e);
-							})((t = E(e.innerBlocks))) ||
+							})((t = O(e.innerBlocks))) ||
 								(function (e) {
 									if (
 										('undefined' != typeof Symbol &&
@@ -272,7 +272,7 @@
 			);
 		});
 	}
-	function O(e) {
+	function E(e) {
 		var t,
 			r = (function (e) {
 				var t = ('undefined' != typeof Symbol && e[Symbol.iterator]) || e['@@iterator'];
@@ -324,7 +324,7 @@
 				var n = t.value;
 				if ('core/post-content' === n.name) return n;
 				if (n.innerBlocks && n.innerBlocks.length > 0) {
-					var a = O(n.innerBlocks);
+					var a = E(n.innerBlocks);
 					if (a) return a;
 				}
 			}
@@ -335,19 +335,19 @@
 		}
 		return null;
 	}
-	function R() {
+	function j() {
 		var e,
 			t =
 				(null === (e = window.ValidationAPI) || void 0 === e ? void 0 : e.editorContext) ||
 				'none',
 			n = 'post-editor' === t || 'post-editor-template' === t;
-		return E(
+		return O(
 			(0, r.useSelect)(
 				function (e) {
 					var t = e('core/block-editor'),
 						r = t.getBlocks();
 					if (n) {
-						var a = O(r);
+						var a = E(r);
 						if (a) {
 							var i = t.getBlock(a.clientId),
 								o = t
@@ -412,7 +412,7 @@
 			})(e, t) ||
 			(function (e, t) {
 				if (e) {
-					if ('string' == typeof e) return j(e, t);
+					if ('string' == typeof e) return P(e, t);
 					var r = {}.toString.call(e).slice(8, -1);
 					return (
 						'Object' === r && e.constructor && (r = e.constructor.name),
@@ -420,7 +420,7 @@
 							? Array.from(e)
 							: 'Arguments' === r ||
 								  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-								? j(e, t)
+								? P(e, t)
 								: void 0
 					);
 				}
@@ -432,12 +432,12 @@
 			})()
 		);
 	}
-	function j(e, t) {
+	function P(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	var P,
+	var R,
 		k =
 			(null === (b = window.ValidationAPI) || void 0 === b
 				? void 0
@@ -455,7 +455,7 @@
 			(0, t.applyFilters)('validation_api_validate_meta', l, n, e, r, a)
 		);
 	}
-	function _(e, t, r) {
+	function I(e, t, r) {
 		for (
 			var n = (k[e] || {})[t] || {}, a = [], i = 0, o = Object.entries(n);
 			i < o.length;
@@ -471,9 +471,9 @@
 		}
 		return v(a);
 	}
-	function N(e) {
+	function _(e) {
 		return (
-			(N =
+			(_ =
 				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
 					? function (e) {
 							return typeof e;
@@ -486,10 +486,10 @@
 								? 'symbol'
 								: typeof e;
 						}),
-			N(e)
+			_(e)
 		);
 	}
-	function I(e, t) {
+	function N(e, t) {
 		var r = Object.keys(e);
 		if (Object.getOwnPropertySymbols) {
 			var n = Object.getOwnPropertySymbols(e);
@@ -505,12 +505,12 @@
 		for (var t = 1; t < arguments.length; t++) {
 			var r = null != arguments[t] ? arguments[t] : {};
 			t % 2
-				? I(Object(r), !0).forEach(function (t) {
+				? N(Object(r), !0).forEach(function (t) {
 						L(e, t, r[t]);
 					})
 				: Object.getOwnPropertyDescriptors
 					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
-					: I(Object(r)).forEach(function (t) {
+					: N(Object(r)).forEach(function (t) {
 							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
 						});
 		}
@@ -520,16 +520,16 @@
 		return (
 			(t = (function (e) {
 				var t = (function (e) {
-					if ('object' != N(e) || !e) return e;
+					if ('object' != _(e) || !e) return e;
 					var t = e[Symbol.toPrimitive];
 					if (void 0 !== t) {
 						var r = t.call(e, 'string');
-						if ('object' != N(r)) return r;
+						if ('object' != _(r)) return r;
 						throw new TypeError('@@toPrimitive must return a primitive value.');
 					}
 					return String(e);
 				})(e);
-				return 'symbol' == N(t) ? t : t + '';
+				return 'symbol' == _(t) ? t : t + '';
 			})(t)) in e
 				? Object.defineProperty(e, t, {
 						value: r,
@@ -541,7 +541,7 @@
 			e
 		);
 	}
-	function V() {
+	function T() {
 		for (
 			var e,
 				t = (0, r.useSelect)(function (e) {
@@ -564,12 +564,12 @@
 			l++
 		) {
 			var u = c[l],
-				s = _(n, u, null == a ? void 0 : a[u]);
+				s = I(n, u, null == a ? void 0 : a[u]);
 			s.isValid || o.push(C(C({}, s), {}, { metaKey: u }));
 		}
 		return o;
 	}
-	function T(e, t) {
+	function B(e, t) {
 		return (
 			(function (e) {
 				if (Array.isArray(e)) return e;
@@ -612,7 +612,7 @@
 			})(e, t) ||
 			(function (e, t) {
 				if (e) {
-					if ('string' == typeof e) return B(e, t);
+					if ('string' == typeof e) return V(e, t);
 					var r = {}.toString.call(e).slice(8, -1);
 					return (
 						'Object' === r && e.constructor && (r = e.constructor.name),
@@ -620,7 +620,7 @@
 							? Array.from(e)
 							: 'Arguments' === r ||
 								  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-								? B(e, t)
+								? V(e, t)
 								: void 0
 					);
 				}
@@ -632,15 +632,15 @@
 			})()
 		);
 	}
-	function B(e, t) {
+	function V(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	var M =
-		(null === (P = window.ValidationAPI) || void 0 === P ? void 0 : P.editorValidationRules) ||
+	var D =
+		(null === (R = window.ValidationAPI) || void 0 === R ? void 0 : R.editorValidationRules) ||
 		{};
-	function D() {
+	function M() {
 		var e = (0, r.useSelect)(function (e) {
 				var t = e('core/editor'),
 					r = e('core/block-editor');
@@ -654,8 +654,8 @@
 			a = e.postType;
 		if (!a || !n) return [];
 		var i = (function (e, r) {
-			for (var n = M[e] || {}, a = [], i = 0, o = Object.entries(n); i < o.length; i++) {
-				var l = T(o[i], 2),
+			for (var n = D[e] || {}, a = [], i = 0, o = Object.entries(n); i < o.length; i++) {
+				var l = B(o[i], 2),
 					c = l[0],
 					u = l[1];
 				if (
@@ -684,9 +684,9 @@
 			i = 'core/editor',
 			o = (0, r.useDispatch)(i),
 			l = wp.data && wp.data.select && wp.data.select(i),
-			c = R(),
-			u = V(),
-			s = D(),
+			c = j(),
+			u = T(),
+			s = M(),
 			d = o || {},
 			p = d.lockPostSaving,
 			v = d.unlockPostSaving,
@@ -759,9 +759,9 @@
 			null
 		);
 	}
-	const W = window.wp.editor,
-		F = window.wp.components,
-		U = window.wp.i18n,
+	const F = window.wp.editor,
+		U = window.wp.components,
+		W = window.wp.i18n,
 		$ = window.wp.blocks;
 	function q(e) {
 		var t = e.fill,
@@ -845,9 +845,9 @@
 		);
 	}
 	function z() {
-		var e = R() || [],
-			t = V() || [],
-			a = D() || [],
+		var e = j() || [],
+			t = T() || [],
+			a = M() || [],
 			i = (0, r.useDispatch)('core/block-editor').selectBlock,
 			o = (0, n.useRef)(null),
 			l = c(a, 'error'),
@@ -889,20 +889,20 @@
 			0 === y && 0 === b
 				? null
 				: React.createElement(
-						W.PluginSidebar,
+						F.PluginSidebar,
 						{
 							name: 'validation-sidebar',
-							title: (0, U.__)('Validation', 'validation-api'),
+							title: (0, W.__)('Validation', 'validation-api'),
 							icon: w,
 							className: 'validation-api-validation-sidebar',
 						},
 						y > 0 &&
 							React.createElement(
-								F.PanelBody,
+								U.PanelBody,
 								{
-									title: (0, U.sprintf)(
+									title: (0, W.sprintf)(
 										/* translators: %d: number of errors */ /* translators: %d: number of errors */
-										(0, U.__)('Errors (%d)', 'validation-api'),
+										(0, W.__)('Errors (%d)', 'validation-api'),
 										y
 									),
 									initialOpen: !0,
@@ -910,7 +910,7 @@
 								},
 								s.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -918,15 +918,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-error-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Block Errors', 'validation-api')
-												)
+												(0, W.__)('Block Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -959,7 +951,7 @@
 									),
 								m.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -967,15 +959,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-error-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Meta Errors', 'validation-api')
-												)
+												(0, W.__)('Field Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -992,7 +976,7 @@
 									),
 								p.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -1000,15 +984,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-error-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Editor Errors', 'validation-api')
-												)
+												(0, W.__)('Editor Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -1026,11 +1002,11 @@
 							),
 						b > 0 &&
 							React.createElement(
-								F.PanelBody,
+								U.PanelBody,
 								{
-									title: (0, U.sprintf)(
+									title: (0, W.sprintf)(
 										/* translators: %d: number of warnings */ /* translators: %d: number of warnings */
-										(0, U.__)('Warnings (%d)', 'validation-api'),
+										(0, W.__)('Warnings (%d)', 'validation-api'),
 										b
 									),
 									initialOpen: !0,
@@ -1038,7 +1014,7 @@
 								},
 								f.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -1046,15 +1022,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-warning-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Block Warnings', 'validation-api')
-												)
+												(0, W.__)('Block Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -1087,7 +1055,7 @@
 									),
 								d.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -1095,15 +1063,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-warning-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Meta Warnings', 'validation-api')
-												)
+												(0, W.__)('Field Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -1120,7 +1080,7 @@
 									),
 								v.length > 0 &&
 									React.createElement(
-										F.PanelRow,
+										U.PanelRow,
 										null,
 										React.createElement(
 											'div',
@@ -1128,15 +1088,7 @@
 											React.createElement(
 												'p',
 												{ className: 'validation-api-warning-subheading' },
-												React.createElement(
-													'strong',
-													null,
-													React.createElement('span', {
-														className:
-															'validation-api-indicator-circle',
-													}),
-													(0, U.__)('Editor Warnings', 'validation-api')
-												)
+												(0, W.__)('Editor Issues', 'validation-api')
 											),
 											React.createElement(
 												'ul',
@@ -1171,12 +1123,24 @@
 			},
 		}
 	);
-	function J(e, t) {
+	(0, e.registerPlugin)('validation-api', {
+		render: function () {
+			return React.createElement(
+				React.Fragment,
+				null,
+				React.createElement(x, null),
+				React.createElement(z, null)
+			);
+		},
+	});
+	const J = window.wp.compose,
+		Q = window.wp.blockEditor;
+	function X(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	function Q(e) {
+	function Y(e) {
 		var t,
 			r,
 			a = e.issues,
@@ -1230,7 +1194,7 @@
 					})(t, r) ||
 					(function (e, t) {
 						if (e) {
-							if ('string' == typeof e) return J(e, t);
+							if ('string' == typeof e) return X(e, t);
 							var r = {}.toString.call(e).slice(8, -1);
 							return (
 								'Object' === r && e.constructor && (r = e.constructor.name),
@@ -1238,7 +1202,7 @@
 									? Array.from(e)
 									: 'Arguments' === r ||
 										  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-										? J(e, t)
+										? X(e, t)
 										: void 0
 							);
 						}
@@ -1256,30 +1220,24 @@
 			d = s(a),
 			p = c
 				? React.createElement(q, { fill: '#d82000' })
-				: React.createElement(q, { fill: '#dbc900' }),
-			v = c
-				? 'validation-api-block-indicator validation-api-block-indicator--error'
-				: 'validation-api-block-indicator validation-api-block-indicator--warning';
+				: React.createElement(q, { fill: '#d8c600' });
 		return React.createElement(
 			React.Fragment,
 			null,
-			React.createElement(
-				'div',
-				{ className: v },
-				React.createElement(F.Button, {
-					icon: p,
-					onClick: function () {
-						return l(!0);
-					},
-					className: 'validation-api-block-indicator-button',
-					'aria-label': (0, U.__)('View block issues or concerns', 'validation-api'),
-				})
-			),
+			React.createElement(U.ToolbarButton, {
+				icon: p,
+				onClick: function () {
+					return l(!0);
+				},
+				label: (0, W.__)('View block issues or concerns', 'validation-api'),
+				className: 'validation-api-toolbar-button',
+				isCompact: !0,
+			}),
 			o &&
 				React.createElement(
-					F.Modal,
+					U.Modal,
 					{
-						title: (0, U.__)('Issues or Concerns', 'validation-api'),
+						title: (0, W.__)('Issues or Concerns', 'validation-api'),
 						onRequestClose: function () {
 							return l(!1);
 						},
@@ -1296,17 +1254,12 @@
 										'validation-api-indicator-section validation-api-indicator-errors',
 								},
 								React.createElement(
-									'p',
-									null,
-									React.createElement(
-										'strong',
-										{ className: 'validation-api-indicator-section-title' },
-										React.createElement('span', {
-											className:
-												'validation-api-indicator-section-title-circle',
-										}),
-										(0, U.__)('Errors', 'validation-api')
-									)
+									'h2',
+									{ className: 'validation-api-indicator-section-title' },
+									React.createElement('span', {
+										className: 'validation-api-indicator-section-title-circle',
+									}),
+									(0, W.__)('Errors', 'validation-api')
 								),
 								React.createElement(
 									'ul',
@@ -1328,17 +1281,12 @@
 										'validation-api-indicator-section validation-api-indicator-warnings',
 								},
 								React.createElement(
-									'p',
-									null,
-									React.createElement(
-										'strong',
-										{ className: 'validation-api-indicator-section-title' },
-										React.createElement('span', {
-											className:
-												'validation-api-indicator-section-title-circle',
-										}),
-										(0, U.__)('Warnings', 'validation-api')
-									)
+									'h2',
+									{ className: 'validation-api-indicator-section-title' },
+									React.createElement('span', {
+										className: 'validation-api-indicator-section-title-circle',
+									}),
+									(0, W.__)('Warnings', 'validation-api')
 								),
 								React.createElement(
 									'ul',
@@ -1356,14 +1304,16 @@
 				)
 		);
 	}
-	function X(e, t) {
+	function ee(e, t) {
 		(null == t || t > e.length) && (t = e.length);
 		for (var r = 0, n = Array(t); r < t; r++) n[r] = e[r];
 		return n;
 	}
-	function Y(e) {
+	var te = new Map(),
+		re = Object.freeze({ mode: 'none', issues: [] });
+	function ne(e) {
 		return (
-			(Y =
+			(ne =
 				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
 					? function (e) {
 							return typeof e;
@@ -1376,10 +1326,10 @@
 								? 'symbol'
 								: typeof e;
 						}),
-			Y(e)
+			ne(e)
 		);
 	}
-	function ee(e, t) {
+	function ae(e, t) {
 		var r = Object.keys(e);
 		if (Object.getOwnPropertySymbols) {
 			var n = Object.getOwnPropertySymbols(e);
@@ -1391,35 +1341,35 @@
 		}
 		return r;
 	}
-	function te(e) {
+	function ie(e) {
 		for (var t = 1; t < arguments.length; t++) {
 			var r = null != arguments[t] ? arguments[t] : {};
 			t % 2
-				? ee(Object(r), !0).forEach(function (t) {
-						re(e, t, r[t]);
+				? ae(Object(r), !0).forEach(function (t) {
+						oe(e, t, r[t]);
 					})
 				: Object.getOwnPropertyDescriptors
 					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
-					: ee(Object(r)).forEach(function (t) {
+					: ae(Object(r)).forEach(function (t) {
 							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
 						});
 		}
 		return e;
 	}
-	function re(e, t, r) {
+	function oe(e, t, r) {
 		return (
 			(t = (function (e) {
 				var t = (function (e) {
-					if ('object' != Y(e) || !e) return e;
+					if ('object' != ne(e) || !e) return e;
 					var t = e[Symbol.toPrimitive];
 					if (void 0 !== t) {
 						var r = t.call(e, 'string');
-						if ('object' != Y(r)) return r;
+						if ('object' != ne(r)) return r;
 						throw new TypeError('@@toPrimitive must return a primitive value.');
 					}
 					return String(e);
 				})(e);
-				return 'symbol' == Y(t) ? t : t + '';
+				return 'symbol' == ne(t) ? t : t + '';
 			})(t)) in e
 				? Object.defineProperty(e, t, {
 						value: r,
@@ -1431,17 +1381,7 @@
 			e
 		);
 	}
-	(0, e.registerPlugin)('validation-api', {
-		render: function () {
-			return React.createElement(
-				React.Fragment,
-				null,
-				React.createElement(x, null),
-				React.createElement(z, null)
-			);
-		},
-	});
-	var ne = (0, window.wp.compose.createHigherOrderComponent)(function (e) {
+	var le = (0, J.createHigherOrderComponent)(function (e) {
 		return function (t) {
 			var a = t.clientId,
 				i = t.attributes,
@@ -1510,7 +1450,7 @@
 								})(r, a) ||
 								(function (e, t) {
 									if (e) {
-										if ('string' == typeof e) return X(e, t);
+										if ('string' == typeof e) return ee(e, t);
 										var r = {}.toString.call(e).slice(8, -1);
 										return (
 											'Object' === r &&
@@ -1522,7 +1462,7 @@
 													  /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
 															r
 													  )
-													? X(e, t)
+													? ee(e, t)
 													: void 0
 										);
 									}
@@ -1553,97 +1493,42 @@
 				})(
 					function () {
 						if (!o) return { isValid: !0, issues: [], mode: 'none' };
-						var e = te(te({}, o), {}, { attributes: i || o.attributes });
+						var e = ie(ie({}, o), {}, { attributes: i || o.attributes });
 						return g(e);
 					},
 					[o, i],
 					{ delay: 300 }
-				),
-				c = 'validation-api-block-wrapper';
+				);
 			return (
-				l.isValid ||
-					('error' === l.mode
-						? (c += ' validation-api-block-error')
-						: 'warning' === l.mode && (c += ' validation-api-block-warning')),
+				(0, n.useEffect)(
+					function () {
+						return (
+							(function (e, t) {
+								te.set(e, t);
+							})(a, l),
+							function () {
+								return (function (e) {
+									te.delete(e);
+								})(a);
+							}
+						);
+					},
+					[a, l]
+				),
 				React.createElement(
-					'div',
-					{ className: c },
+					React.Fragment,
+					null,
 					React.createElement(e, t),
-					!l.isValid && React.createElement(Q, { mode: l.mode, issues: l.issues })
+					!l.isValid &&
+						React.createElement(
+							Q.BlockControls,
+							{ group: 'block' },
+							React.createElement(Y, { issues: l.issues })
+						)
 				)
 			);
 		};
 	}, 'withErrorHandling');
-	function ae(e) {
-		return (
-			(ae =
-				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
-					? function (e) {
-							return typeof e;
-						}
-					: function (e) {
-							return e &&
-								'function' == typeof Symbol &&
-								e.constructor === Symbol &&
-								e !== Symbol.prototype
-								? 'symbol'
-								: typeof e;
-						}),
-			ae(e)
-		);
-	}
-	function ie(e, t) {
-		var r = Object.keys(e);
-		if (Object.getOwnPropertySymbols) {
-			var n = Object.getOwnPropertySymbols(e);
-			(t &&
-				(n = n.filter(function (t) {
-					return Object.getOwnPropertyDescriptor(e, t).enumerable;
-				})),
-				r.push.apply(r, n));
-		}
-		return r;
-	}
-	function oe(e) {
-		for (var t = 1; t < arguments.length; t++) {
-			var r = null != arguments[t] ? arguments[t] : {};
-			t % 2
-				? ie(Object(r), !0).forEach(function (t) {
-						le(e, t, r[t]);
-					})
-				: Object.getOwnPropertyDescriptors
-					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
-					: ie(Object(r)).forEach(function (t) {
-							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
-						});
-		}
-		return e;
-	}
-	function le(e, t, r) {
-		return (
-			(t = (function (e) {
-				var t = (function (e) {
-					if ('object' != ae(e) || !e) return e;
-					var t = e[Symbol.toPrimitive];
-					if (void 0 !== t) {
-						var r = t.call(e, 'string');
-						if ('object' != ae(r)) return r;
-						throw new TypeError('@@toPrimitive must return a primitive value.');
-					}
-					return String(e);
-				})(e);
-				return 'symbol' == ae(t) ? t : t + '';
-			})(t)) in e
-				? Object.defineProperty(e, t, {
-						value: r,
-						enumerable: !0,
-						configurable: !0,
-						writable: !0,
-					})
-				: (e[t] = r),
-			e
-		);
-	}
 	function ce(e) {
 		return (
 			(ce =
@@ -1662,7 +1547,183 @@
 			ce(e)
 		);
 	}
-	(wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', ne),
+	function ue() {
+		return (
+			(ue = Object.assign
+				? Object.assign.bind()
+				: function (e) {
+						for (var t = 1; t < arguments.length; t++) {
+							var r = arguments[t];
+							for (var n in r) ({}).hasOwnProperty.call(r, n) && (e[n] = r[n]);
+						}
+						return e;
+					}),
+			ue.apply(null, arguments)
+		);
+	}
+	function se(e, t) {
+		var r = Object.keys(e);
+		if (Object.getOwnPropertySymbols) {
+			var n = Object.getOwnPropertySymbols(e);
+			(t &&
+				(n = n.filter(function (t) {
+					return Object.getOwnPropertyDescriptor(e, t).enumerable;
+				})),
+				r.push.apply(r, n));
+		}
+		return r;
+	}
+	function fe(e) {
+		for (var t = 1; t < arguments.length; t++) {
+			var r = null != arguments[t] ? arguments[t] : {};
+			t % 2
+				? se(Object(r), !0).forEach(function (t) {
+						me(e, t, r[t]);
+					})
+				: Object.getOwnPropertyDescriptors
+					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
+					: se(Object(r)).forEach(function (t) {
+							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
+						});
+		}
+		return e;
+	}
+	function me(e, t, r) {
+		return (
+			(t = (function (e) {
+				var t = (function (e) {
+					if ('object' != ce(e) || !e) return e;
+					var t = e[Symbol.toPrimitive];
+					if (void 0 !== t) {
+						var r = t.call(e, 'string');
+						if ('object' != ce(r)) return r;
+						throw new TypeError('@@toPrimitive must return a primitive value.');
+					}
+					return String(e);
+				})(e);
+				return 'symbol' == ce(t) ? t : t + '';
+			})(t)) in e
+				? Object.defineProperty(e, t, {
+						value: r,
+						enumerable: !0,
+						configurable: !0,
+						writable: !0,
+					})
+				: (e[t] = r),
+			e
+		);
+	}
+	function de(e) {
+		return (
+			(de =
+				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+					? function (e) {
+							return typeof e;
+						}
+					: function (e) {
+							return e &&
+								'function' == typeof Symbol &&
+								e.constructor === Symbol &&
+								e !== Symbol.prototype
+								? 'symbol'
+								: typeof e;
+						}),
+			de(e)
+		);
+	}
+	function pe(e, t) {
+		var r = Object.keys(e);
+		if (Object.getOwnPropertySymbols) {
+			var n = Object.getOwnPropertySymbols(e);
+			(t &&
+				(n = n.filter(function (t) {
+					return Object.getOwnPropertyDescriptor(e, t).enumerable;
+				})),
+				r.push.apply(r, n));
+		}
+		return r;
+	}
+	function ve(e) {
+		for (var t = 1; t < arguments.length; t++) {
+			var r = null != arguments[t] ? arguments[t] : {};
+			t % 2
+				? pe(Object(r), !0).forEach(function (t) {
+						ye(e, t, r[t]);
+					})
+				: Object.getOwnPropertyDescriptors
+					? Object.defineProperties(e, Object.getOwnPropertyDescriptors(r))
+					: pe(Object(r)).forEach(function (t) {
+							Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(r, t));
+						});
+		}
+		return e;
+	}
+	function ye(e, t, r) {
+		return (
+			(t = (function (e) {
+				var t = (function (e) {
+					if ('object' != de(e) || !e) return e;
+					var t = e[Symbol.toPrimitive];
+					if (void 0 !== t) {
+						var r = t.call(e, 'string');
+						if ('object' != de(r)) return r;
+						throw new TypeError('@@toPrimitive must return a primitive value.');
+					}
+					return String(e);
+				})(e);
+				return 'symbol' == de(t) ? t : t + '';
+			})(t)) in e
+				? Object.defineProperty(e, t, {
+						value: r,
+						enumerable: !0,
+						configurable: !0,
+						writable: !0,
+					})
+				: (e[t] = r),
+			e
+		);
+	}
+	function be(e) {
+		return (
+			(be =
+				'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+					? function (e) {
+							return typeof e;
+						}
+					: function (e) {
+							return e &&
+								'function' == typeof Symbol &&
+								e.constructor === Symbol &&
+								e !== Symbol.prototype
+								? 'symbol'
+								: typeof e;
+						}),
+			be(e)
+		);
+	}
+	(wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', le),
+		wp.hooks.addFilter(
+			'editor.BlockListBlock',
+			'validation-api/with-block-validation-classes',
+			function (e) {
+				return function (t) {
+					var r,
+						n = ((r = t.clientId), te.get(r) || re);
+					if ('none' === n.mode) return React.createElement(e, t);
+					var a =
+							'error' === n.mode
+								? 'validation-api-block-error'
+								: 'validation-api-block-warning',
+						i = t.wrapperProps || {},
+						o = fe(
+							fe({}, i),
+							{},
+							{ className: [i.className, a].filter(Boolean).join(' ') }
+						);
+					return React.createElement(e, ue({}, t, { wrapperProps: o }));
+				};
+			}
+		),
 		void 0 === window.ValidationAPI && (window.ValidationAPI = {}),
 		(window.ValidationAPI.useMetaField = function (e) {
 			var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : '',
@@ -1682,13 +1743,13 @@
 									issues: [],
 									wrapperClassName: '',
 								};
-							var l = _(a, e, o),
+							var l = I(a, e, o),
 								c = '';
 							return (
 								l.hasErrors
 									? (c = 'validation-api-meta-error')
 									: l.hasWarnings && (c = 'validation-api-meta-warning'),
-								oe(oe({}, l), {}, { wrapperClassName: c })
+								ve(ve({}, l), {}, { wrapperClassName: c })
 							);
 						},
 						[e]
@@ -1733,18 +1794,18 @@
 								(a = t),
 								(n = (function (e) {
 									var t = (function (e) {
-										if ('object' != ce(e) || !e) return e;
+										if ('object' != be(e) || !e) return e;
 										var t = e[Symbol.toPrimitive];
 										if (void 0 !== t) {
 											var r = t.call(e, 'string');
-											if ('object' != ce(r)) return r;
+											if ('object' != be(r)) return r;
 											throw new TypeError(
 												'@@toPrimitive must return a primitive value.'
 											);
 										}
 										return String(e);
 									})(e);
-									return 'symbol' == ce(t) ? t : t + '';
+									return 'symbol' == be(t) ? t : t + '';
 								})(n)) in r
 									? Object.defineProperty(r, n, {
 											value: a,

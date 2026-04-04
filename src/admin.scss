@@ -1,22 +1,22 @@
 // Plugin Sidebar Icon Styles
 
 .has-meta-validation-warnings button[aria-controls="validation-api:validation-sidebar"].is-pressed {
-    background-color: var(--validaion-api-light-yellow);
+    background-color: var(--validation-api-light-yellow);
     transition: background-color 0.2s ease;
 }
 
 .has-meta-validation-errors button[aria-controls="validation-api:validation-sidebar"].is-pressed {
-    background-color: var(--validaion-api-light-red);
+    background-color: var(--validation-api-light-red);
     transition: background-color 0.2s ease;
 }
 
 .has-meta-validation-warnings button[aria-controls="validation-api:validation-sidebar"].is-pressed:hover {
-    background-color: var(--validaion-api-light-yellow);
+    background-color: var(--validation-api-light-yellow);
     transition: background-color 0.2s ease;
 }
 
 .has-meta-validation-errors button[aria-controls="validation-api:validation-sidebar"].is-pressed:hover {
-    background-color: var(--validaion-api-light-red);
+    background-color: var(--validation-api-light-red);
     transition: background-color 0.2s ease;
 }
 
