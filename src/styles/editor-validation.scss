@@ -6,7 +6,7 @@
 .validation-api-validation-item {
 	width: 100%;
 	padding: 12px 14px;
-	border-left: var(--validaion-api-border-width);
+	border-left: var(--validation-api-border-width);
 	margin-bottom: 12px;
 	border-radius: 2px;
 
@@ -16,13 +16,13 @@
 }
 
 .validation-api-validation-item--error {
-	background-color: var(--validaion-api-light-red);
-	border-color: var(--validaion-api-red);
+	background-color: var(--validation-api-light-red);
+	border-color: var(--validation-api-red);
 }
 
 .validation-api-validation-item--warning {
-	background-color: var(--validaion-api-light-yellow);
-	border-color: var(--validaion-api-yellow);
+	background-color: var(--validation-api-light-yellow);
+	border-color: var(--validation-api-yellow);
 }
 
 .validation-api-validation-message {
@@ -36,11 +36,11 @@
 }
 
 .validation-api-validation-item--error .validation-api-validation-message {
-	color: var(--validaion-api-dark-red);
+	color: var(--validation-api-dark-red);
 }
 
 .validation-api-validation-item--warning .validation-api-validation-message {
-	color: var(--validaion-api-dark-yellow);
+	color: var(--validation-api-dark-yellow);
 }
 
 .validation-api-validation-description {

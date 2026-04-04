@@ -59,12 +59,10 @@ export function ValidationToolbarButton({ issues }) {
 					<div className="validation-api-indicator-modal-content">
 						{errors.length > 0 && (
 							<div className="validation-api-indicator-section validation-api-indicator-errors">
-								<p>
-									<strong className="validation-api-indicator-section-title">
-										<span className="validation-api-indicator-section-title-circle"></span>
-										{__('Errors', 'validation-api')}
-									</strong>
-								</p>
+								<h2 className="validation-api-indicator-section-title">
+									<span className="validation-api-indicator-section-title-circle"></span>
+									{__('Errors', 'validation-api')}
+								</h2>
 								<ul>
 									{errors.map((issue, index) => (
 										<li key={`error-${index}`}>{issue.error_msg}</li>
@@ -75,12 +73,10 @@ export function ValidationToolbarButton({ issues }) {
 
 						{warnings.length > 0 && (
 							<div className="validation-api-indicator-section validation-api-indicator-warnings">
-								<p>
-									<strong className="validation-api-indicator-section-title">
-										<span className="validation-api-indicator-section-title-circle"></span>
-										{__('Warnings', 'validation-api')}
-									</strong>
-								</p>
+								<h2 className="validation-api-indicator-section-title">
+									<span className="validation-api-indicator-section-title-circle"></span>
+									{__('Warnings', 'validation-api')}
+								</h2>
 								<ul>
 									{warnings.map((warning, index) => (
 										<li key={`warning-${index}`}>

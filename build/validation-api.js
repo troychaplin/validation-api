@@ -1302,17 +1302,12 @@
 										'validation-api-indicator-section validation-api-indicator-errors',
 								},
 								React.createElement(
-									'p',
-									null,
-									React.createElement(
-										'strong',
-										{ className: 'validation-api-indicator-section-title' },
-										React.createElement('span', {
-											className:
-												'validation-api-indicator-section-title-circle',
-										}),
-										(0, U.__)('Errors', 'validation-api')
-									)
+									'h2',
+									{ className: 'validation-api-indicator-section-title' },
+									React.createElement('span', {
+										className: 'validation-api-indicator-section-title-circle',
+									}),
+									(0, U.__)('Errors', 'validation-api')
 								),
 								React.createElement(
 									'ul',
@@ -1334,17 +1329,12 @@
 										'validation-api-indicator-section validation-api-indicator-warnings',
 								},
 								React.createElement(
-									'p',
-									null,
-									React.createElement(
-										'strong',
-										{ className: 'validation-api-indicator-section-title' },
-										React.createElement('span', {
-											className:
-												'validation-api-indicator-section-title-circle',
-										}),
-										(0, U.__)('Warnings', 'validation-api')
-									)
+									'h2',
+									{ className: 'validation-api-indicator-section-title' },
+									React.createElement('span', {
+										className: 'validation-api-indicator-section-title-circle',
+									}),
+									(0, U.__)('Warnings', 'validation-api')
 								),
 								React.createElement(
 									'ul',
@@ -1580,7 +1570,7 @@
 					!l.isValid &&
 						React.createElement(
 							Q.BlockControls,
-							{ group: 'other' },
+							{ group: 'block' },
 							React.createElement(Y, { issues: l.issues })
 						)
 				)

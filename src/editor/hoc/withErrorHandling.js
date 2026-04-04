@@ -60,7 +60,7 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 			<>
 				<BlockEdit {...props} />
 				{!validationResult.isValid && (
-					<BlockControls group="other">
+					<BlockControls group="block">
 						<ValidationToolbarButton issues={validationResult.issues} />
 					</BlockControls>
 				)}
