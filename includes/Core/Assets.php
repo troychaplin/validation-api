@@ -10,6 +10,11 @@
 
 namespace ValidationAPI\Core;
 
+// Prevent direct access to the file.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use ValidationAPI\Core\Traits\EditorDetection;
 use ValidationAPI\Block\Registry as BlockRegistry;
 use ValidationAPI\Meta\Registry as MetaRegistry;
@@ -119,11 +124,10 @@ class Assets {
 	 * The config is available in JS via:
 	 * `select('core/editor').getEditorSettings().validationApi`
 	 *
-	 * @param array                    $settings The editor settings array.
-	 * @param \WP_Block_Editor_Context $context  The block editor context.
+	 * @param array $settings The editor settings array.
 	 * @return array Modified editor settings with validation config.
 	 */
-	public function inject_editor_settings( array $settings, $context ): array {
+	public function inject_editor_settings( array $settings ): array {
 		if ( ! $this->should_load_validation() ) {
 			return $settings;
 		}

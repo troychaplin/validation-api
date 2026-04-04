@@ -10,6 +10,11 @@
 
 namespace ValidationAPI\Core;
 
+// Prevent direct access to the file.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use ValidationAPI\Core\Traits\Logger;
 use ValidationAPI\Block\Registry as BlockRegistry;
 use ValidationAPI\Editor\Registry as EditorRegistry;
@@ -102,8 +107,7 @@ class Plugin {
 	 */
 	private function init_translations(): void {
 		try {
-			$translations = new I18n( $this->plugin_file, $this->text_domain );
-			$translations->load_text_domain();
+			$translations                   = new I18n( $this->plugin_file, $this->text_domain );
 			$this->services['translations'] = $translations;
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize translations: ' . $e->getMessage() );

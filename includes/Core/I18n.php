@@ -43,15 +43,6 @@ class I18n {
 	}
 
 	/**
-	 * Loads the text domain for the plugin.
-	 *
-	 * @return void
-	 */
-	public function load_text_domain(): void {
-		\load_plugin_textdomain( $this->text_domain, false, dirname( \plugin_basename( $this->plugin_file ) ) . '/languages/' );
-	}
-
-	/**
 	 * Sets up translations for a script.
 	 *
 	 * @param string $script_handle The handle of the script to set up translations for.

@@ -44,6 +44,8 @@
             <property name="prefixes" type="array">
                 <element value="ValidationAPI"/>
                 <element value="validation_api"/>
+                <element value="wp_register"/>
+                <element value="wp_validation"/>
             </property>
         </properties>
     </rule>
