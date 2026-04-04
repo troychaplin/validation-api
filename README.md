@@ -132,25 +132,7 @@ The core plugin has no settings UI and no storage. The companion bridges admin s
 - Fork this repo
 - Create a branch off of `main`
 - Clone your fork locally
-- Run the following in the repo root:
-    - `npm -g i @wordpress/env` — installs wp-env if you don't already have it
-    - `pnpm install` — installs project dependencies
-
-### Start Developing
-
-This repo uses [@wordpress/env](https://github.com/WordPress/gutenberg/tree/HEAD/packages/env#readme) for a local WordPress environment via Docker.
-
-- Make sure `Docker Desktop` is running
-- Start WordPress: `wp-env start`
-- Start watch task: `pnpm start`
-- Build assets: `pnpm build`
-- Stop WordPress: `wp-env stop`
-
-### Local Site Details
-
-- http://localhost:8888
-- User: `admin`
-- Password: `password`
+- Run the following in the repo root: `pnpm install`
 
 ### Contributing
 
