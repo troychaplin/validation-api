@@ -19,13 +19,25 @@ Prefix the change with one of these keywords:
 
 ### Added
 
-- Custom `@wordpress/data` store (`validation-api`) centralizing all validation state with reactive selectors
+- Custom `@wordpress/data` store (`core/validation`) centralizing all validation state with reactive selectors
 - `ValidationProvider` component as single source of validation computation
 - Store selectors: `getInvalidBlocks()`, `getInvalidMeta()`, `getInvalidEditorChecks()`, `getBlockValidation()`, `hasErrors()`, `hasWarnings()`
-- Console-queryable validation state via `wp.data.select('validation-api')`
+- Console-queryable validation state via `wp.data.select('core/validation')`
+- `getValidationConfig.js` utility for reading validation config from editor settings
+- `block_editor_settings_all` filter integration for passing PHP config to JS via editor settings
 
 ### Changed
 
+- **Gutenberg alignment refactor:** All public API surfaces renamed to core conventions
+- PHP registration functions renamed: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
+- PHP hooks renamed from `validation_api_*` to `wp_validation_*` (e.g., `wp_validation_check_level`, `wp_validation_check_args`)
+- JS filter hooks renamed: `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
+- Data store renamed from `validation-api` to `core/validation`
+- Plugin registration renamed from `registerPlugin('validation-api')` to `registerPlugin('core-validation')`
+- REST endpoint moved from `validation-api/v1/checks` to `wp/v2/validation-checks`
+- `PluginContext` wrapper replaced by required `namespace` field in check registration args; plugin attribution stored as `_namespace` instead of `_plugin`
+- `wp_localize_script()` / `window.ValidationAPI` global replaced by `block_editor_settings_all` filter; config available via `select('core/editor').getEditorSettings().validationApi`
+- JS issue model standardized to camelCase only (`errorMsg`, `warningMsg`); snake_case aliases removed
 - Switched package manager from npm to pnpm
 - Editor context detection scoped to post editor only (`post-editor`, `post-editor-template`)
 - Sidebar now hidden when no validation issues are present, including its toolbar icon
@@ -43,7 +55,11 @@ Prefix the change with one of these keywords:
 
 ### Removed
 
+- `validation_api_register_plugin()` function and `PluginContext` class (replaced by `namespace` field)
+- `window.ValidationAPI` global object and `window.ValidationAPI.useMetaField` export
 - `blockValidationStore.js` module-scoped Map store (replaced by `@wordpress/data` store)
+- Dual camelCase/snake_case issue model compatibility layer
+- `load_plugin_textdomain()` call (handled automatically by WordPress since 4.6)
 - Unused SVG assets, SCSS files, and barrel exports cleaned up
 - Unused `src/editor/validation/index.js` and `src/editor/hoc/index.js` barrel files
 - Legacy SCSS variables replaced by direct values

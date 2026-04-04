@@ -1,5 +1,5 @@
 <img src="assets/icon-256x256.png" alt="Validation API Plugin Banner" style="float: left; margin-right: 1.5em; height: auto; width: 128px;">
-  
+
 # Validation API
 
 A pure validation framework for the WordPress block editor. Register validation checks for blocks, post meta fields, and editor-level content structure — with real-time feedback, visual indicators, and publish-locking. Zero built-in checks. Zero settings UI. Zero opinions. Just infrastructure.
@@ -12,11 +12,11 @@ Designed for Gutenberg core merge. External plugins provide the rules.
 - **Real-Time Editor Feedback:** Validation runs as users edit — instant visual indicators with red (error) and yellow (warning) borders on blocks
 - **Publish Locking:** Error-level checks prevent publishing. Warnings show feedback but allow saving
 - **Validation Sidebar:** All issues displayed in a unified sidebar panel, grouped by severity, with click-to-navigate to the offending block
-- **Scoped Plugin Registration:** Declare your plugin identity once via `validation_api_register_plugin()` — all checks registered within the scope are automatically attributed
-- **CheckProvider Interface:** Enterprise-scale class-based registration pattern for organizing checks across files and concerns
-- **Filterable Severity:** Every check passes through the `validation_api_check_level` filter — any plugin can override severity at runtime
-- **REST API:** Registered checks are exposed via `GET /validation-api/v1/checks` for admin tooling and companion packages
-- **Multi-Context:** Works in both the post editor and the site editor
+- **Flat Registration API:** Register checks with `wp_register_block_validation_check()` and related functions — a `namespace` field attributes each check to the registering plugin
+- **Filterable Severity:** Every check passes through the `wp_validation_check_level` filter — any plugin can override severity at runtime
+- **Centralized Data Store:** A dedicated `core/validation` store via `@wordpress/data` manages all validation state with reactive selectors
+- **REST API:** Registered checks are exposed via `GET /wp/v2/validation-checks` for admin tooling and companion packages
+- **Editor Settings Integration:** Validation config flows from PHP to JS via the `block_editor_settings_all` filter, following Gutenberg's standard data passing pattern
 - **Extensible:** 20+ PHP actions/filters and 3 JS filters for complete customization
 
 ## How It Works
@@ -46,11 +46,11 @@ The plugin ships no built-in checks — it's a framework. Install a companion pl
 | `none` | Check is disabled. Skipped entirely. |
 | *(omitted)* | Defaults to `error`. Filter can override. |
 
-Every active check passes through the `validation_api_check_level` filter, making all checks configurable without the core plugin needing any storage:
+Every active check passes through the `wp_validation_check_level` filter, making all checks configurable without the core plugin needing any storage:
 
 ```php
 apply_filters(
-    'validation_api_check_level',
+    'wp_validation_check_level',
     $registered_level,
     $context // [ 'scope' => 'block', 'block_type' => 'core/image', 'check_name' => 'alt_text' ]
 );
@@ -58,26 +58,22 @@ apply_filters(
 
 ## Quick Start
 
-### Register a Plugin with Checks
+### Register a Block Check
 
 ```php
 add_action( 'init', function() {
-    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
+    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
         return;
     }
 
-    validation_api_register_plugin(
-        [ 'name' => 'My Content Rules' ],
-        function() {
-            validation_api_register_block_check( 'core/image', [
-                'name'        => 'alt_text',
-                'level'       => 'error',
-                'description' => 'Images must have alt text',
-                'error_msg'   => 'This image is missing alt text.',
-                'warning_msg' => 'Consider adding alt text to this image.',
-            ] );
-        }
-    );
+    wp_register_block_validation_check( 'core/image', [
+        'namespace'   => 'my-content-rules',
+        'name'        => 'alt_text',
+        'level'       => 'error',
+        'description' => 'Images must have alt text',
+        'error_msg'   => 'This image is missing alt text.',
+        'warning_msg' => 'Consider adding alt text to this image.',
+    ] );
 } );
 ```
 
@@ -87,7 +83,7 @@ add_action( 'init', function() {
 import { addFilter } from '@wordpress/hooks';
 
 addFilter(
-    'validation_api_validate_block',
+    'editor.validateBlock',
     'my-plugin/image-alt',
     ( isValid, blockType, attributes, checkName ) => {
         if ( blockType === 'core/image' && checkName === 'alt_text' ) {
@@ -98,45 +94,11 @@ addFilter(
 );
 ```
 
-### Enterprise Pattern (Class-Based)
-
-```php
-use ValidationAPI\Contracts\CheckProvider;
-
-class ImageChecks implements CheckProvider {
-    public function register(): void {
-        validation_api_register_block_check( 'core/image', [
-            'name'        => 'alt_text',
-            'level'       => 'error',
-            'description' => 'Images must have alt text',
-            'error_msg'   => 'This image is missing alt text.',
-            'warning_msg' => 'Consider adding alt text to this image.',
-        ] );
-    }
-}
-
-// In your plugin bootstrap:
-add_action( 'init', function() {
-    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
-        return;
-    }
-
-    validation_api_register_plugin(
-        [ 'name' => 'Enterprise Content Rules' ],
-        [
-            ImageChecks::class,
-            HeadingChecks::class,
-            MetaChecks::class,
-        ]
-    );
-} );
-```
-
 ## Companion Settings Package
 
 The **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** companion plugin provides an admin settings page built on WordPress DataForm. It reads all registered checks and lets admins override severity levels globally — no code required.
 
-The core plugin has no settings UI and no storage. The companion bridges admin settings to the `validation_api_check_level` filter via `wp_options`.
+The core plugin has no settings UI and no storage. The companion bridges admin settings to the `wp_validation_check_level` filter via `wp_options`.
 
 ## Requirements
 
@@ -153,7 +115,6 @@ The core plugin has no settings UI and no storage. The companion bridges admin s
 - **[Meta Checks](docs/guide/meta-checks.md)** — Validate post meta fields
 - **[Editor Checks](docs/guide/editor-checks.md)** — Validate document-level concerns
 - **[Severity Model](docs/guide/severity.md)** — Error vs. warning vs. none, and runtime overrides
-- **[CheckProvider Pattern](docs/guide/check-providers.md)** — Class-based registration for enterprise plugins
 - **[Examples](docs/guide/examples.md)** — Complete integration examples
 
 ### Technical Reference
@@ -195,7 +156,7 @@ This repo uses [@wordpress/env](https://github.com/WordPress/gutenberg/tree/HEAD
 
 1. Ensure your code follows WordPress coding standards
 2. Run `pnpm build` to build production assets
-3. Test in both the post editor and site editor
+3. Test in the post editor
 4. Create a PR from your branch into the primary repo
 5. Provide detailed info in the PR template
 

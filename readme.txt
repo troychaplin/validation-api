@@ -30,37 +30,34 @@ Each check has a configurable severity level:
 * **Warning** — Advisory only; allows publishing; shown with a yellow indicator
 * **None** — Check is disabled; no validation runs
 
-All severity levels are filterable at runtime via `validation_api_check_level`, enabling a companion settings plugin to expose per-check configuration to site administrators without modifying registration code.
+All severity levels are filterable at runtime via `wp_validation_check_level`, enabling a companion settings plugin to expose per-check configuration to site administrators without modifying registration code.
 
 **For Developers:**
 
-* Register checks using `validation_api_register_plugin()` with a scoped callback or class-based `CheckProvider` implementations
+* Register checks using `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, and `wp_register_editor_validation_check()` with a `namespace` field for attribution
 * Zero built-in checks — the framework ships clean; all checks come from integrating plugins
 * `function_exists()` guard pattern for safe integration across plugin load orders
 * Full PHP Registry API with singleton access for advanced use cases
-* JavaScript validation runs client-side via `@wordpress/hooks` filters for real-time feedback
-* REST endpoint at `/validation-api/v1/checks` returns all registered checks for companion tooling
+* JavaScript validation runs client-side via `@wordpress/hooks` filters (`editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`) for real-time feedback
+* Centralized `core/validation` data store via `@wordpress/data` for reactive state management
+* REST endpoint at `/wp/v2/validation-checks` returns all registered checks for companion tooling
 
 **Integration Example:**
 
-```php
-add_action( 'validation_api_register_checks', function() {
-    if ( ! function_exists( 'validation_api_register_plugin' ) ) {
+`
+add_action( 'init', function() {
+    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
         return;
     }
 
-    validation_api_register_plugin(
-        [ 'name' => 'My Plugin' ],
-        function() {
-            validation_api_register_block_check( 'core/image', [
-                'name'      => 'alt_text',
-                'error_msg' => 'Images must have alt text.',
-                'level'     => 'error',
-            ] );
-        }
-    );
+    wp_register_block_validation_check( 'core/image', [
+        'namespace' => 'my-plugin',
+        'name'      => 'alt_text',
+        'error_msg' => 'Images must have alt text.',
+        'level'     => 'error',
+    ] );
 } );
-```
+`
 
 **Developer Resources:**
 
@@ -98,15 +95,15 @@ No. Validation API ships with zero built-in checks. After activation, no validat
 
 = How do I add validation checks? =
 
-Use `validation_api_register_plugin()` within a `validation_api_register_checks` action hook. See the `docs/guide/` directory for a complete getting started guide and examples.
+Use the registration functions (`wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`) within an `init` action hook with a `function_exists` guard. See the `docs/guide/` directory for a complete getting started guide and examples.
 
 = Can I control which checks are errors vs. warnings? =
 
-Yes, in two ways. First, the registering plugin sets the default severity level. Second, any plugin can filter severity at runtime via the `validation_api_check_level` filter. This enables a companion settings plugin to let administrators configure severity per check without touching registration code.
+Yes, in two ways. First, the registering plugin sets the default severity level. Second, any plugin can filter severity at runtime via the `wp_validation_check_level` filter. This enables a companion settings plugin to let administrators configure severity per check without touching registration code.
 
 = Where are the settings? =
 
-Validation API has no settings UI. It is a framework. A separate companion settings plugin can consume the `validation_api_check_level` filter and the REST API to expose per-check configuration to administrators.
+Validation API has no settings UI. It is a framework. A separate companion settings plugin can consume the `wp_validation_check_level` filter and the REST API to expose per-check configuration to administrators.
 
 = What are the three validation scopes? =
 
@@ -116,7 +113,7 @@ Validation API has no settings UI. It is a framework. A separate companion setti
 
 = Does this work in the site editor? =
 
-Yes. The plugin loads in both the post editor and site editor. The `editorContext` value exposed to JavaScript allows integrating plugins to apply different validation rules per context if needed.
+No. Validation currently loads in the post editor only. Site editor support is being evaluated for a future release.
 
 = How do I migrate from Block Accessibility Checks? =
 
