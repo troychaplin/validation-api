@@ -96,7 +96,7 @@ addFilter(
 
 ## Companion Settings Package
 
-The **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** companion plugin provides an admin settings page built on WordPress DataForm. It reads all registered checks and lets admins override severity levels globally — no code required.
+The **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** companion plugin provides an admin settings page built using a sortable table. It reads all registered checks and lets admins override severity levels globally — no code required.
 
 The core plugin has no settings UI and no storage. The companion bridges admin settings to the `wp_validation_check_level` filter via `wp_options`.
 
