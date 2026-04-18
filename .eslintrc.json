@@ -13,5 +13,13 @@
 	"rules": {
 		"@wordpress/no-global-active-element": "warn",
 		"@wordpress/no-unsafe-wp-apis": "off"
-	}
+	},
+	"overrides": [
+		{
+			"files": ["**/__tests__/**/*.js", "**/*.test.js"],
+			"env": {
+				"jest": true
+			}
+		}
+	]
 }

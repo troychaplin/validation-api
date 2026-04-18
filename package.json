@@ -38,6 +38,8 @@
 	"scripts": {
 		"build": "wp-scripts build",
 		"start": "wp-scripts start",
+		"test": "wp-scripts test-unit-js",
+		"test:watch": "wp-scripts test-unit-js --watch",
 		"format": "pnpm format:js && pnpm format:php && pnpm format:css",
 		"format:js": "wp-scripts lint-js --fix",
 		"format:php": "composer run format",
