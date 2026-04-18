@@ -1,30 +1,19 @@
 # Gutenberg Alignment
 
-Planning docs for aligning the Validation API plugin with current Gutenberg conventions, in preparation for a potential core-merge proposal. These are planning artifacts — not active implementation yet.
+Documents tracking the alignment work that brought the plugin to a state ready for a Gutenberg core-merge proposal. The five-batch alignment plan and the four-item polish pass have shipped; remaining work is captured in the files below.
 
-## Read in this order
+## Files
 
-1. **[consolidated-plan.md](consolidated-plan.md)** — Start here. The authoritative execution plan: five batches, order, acceptance criteria, verification steps.
-2. **[pass-a.md](pass-a.md)** — Convention & alignment findings. Contains the full checklist for every batch.
-3. **[pass-b.md](pass-b.md)** — Architectural review. Explains why `ValidationProvider` + `ValidationAPI` convert to hooks and why `editor.preSavePost` gets added.
-4. **[pass-c.md](pass-c.md)** — Leanness review. Explains the ~375 LOC of deletable PHP.
-5. **[core-pr-migration.md](core-pr-migration.md)** — Deferred items. Activate only when all NOW-batches ship and a core PR is being cut.
-
-## Scope
-
-| Document | Covers | Status |
+| Document | Purpose | Status |
 |---|---|---|
-| `pass-a.md` | Naming, file layout, style, REST namespace, package-ready src/ layout | Complete |
-| `pass-b.md` | Renderless components vs hooks, SlotFills, `registerPlugin`, save-locking pattern, REST permissions | Complete |
-| `pass-c.md` | Dead code, duplication, abstraction cost/benefit | Complete |
-| `consolidated-plan.md` | Batch sequencing, acceptance criteria, manual verification | Complete |
-| `core-pr-migration.md` | PSR-4 → WP-core style, text domain, `@since`, sidebar mount, CSS prefix | Complete (dormant until PR) |
+| **[consolidated-plan.md](consolidated-plan.md)** | Execution record of the five alignment batches plus the four-item polish pass. Shows what shipped, with commit hashes, acceptance criteria, and the deferred-polish list (items 5-7). | Complete; kept as reference |
+| **[core-pr-migration.md](core-pr-migration.md)** | Checklist activated when the core PR is actually cut. Covers PSR-4 → WP-core PHP style, text domain changes, `@since` versioning, REST-namespace finalization, sidebar mount swap, and other items that only make sense in-core. | Dormant until the PR |
+| **[../PR-READINESS.md](../PR-READINESS.md)** | Single-page answer to "where are we, what's next for the Gutenberg PR?" Written for future-you returning after a break. | Active |
 
-## NOW vs. deferred
+## History
 
-- **NOW batches** (in `consolidated-plan.md` + `pass-a.md`) preserve standalone-plugin viability. No public API breaking changes except the REST namespace (coordinated with the only consumer, the settings addon).
-- **Deferred migrations** (in `core-pr-migration.md`) would break standalone functionality and only make sense when translating the plugin into core-style PHP/JS. Activate when cutting the actual core PR.
+Detailed audit + planning notes from the alignment work (pass-a convention review, pass-b architectural review, pass-c leanness review) were deleted after the batches shipped. Git history preserves them if ever needed; the decisions they captured live in the code, in the consolidated plan, and in individual commit messages (`batch 1:`, `batch 2:`, etc. — see `git log`).
 
 ## Ownership context
 
-User owns all three related plugins (`validation-api`, `validation-api-settings`, `validation-api-integration-example`). No backward-compat concerns apply to internal consumers; coordinated changes across all three are acceptable.
+User owns all three related plugins — `validation-api` (this plugin), `validation-api-settings` (companion admin UI), `validation-api-integration-example` (demo). No backward-compat concerns apply to internal consumers; coordinated changes across all three are acceptable.
