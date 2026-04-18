@@ -1,6 +1,15 @@
 /**
+ * Side-effect module. Adds the `editor.BlockEdit` filter that runs per-block
+ * validation, syncs the result to the `core/validation` store, and renders
+ * a toolbar button (via BlockControls) when issues exist.
+ *
+ * Imported for side effects from src/hooks/index.js.
+ */
+
+/**
  * WordPress dependencies
  */
+import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -9,20 +18,11 @@ import { BlockControls } from '@wordpress/block-editor';
 /**
  * Internal dependencies
  */
-import { validateBlock } from '../validation/blocks';
-import { ValidationToolbarButton } from '../components/ValidationToolbarButton';
-import { useDebouncedValidation } from '../../shared/hooks';
-import { STORE_NAME } from '../store';
+import { STORE_NAME } from '../store/constants';
+import { validateBlock } from '../utils/validate-block';
+import { useDebouncedValidation } from '../utils/use-debounced-validation';
+import { ValidationToolbarButton } from '../components/validation-toolbar-button';
 
-/**
- * Higher-order component that adds validation indicators to blocks.
- *
- * Runs debounced validation on each block and:
- * - Syncs the result to the shared validation store so the
- *   editor.BlockListBlock filter can apply CSS classes.
- * - Renders a toolbar button (via BlockControls) when issues exist,
- *   allowing users to view the full issue list in a modal.
- */
 const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 	return props => {
 		const { clientId, attributes } = props;
@@ -71,4 +71,4 @@ const withErrorHandling = createHigherOrderComponent(BlockEdit => {
 	};
 }, 'withErrorHandling');
 
-wp.hooks.addFilter('editor.BlockEdit', 'validation-api/with-error-handling', withErrorHandling);
+addFilter('editor.BlockEdit', 'validation-api/with-error-handling', withErrorHandling);

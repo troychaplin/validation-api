@@ -6,7 +6,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { validateAllMetaChecks } from '../validateMeta';
+import { validateAllMetaChecks } from './validate-meta';
 
 /**
  * React hook to retrieve meta field validation status.

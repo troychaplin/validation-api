@@ -6,12 +6,8 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import {
-	isCheckEnabled,
-	createIssue,
-	createValidationResult,
-	getMetaValidationRules,
-} from '../../../shared/utils/validation';
+import { isCheckEnabled, createIssue, createValidationResult } from './issue-helpers';
+import { getMetaValidationRules } from './get-validation-config';
 
 /**
  * Validates a single meta field against a specific validation check.

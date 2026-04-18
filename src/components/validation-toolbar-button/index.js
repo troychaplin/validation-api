@@ -8,8 +8,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ValidationIcon } from './ValidationIcon';
-import { hasErrors, getErrors, getWarnings } from '../../shared/utils/validation';
+import { ValidationIcon } from '../validation-icon';
+import { hasErrors, getErrors, getWarnings } from '../../utils/issue-helpers';
 
 /**
  * Validation Toolbar Button
@@ -92,3 +92,5 @@ export function ValidationToolbarButton({ issues }) {
 		</>
 	);
 }
+
+export default ValidationToolbarButton;

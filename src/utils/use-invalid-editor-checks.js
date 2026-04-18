@@ -6,7 +6,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { validateEditor } from '../../../editor/validation/editor';
+import { validateEditor } from './validate-editor';
 
 /**
  * React hook that retrieves all invalid editor-level validation checks.
@@ -18,7 +18,7 @@ import { validateEditor } from '../../../editor/validation/editor';
  *
  * @return {Array} Array of validation issues for editor-level checks that failed.
  */
-export function GetInvalidEditorChecks() {
+export function useInvalidEditorChecks() {
 	// Retrieve current post type, blocks, and title from the editor store
 	// Including title ensures validation updates in real-time as user types
 	const { blocks, postType } = useSelect(select => {

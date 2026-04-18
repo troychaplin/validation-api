@@ -6,8 +6,8 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { validateAllMetaChecks } from '../../../editor/validation/meta/validateMeta';
-import { getMetaValidationRules } from './getValidationConfig';
+import { validateAllMetaChecks } from './validate-meta';
+import { getMetaValidationRules } from './get-validation-config';
 
 /**
  * React hook that retrieves all invalid meta field validations for the current post.
@@ -19,7 +19,7 @@ import { getMetaValidationRules } from './getValidationConfig';
  *
  * @return {Array} Array of validation results for meta fields that failed validation.
  */
-export function GetInvalidMeta() {
+export function useInvalidMeta() {
 	// Retrieve current post type and meta fields from the editor store
 	const { postType, meta } = useSelect(select => {
 		const editor = select('core/editor');

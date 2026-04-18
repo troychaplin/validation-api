@@ -25,3 +25,5 @@ export function ValidationIcon({ fill = 'currentColor' }) {
 		</svg>
 	);
 }
+
+export default ValidationIcon;

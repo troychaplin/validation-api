@@ -12,8 +12,8 @@ import {
 	hasErrors,
 	hasWarnings,
 	createValidationResult,
-	getValidationRules,
-} from '../../../shared/utils/validation';
+} from './issue-helpers';
+import { getValidationRules } from './get-validation-config';
 
 /**
  * Validates a block against all PHP-registered checks.

@@ -4,16 +4,16 @@
 import { PluginSidebar } from '@wordpress/editor';
 import { PanelBody, PanelRow } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useDispatch } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
 import { getBlockType } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
-import { ValidationIcon } from './ValidationIcon';
-import { STORE_NAME } from '../store';
-import { filterIssuesByType, getErrors, getWarnings } from '../../shared/utils/validation';
+import { ValidationIcon } from '../validation-icon';
+import { filterIssuesByType, getErrors, getWarnings } from '../../utils/issue-helpers';
+import { useValidationIssues } from '../../utils/use-validation-issues';
 
 /**
  * Get display name for a block type
@@ -154,15 +154,7 @@ function deduplicateEditorIssues(issues, severity) {
  * The icon color reflects the highest severity issue present (red for errors, yellow for warnings).
  */
 export function ValidationSidebar() {
-	// Read validation results from the centralized store
-	const { invalidBlocks, invalidMeta, invalidEditorChecks } = useSelect(select => {
-		const store = select(STORE_NAME);
-		return {
-			invalidBlocks: store.getInvalidBlocks(),
-			invalidMeta: store.getInvalidMeta(),
-			invalidEditorChecks: store.getInvalidEditorChecks(),
-		};
-	}, []);
+	const { invalidBlocks, invalidMeta, invalidEditorChecks } = useValidationIssues();
 
 	// Get dispatch function to select blocks when user clicks on issues
 	const { selectBlock } = useDispatch('core/block-editor');
@@ -437,3 +429,5 @@ export function ValidationSidebar() {
 		</PluginSidebar>
 	);
 }
+
+export default ValidationSidebar;

@@ -1,4 +1,11 @@
 /**
+ * Side-effect module. Adds the `editor.BlockListBlock` filter that injects
+ * CSS classes onto each block's wrapper based on its validation state.
+ *
+ * Imported for side effects from src/hooks/index.js.
+ */
+
+/**
  * WordPress dependencies
  */
 import { addFilter } from '@wordpress/hooks';
@@ -7,7 +14,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { STORE_NAME } from '../store';
+import { STORE_NAME } from '../store/constants';
 
 /**
  * Adds validation CSS classes to the block's own wrapper element.

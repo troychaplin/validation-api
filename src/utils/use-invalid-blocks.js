@@ -6,8 +6,8 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { validateBlock } from '../../../editor/validation/blocks';
-import { getEditorContext } from './getValidationConfig';
+import { validateBlock } from './validate-block';
+import { getEditorContext } from './get-validation-config';
 
 /**
  * Recursively retrieves invalid blocks from a block tree.
@@ -79,7 +79,7 @@ function findPostContentBlock(blocks) {
  *
  * @return {Array} Array of validation results for all invalid blocks in the editor.
  */
-export function GetInvalidBlocks() {
+export function useInvalidBlocks() {
 	// Get editor context to determine filtering strategy
 	const editorContext = getEditorContext();
 	const isPostEditor =

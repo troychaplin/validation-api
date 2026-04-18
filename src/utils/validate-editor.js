@@ -6,12 +6,8 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import {
-	isCheckEnabled,
-	createIssue,
-	createValidationResult,
-	getEditorValidationRules,
-} from '../../../shared/utils/validation';
+import { isCheckEnabled, createIssue, createValidationResult } from './issue-helpers';
+import { getEditorValidationRules } from './get-validation-config';
 
 /**
  * Validates entire editor content against editor-level validation rules.
