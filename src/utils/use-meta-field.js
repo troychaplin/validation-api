@@ -17,9 +17,24 @@ import { validateAllMetaChecks } from './validate-meta';
  * - Displaying validation errors/warnings in the help text
  * - Applying validation-specific CSS classes for styling
  *
- * @param {string} metaKey      - The meta key to manage (e.g., '_wp_page_template').
- * @param {string} originalHelp - Optional original help text to display alongside validation messages.
- * @return {Object} Object containing value, onChange handler, help text, and className for the control.
+ * Spread the returned object onto a `TextControl` (or compatible component) to
+ * wire value, change handler, help text, and validation styling in one line.
+ *
+ * @example
+ *
+ * ```js
+ * import { TextControl } from '@wordpress/components';
+ * import { useMetaField } from '@wordpress/validation';
+ *
+ * const BandOriginField = () => {
+ *     const props = useMetaField( 'band_origin', 'Where the band formed.' );
+ *     return <TextControl label="City of Origin" { ...props } />;
+ * };
+ * ```
+ *
+ * @param {string} metaKey      - The meta key to manage (e.g., 'seo_description').
+ * @param {string} originalHelp - Optional help text to display alongside validation messages.
+ * @return {Object} Props for TextControl: { value, onChange, help, className }.
  */
 export function useMetaField(metaKey, originalHelp = '') {
 	// Single useSelect reads post type + meta value + runs validation.

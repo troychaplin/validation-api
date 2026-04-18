@@ -16,9 +16,32 @@ import { validateAllMetaChecks } from './validate-meta';
  * validation results including error/warning flags, issues array, and CSS
  * class name for styling the field based on validation state.
  *
+ * Use this when you want full control over how a validation result is
+ * rendered. For the common "spread onto TextControl" case, use
+ * `useMetaField` instead, which wraps this hook with change-handler and
+ * help-text integration.
+ *
  * Updates automatically when the meta field value changes due to useSelect reactivity.
  *
- * @param {string} metaKey - The meta key to validate (e.g., '_wp_page_template').
+ * @example
+ *
+ * ```js
+ * import { useMetaValidation } from '@wordpress/validation';
+ *
+ * const SeoDescriptionStatus = () => {
+ *     const { hasErrors, hasWarnings, issues } = useMetaValidation( 'seo_description' );
+ *     if ( ! hasErrors && ! hasWarnings ) return null;
+ *     return (
+ *         <ul>
+ *             { issues.map( ( issue ) => (
+ *                 <li key={ issue.checkName }>{ issue.errorMsg }</li>
+ *             ) ) }
+ *         </ul>
+ *     );
+ * };
+ * ```
+ *
+ * @param {string} metaKey - The meta key to validate (e.g., 'seo_description').
  * @return {Object} Validation result object containing:
  *   - isValid: Boolean indicating if validation passed
  *   - hasErrors: Boolean indicating if any errors exist
