@@ -73,7 +73,6 @@ class Plugin {
 	public function init(): void {
 		try {
 			// Initialize services in the correct order.
-			$this->init_translations();
 			$this->init_scripts_styles();
 			$this->init_block_checks_registry();
 			$this->init_editor_checks_registry();
@@ -100,22 +99,6 @@ class Plugin {
 	}
 
 	/**
-	 * Initialize translations
-	 *
-	 * @return void
-	 * @throws \Exception If translations service initialization fails.
-	 */
-	private function init_translations(): void {
-		try {
-			$translations                   = new I18n( $this->plugin_file, $this->text_domain );
-			$this->services['translations'] = $translations;
-		} catch ( \Exception $e ) {
-			$this->log_error( 'Failed to initialize translations: ' . $e->getMessage() );
-			throw $e;
-		}
-	}
-
-	/**
 	 * Initialize scripts and styles
 	 *
 	 * @return void
@@ -123,8 +106,7 @@ class Plugin {
 	 */
 	private function init_scripts_styles(): void {
 		try {
-			$translations                     = $this->get_service( 'translations' );
-			$scripts_styles                   = new Assets( $this->plugin_file, $translations );
+			$scripts_styles                   = new Assets( $this->plugin_file, $this->text_domain );
 			$this->services['scripts_styles'] = $scripts_styles;
 		} catch ( \Exception $e ) {
 			$this->log_error( 'Failed to initialize scripts and styles: ' . $e->getMessage() );

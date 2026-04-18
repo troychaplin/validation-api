@@ -59,8 +59,7 @@ includes/
   Meta/Registry.php           # Meta check registration
   Meta/Validator.php          # Server-side meta validation helper
   Core/Plugin.php             # Plugin initialization
-  Core/Assets.php             # Script enqueuing + editor settings injection
-  Core/I18n.php               # Script translations
+  Core/Assets.php             # Script enqueuing + editor settings injection + script translations
   Core/Traits/EditorDetection.php  # Post editor context detection
   Rest/ChecksController.php   # REST endpoint
 
