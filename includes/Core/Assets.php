@@ -59,21 +59,21 @@ class Assets {
 	private $plugin_file;
 
 	/**
-	 * The translations object.
+	 * The plugin text domain.
 	 *
-	 * @var I18n
+	 * @var string
 	 */
-	private $translations;
+	private $text_domain;
 
 	/**
 	 * Constructs a new instance of the Assets class.
 	 *
 	 * @param string $plugin_file The path to the plugin file.
-	 * @param I18n   $translations The translations object.
+	 * @param string $text_domain The plugin text domain.
 	 */
-	public function __construct( string $plugin_file, I18n $translations ) {
-		$this->plugin_file  = $plugin_file;
-		$this->translations = $translations;
+	public function __construct( string $plugin_file, string $text_domain ) {
+		$this->plugin_file = $plugin_file;
+		$this->text_domain = $text_domain;
 
 		// Inject validation config into editor settings instead of using wp_localize_script.
 		add_filter( 'block_editor_settings_all', array( $this, 'inject_editor_settings' ), 10, 2 );
@@ -92,7 +92,11 @@ class Assets {
 			return;
 		}
 
-		$this->translations->setup_script_translations( self::VALIDATION_SCRIPT_HANDLE );
+		\wp_set_script_translations(
+			self::VALIDATION_SCRIPT_HANDLE,
+			$this->text_domain,
+			\plugin_dir_path( $this->plugin_file ) . 'languages'
+		);
 
 		$this->enqueue_block_scripts();
 		$this->enqueue_block_styles();

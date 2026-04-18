@@ -15,7 +15,7 @@ Designed for Gutenberg core merge. External plugins provide the rules.
 - **Flat Registration API:** Register checks with `wp_register_block_validation_check()` and related functions — a `namespace` field attributes each check to the registering plugin
 - **Filterable Severity:** Every check passes through the `wp_validation_check_level` filter — any plugin can override severity at runtime
 - **Centralized Data Store:** A dedicated `core/validation` store via `@wordpress/data` manages all validation state with reactive selectors
-- **REST API:** Registered checks are exposed via `GET /wp/v2/validation-checks` for admin tooling and companion packages
+- **REST API:** Registered checks are exposed via `GET /wp-validation/v1/checks` for admin tooling and companion packages
 - **Editor Settings Integration:** Validation config flows from PHP to JS via the `block_editor_settings_all` filter, following Gutenberg's standard data passing pattern
 - **Extensible:** 20+ PHP actions/filters and 3 JS filters for complete customization
 

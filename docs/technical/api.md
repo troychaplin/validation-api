@@ -72,26 +72,6 @@ All registration functions accept an `$args` array with the following keys:
 |---|---|---|---|
 | `meta_key` | `string` | Yes | The post meta key to validate |
 
-## Contracts
-
-### CheckProvider
-
-Interface for class-based check registration.
-
-```php
-namespace ValidationAPI\Contracts;
-
-interface CheckProvider {
-    /**
-     * Register validation checks.
-     * Called within a scoped plugin context.
-     */
-    public function register(): void;
-}
-```
-
-Implementations call global registration functions (`wp_register_block_validation_check()`, etc.) inside `register()`. All checks use the same `namespace` value to group them together.
-
 ## Registry Classes
 
 These are the internal registry singletons. Most integrations should use the global functions above. Registry methods are documented here for contributors and advanced use cases.
@@ -102,8 +82,6 @@ Singleton. Access via `BlockRegistry::get_instance()`.
 
 ```php
 register_check( string $block_type, string $check_name, array $check_args ): bool
-unregister_check( string $block_type, string $check_name ): bool
-set_check_enabled( string $block_type, string $check_name, bool $enabled ): bool
 get_checks( string $block_type ): array
 get_all_checks(): array
 is_check_registered( string $block_type, string $check_name ): bool
@@ -118,7 +96,6 @@ Singleton. Access via `EditorRegistry::get_instance()`.
 
 ```php
 register_editor_check( string $post_type, string $check_name, array $check_args ): bool
-register_editor_check_for_post_types( array $post_types, string $check_name, array $check_args ): array
 get_editor_checks( string $post_type ): array
 get_all_editor_checks(): array
 get_editor_check_config( string $post_type, string $check_name ): ?array
@@ -137,30 +114,9 @@ get_meta_check_config( string $post_type, string $meta_key, string $check_name )
 get_effective_meta_check_level( string $post_type, string $meta_key, string $check_name ): string
 ```
 
-### ValidationAPI\Meta\Validator
-
-Static helper for server-side meta validation integrated with `register_post_meta()`.
-
-```php
-Validator::required( string $post_type, string $meta_key, array $args = [] ): callable
-```
-
-| Arg Key | Type | Default | Description |
-|---|---|---|---|
-| `error_msg` | `string` | `'This field is required.'` | Error message |
-| `warning_msg` | `string` | `'This field is recommended.'` | Warning message |
-| `level` | `string` | `'error'` | Severity level |
-| `check_name` | `string` | `'required'` | Check identifier |
-| `description` | `string` | `''` | Human-readable description |
-
-Returns a `callable` for use as the `validate_callback` parameter in `register_post_meta()`. The callback:
-- Returns `true` if the check passes or is disabled (`none`)
-- Returns `WP_Error` if the check fails at `error` level
-- Returns `true` for `warning` level failures (allows save; client-side shows the warning)
-
 ## REST API
 
-### GET /wp/v2/validation-checks
+### GET /wp-validation/v1/checks
 
 Returns all registered checks across all three scopes.
 

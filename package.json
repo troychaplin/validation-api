@@ -4,7 +4,13 @@
 	"description": "A framework for registering block, meta, and editor validation checks in the WordPress block editor",
 	"author": "Troy Chaplin",
 	"license": "GPL-2.0-or-later",
-	"main": "build/index.js",
+	"main": "build/validation-api.js",
+	"sideEffects": [
+		"src/index.js",
+		"src/hooks/**",
+		"src/store/index.js",
+		"src/**/*.scss"
+	],
 	"packageManager": "pnpm@10.33.0",
 	"lint-staged": {
 		"*.{css,scss}": [
@@ -32,6 +38,8 @@
 	"scripts": {
 		"build": "wp-scripts build",
 		"start": "wp-scripts start",
+		"test": "wp-scripts test-unit-js",
+		"test:watch": "wp-scripts test-unit-js --watch",
 		"format": "pnpm format:js && pnpm format:php && pnpm format:css",
 		"format:js": "wp-scripts lint-js --fix",
 		"format:php": "composer run format",

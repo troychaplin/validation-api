@@ -87,57 +87,29 @@ addFilter(
 
 Return `true` if the field passes validation, `false` if it fails.
 
-## Server-Side Validation with Meta\Validator
+## Server-Side Validation
 
-The `ValidationAPI\Meta\Validator` helper class bridges meta checks with WordPress's `register_post_meta()`. It registers the check with the Validation API and returns a `validate_callback` for server-side enforcement:
+For server-side enforcement, use WordPress's native `validate_callback` parameter on `register_post_meta()`. The Validation API handles client-side validation; server-side is up to you and happens at `register_post_meta()` time:
 
 ```php
-use ValidationAPI\Meta\Validator;
-
 register_post_meta( 'post', 'seo_description', [
     'show_in_rest'      => true,
     'single'            => true,
     'type'              => 'string',
-    'validate_callback' => Validator::required( 'post', 'seo_description', [
-        'error_msg'   => 'SEO description is required.',
-        'warning_msg' => 'Consider adding an SEO description.',
-        'level'       => 'error',
-    ] ),
+    'validate_callback' => static function ( $value ) {
+        if ( empty( trim( (string) $value ) ) ) {
+            return new WP_Error(
+                'seo_description_required',
+                'SEO description is required.',
+                [ 'status' => 400 ]
+            );
+        }
+        return true;
+    },
 ] );
 ```
 
-### What Validator::required() Does
-
-1. Registers the check with the Meta Registry (so the client-side validation is aware of it)
-2. Returns a `validate_callback` function for `register_post_meta()`
-3. The callback runs on save and returns a `WP_Error` if validation fails at `error` level
-4. At `warning` level, the callback allows the save (client-side shows the warning)
-5. At `none` level, the callback is a no-op
-
-This means a single call handles both client-side and server-side validation for required fields.
-
-### Validator Parameters
-
-```php
-Validator::required( string $post_type, string $meta_key, array $args = [] ): callable
-```
-
-| Arg Key | Type | Default | Description |
-|---|---|---|---|
-| `error_msg` | `string` | `'This field is required.'` | Error message |
-| `warning_msg` | `string` | `'This field is recommended.'` | Warning message |
-| `level` | `string` | `'error'` | Severity level |
-| `check_name` | `string` | `'required'` | Check identifier |
-| `description` | `string` | `''` | Human-readable description |
-
-### When to Use Validator vs. Manual Registration
-
-Use `Validator::required()` when you're already calling `register_post_meta()` and want both client and server validation in one step.
-
-Use `wp_register_meta_validation_check()` directly when:
-- You don't need server-side enforcement
-- You need a custom validation rule beyond "required"
-- You're validating meta that's registered elsewhere
+Client-side validation (via `wp_register_meta_validation_check()` + the `editor.validateMeta` JS filter) covers the editor experience. Server-side `validate_callback` covers REST writes and other non-editor save paths. They are independent; register both if you need both.
 
 ## Meta Validation Data Flow
 

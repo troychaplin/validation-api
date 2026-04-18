@@ -56,33 +56,6 @@ do_action( 'wp_validation_check_registered', string $block_type, string $check_n
 | `$check_name` | `string` | Check identifier |
 | `$check_args` | `array` | The final check configuration |
 
-### wp_validation_check_unregistered
-
-Fires when a block check is unregistered.
-
-```php
-do_action( 'wp_validation_check_unregistered', string $block_type, string $check_name );
-```
-
-| Parameter | Type | Description |
-|---|---|---|
-| `$block_type` | `string` | Block type name |
-| `$check_name` | `string` | Check identifier |
-
-### wp_validation_check_toggled
-
-Fires when a block check is enabled or disabled.
-
-```php
-do_action( 'wp_validation_check_toggled', string $block_type, string $check_name, bool $enabled );
-```
-
-| Parameter | Type | Description |
-|---|---|---|
-| `$block_type` | `string` | Block type name |
-| `$check_name` | `string` | Check identifier |
-| `$enabled` | `bool` | Whether the check is now enabled |
-
 ### wp_validation_editor_check_registered
 
 Fires when an editor check is successfully registered.
@@ -244,25 +217,6 @@ $level = apply_filters( 'wp_validation_check_level', string $level, array $conte
 ```php
 [ 'scope' => 'editor', 'post_type' => 'post', 'check_name' => 'heading_hierarchy' ]
 ```
-
-### wp_validation_validate_meta
-
-Server-side meta validation filter. Fires during `register_post_meta()` validate_callback when using `Validator::required()`.
-
-```php
-$is_valid = apply_filters( 'wp_validation_validate_meta', bool $is_valid, mixed $value, string $post_type, string $meta_key, string $check_name, array $config );
-```
-
-| Parameter | Type | Description |
-|---|---|---|
-| `$is_valid` | `bool` | Current validation state (default: `true`) |
-| `$value` | `mixed` | The meta value being validated |
-| `$post_type` | `string` | Post type |
-| `$meta_key` | `string` | The meta key |
-| `$check_name` | `string` | Check identifier |
-| `$config` | `array` | The check configuration |
-
-**Return:** `bool` — `true` if valid, `false` if invalid.
 
 ## JavaScript Filters
 

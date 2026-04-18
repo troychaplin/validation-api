@@ -65,21 +65,21 @@ These items were adapted from plugin conventions to core conventions and are now
 | Function names `wp_register_*_validation_check()` | Done | Renamed from `validation_api_*` prefix |
 | JS filter names `editor.validate*` | Done | Renamed from `validation_api_validate_*` |
 | camelCase-only issue model in JS | Done | Removed dual camelCase/snake_case compatibility layer |
-| REST endpoint `wp/v2/validation-checks` | Done | Renamed from `validation-api/v1/checks` |
+| REST endpoint `wp-validation/v1/checks` | Done | Plugin-owned namespace; core-PR will negotiate final location (`wp/v2/validation-checks` or `wp-block-editor/v1/*`) |
 
 ### New to Gutenberg (No Equivalent)
 
 | Component | Purpose |
 |---|---|
 | `core/validation` store | Centralized validation state |
-| `ValidationProvider` | Single computation point for all validation |
-| `ValidationAPI` | Side-effect manager (locks, CSS classes) |
+| `useValidationSync` hook | Single computation point — reads source hooks + dispatches to store |
+| `useValidationLifecycle` hook | Side-effect manager — `lockPostSaving` + body CSS classes |
 | `ValidationSidebar` | Consolidated validation results panel |
 | `ValidationToolbarButton` | Per-block validation toolbar UI |
-| Block/Meta/Editor registries | Declarative check registration |
+| Block/Meta/Editor registries (+ AbstractRegistry base) | Declarative check registration |
 | `wp_validation_check_level` filter | Runtime severity override |
-| `Validator::required()` helper | Bridge between client and server meta validation |
-| REST `wp/v2/validation-checks` | Check introspection for admin tooling |
+| `editor.preSavePost` gate | Async save-time safety net layered on `lockPostSaving` |
+| REST `wp-validation/v1/checks` | Check introspection for admin tooling |
 
 ## Packages Affected
 
@@ -88,7 +88,9 @@ These items were adapted from plugin conventions to core conventions and are now
 This is where the bulk of the integration lives:
 
 - **Store**: Register `core/validation` store alongside `core/editor`
-- **Components**: `ValidationProvider`, `ValidationSidebar`, `ValidationAPI` integrated into editor initialization via `ExperimentalEditorProvider`
+- **Hooks**: `useValidationSync` + `useValidationLifecycle` invoked from within the editor provider's render tree (or from dedicated renderless sibling wrappers)
+- **Components**: `ValidationSidebar` mounted as a `ComplementaryArea` / `PluginSidebar`
+- **Pre-save gate**: `editor.preSavePost` filter subscribed in the package (layered on top of `lockPostSaving`)
 - **Editor settings**: Validation config passed from PHP through the settings object that `setupEditor()` receives, via the `block_editor_settings_all` filter
 
 ### `@wordpress/block-editor`
@@ -169,9 +171,11 @@ The naming alignment refactor is complete. The plugin now uses core-style names 
 
 **Deliverables**:
 - JS filter hooks: `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
-- `ValidationProvider` integrated into `ExperimentalEditorProvider`
+- `useValidationSync` hook invoked from the editor provider tree (single computation point)
+- `useValidationLifecycle` hook managing `lockPostSaving` + body classes
+- `editor.preSavePost` async filter gate (belt-and-suspenders on top of lock)
 - Per-block validation via `editor.BlockEdit` and `editor.BlockListBlock` filters
-- Debounced validation (300ms) to prevent performance issues
+- Debounced per-block validation (300ms) to prevent performance issues
 
 **Why third**: This is where the system becomes usable. Depends on both the store (Phase 1) and config from PHP (Phase 2).
 
@@ -228,7 +232,7 @@ The following naming changes have been applied throughout the codebase. These re
 
 | Old (Plugin) | Current |
 |---|---|
-| `validation-api/v1/checks` | `wp/v2/validation-checks` |
+| `validation-api/v1/checks` | `wp-validation/v1/checks` |
 
 ### Structural
 
@@ -242,7 +246,7 @@ The following naming changes have been applied throughout the codebase. These re
 
 ## Risks
 
-1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current debouncing (300ms) and `ValidationProvider` single-computation pattern help, but core demands higher standards.
+1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current per-block debouncing (300ms) and single-`useValidationSync` computation pattern help, but core demands higher standards. Polish item 6 (deferred) covers measurement; see [docs/TODO.md](TODO.md).
 
 2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The current naming has been chosen to align with existing core conventions.
 
@@ -260,8 +264,8 @@ The following naming changes have been applied throughout the codebase. These re
 
 3. **Async validation** -- Should the framework support async validators from day one, or add it later?
 
-4. **Server-side enforcement** -- Should core provide a `Validator` helper bridging client and server validation for meta fields, or leave server-side to the REST API layer?
+4. **Server-side enforcement** -- The reference plugin currently does not ship a `Validator` helper. Plugins use the native `register_post_meta(..., 'validate_callback' => ...)` pattern for server-side enforcement alongside the client-side check. Does core want to bundle a thin helper, or leave this split as-is?
 
 5. **Default checks** -- Should WordPress ship with any validation checks enabled by default?
 
-6. **Relationship to `editor.preSavePost`** -- How does real-time validation relate to save-time validation? Separate concerns or unified framework?
+6. **Relationship to `editor.preSavePost`** -- The reference plugin uses `editor.preSavePost` as a second line of defence behind `lockPostSaving` (throws if errors exist at save time). Does core want to formalize both as complementary or document the preference for one over the other?

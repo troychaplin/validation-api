@@ -156,20 +156,24 @@ addFilter(
 );
 ```
 
-For server-side enforcement on save, the API provides a `Validator` helper that registers both the client-side check and a `validate_callback` for `register_post_meta()`:
+For server-side enforcement on save, use WordPress's native `validate_callback` parameter on `register_post_meta()`. The Validation API handles the client-side UX; server-side enforcement is a separate, complementary concern:
 
 ```php
-use ValidationAPI\Meta\Validator;
-
 register_post_meta( 'post', 'seo_description', [
     'single'            => true,
     'type'              => 'string',
     'show_in_rest'      => true,
     'sanitize_callback' => 'sanitize_text_field',
-    'validate_callback' => Validator::required( 'post', 'seo_description', [
-        'error_msg' => __( 'SEO description is required.', 'my-plugin' ),
-        'level'     => 'error',
-    ] ),
+    'validate_callback' => static function ( $value ) {
+        if ( empty( trim( (string) $value ) ) ) {
+            return new WP_Error(
+                'seo_description_required',
+                __( 'SEO description is required.', 'my-plugin' ),
+                [ 'status' => 400 ]
+            );
+        }
+        return true;
+    },
 ] );
 ```
 
@@ -234,7 +238,7 @@ When any check fails at the `error` level, the API uses `lockPostSaving` to prev
 
 ### State Management
 
-Validation results are managed through a dedicated `@wordpress/data` store. A single `ValidationProvider` component computes all validation and dispatches results to the store. All other components read from the store -- no duplicate computation.
+Validation results are managed through a dedicated `@wordpress/data` store. A single `useValidationSync` hook computes all validation and dispatches results to the store. All other consumers read from the store -- no duplicate computation.
 
 **Store structure:**
 
@@ -256,7 +260,7 @@ Validation results are managed through a dedicated `@wordpress/data` store. A si
 - `hasErrors()` -- Whether any error-level failures exist
 - `hasWarnings()` -- Whether warning-level failures exist (and no errors)
 
-This architecture separates concerns cleanly: `ValidationProvider` handles computation, `ValidationAPI` handles side effects (save-locking, body CSS classes), and UI components like `ValidationSidebar` handle display.
+This architecture separates concerns cleanly: `useValidationSync` handles computation, `useValidationLifecycle` handles side effects (save-locking, body CSS classes), and UI components like `ValidationSidebar` handle display. A reactive save-lock (`lockPostSaving`) is layered with an async safety net (`editor.preSavePost` throws if errors exist at save time) for defense in depth.
 
 ### Validation Results UI
 
@@ -282,17 +286,20 @@ The [Validation API](https://github.com/troychaplin/validation-api) plugin demon
 
 ### Architecture
 
-- **PHP Registries** -- Singleton registries (`Block\Registry`, `Meta\Registry`, `Editor\Registry`) manage check registration, configuration, and data export via filters and actions.
-- **`@wordpress/data` Store** -- A dedicated Redux store (`core/validation`) centralizes all validation state with actions, selectors, and a reducer.
-- **`ValidationProvider`** -- A renderless component that serves as the single computation point. Calls validation hooks for blocks, meta, and editor checks, then dispatches results to the store.
-- **`ValidationAPI`** -- A renderless component that manages side effects: `lockPostSaving`/`unlockPostSaving`, `lockPostAutosaving`/`unlockPostAutosaving`, `disablePublishSidebar`/`enablePublishSidebar`, and body CSS classes.
-- **JavaScript Validation** -- Validation logic runs entirely in JavaScript via WordPress filters (`editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`).
-- **Configuration Export** -- PHP configuration is passed to JavaScript via the `block_editor_settings_all` filter, delivering validation rules and editor context through editor settings.
-- **Plugin Attribution** -- The `namespace` field in check registration args attributes checks to the registering plugin, enabling organized settings and REST API attribution.
+- **PHP Registries** — Singleton registries (`Block\Registry`, `Meta\Registry`, `Editor\Registry`) extending a shared `AbstractRegistry` base class. The abstract holds defaults, required-field validation, namespace stamping, priority sort, and `wp_validation_check_level` filter application; the concrete registries differ only in storage shape and scope-specific hook names.
+- **`@wordpress/data` Store** — A dedicated Redux store (`core/validation`) centralizes all validation state with actions, selectors, and a reducer.
+- **`useValidationSync` hook** — Single computation point. Calls `useInvalidBlocks`/`useInvalidMeta`/`useInvalidEditorChecks`, dispatches the results to the store.
+- **`useValidationLifecycle` hook** — Manages editor-wide side effects: `lockPostSaving`/`unlockPostSaving`, `lockPostAutosaving`/`unlockPostAutosaving`, `disablePublishSidebar`/`enablePublishSidebar`, and body CSS classes.
+- **Save-time gate** — The `editor.preSavePost` async filter is subscribed as a belt-and-suspenders safety net on top of `lockPostSaving`: if errors exist at save time the filter throws, aborting the save.
+- **JavaScript Validation** — Validation logic runs entirely in JavaScript via WordPress filters (`editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`).
+- **Configuration Export** — PHP configuration is passed to JavaScript via the `block_editor_settings_all` filter, delivering validation rules and editor context through editor settings.
+- **Plugin Attribution** — The `namespace` field in check registration args attributes checks to the registering plugin, enabling organized settings and REST API attribution.
+
+> Note on terminology: the two hooks above are called from small renderless sibling wrappers (`ValidationSync`, `ValidationLifecycle`) under the root `ValidationPlugin` component. The sibling arrangement is deliberate — putting both hooks in a single parent component causes an infinite render loop because `useValidationLifecycle` subscribes to the store that `useValidationSync` dispatches to. See [docs/technical/README.md](technical/README.md) for the full explanation.
 
 ### REST API
 
-A read-only endpoint (`GET /wp/v2/validation-checks`) exposes all registered checks grouped by scope (block, meta, editor). This enables admin tooling and companion packages to read the validation configuration without parsing PHP internals.
+A read-only endpoint exposes all registered checks grouped by scope (block, meta, editor). This enables admin tooling and companion packages to read the validation configuration without parsing PHP internals. The reference plugin currently exposes this at `GET /wp-validation/v1/checks`; the final namespace in core is TBD during PR review (candidates: `wp/v2/validation-checks`, `wp-block-editor/v1/validation-checks`).
 
 ### External Plugin Integration
 
@@ -323,8 +330,7 @@ The proposal is specifically for the **Validation API framework** -- the infrast
 - Editor context scoping (post editor only, content blocks within templates)
 - PHP action hooks for lifecycle events (`wp_validation_initialized`, `wp_validation_ready`, `wp_validation_editor_checks_ready`)
 - PHP filter hooks for check modification (`wp_validation_check_args`, `wp_validation_should_register_check`, `wp_validation_check_level`)
-- REST API endpoint (`GET /wp/v2/validation-checks`) for admin tooling
-- Meta validation helper (`Validator::required()`) for server-side enforcement via `register_post_meta()`
+- REST API endpoint for admin tooling (plugin exposes at `GET /wp-validation/v1/checks`; final namespace in core TBD)
 
 **Not included (remains in plugin territory):**
 

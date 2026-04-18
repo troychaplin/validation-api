@@ -40,7 +40,7 @@ All severity levels are filterable at runtime via `wp_validation_check_level`, e
 * Full PHP Registry API with singleton access for advanced use cases
 * JavaScript validation runs client-side via `@wordpress/hooks` filters (`editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`) for real-time feedback
 * Centralized `core/validation` data store via `@wordpress/data` for reactive state management
-* REST endpoint at `/wp/v2/validation-checks` returns all registered checks for companion tooling
+* REST endpoint at `/wp-validation/v1/checks` returns all registered checks for companion tooling
 
 **Integration Example:**
 
