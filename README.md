@@ -1,67 +1,21 @@
-<img src="assets/icon-256x256.png" alt="Validation API Plugin Banner" style="float: left; margin-right: 1.5em; height: auto; width: 128px;">
-
 # Validation API
 
-A pure validation framework for the WordPress block editor. Register validation checks for blocks, post meta fields, and editor-level content structure — with real-time feedback, visual indicators, and publish-locking. Zero built-in checks. Zero settings UI. Zero opinions. Just infrastructure.
+A framework for content-validation checks in the WordPress block editor. Plugins register checks declaratively; the framework handles real-time feedback, visual indicators, publish locking, and admin introspection.
 
-Designed for Gutenberg core merge. External plugins provide the rules.
+No built-in checks. No settings UI. No opinions about what should be validated. The core plugin is infrastructure — your plugin supplies the rules.
 
-## Features
+Designed for eventual inclusion in Gutenberg core. See [docs/PROPOSAL.md](docs/PROPOSAL.md).
 
-- **Three-Scope Validation:** Register checks for block attributes, post meta fields, and editor-level concerns (heading hierarchy, content structure, etc.)
-- **Real-Time Editor Feedback:** Validation runs as users edit — instant visual indicators with red (error) and yellow (warning) borders on blocks
-- **Publish Locking:** Error-level checks prevent publishing. Warnings show feedback but allow saving
-- **Validation Sidebar:** All issues displayed in a unified sidebar panel, grouped by severity, with click-to-navigate to the offending block
-- **Flat Registration API:** Register checks with `wp_register_block_validation_check()` and related functions — a `namespace` field attributes each check to the registering plugin
-- **Filterable Severity:** Every check passes through the `wp_validation_check_level` filter — any plugin can override severity at runtime
-- **Centralized Data Store:** A dedicated `core/validation` store via `@wordpress/data` manages all validation state with reactive selectors
-- **REST API:** Registered checks are exposed via `GET /wp-validation/v1/checks` for admin tooling and companion packages
-- **Editor Settings Integration:** Validation config flows from PHP to JS via the `block_editor_settings_all` filter, following Gutenberg's standard data passing pattern
-- **Extensible:** 20+ PHP actions/filters and 3 JS filters for complete customization
+▶ **[Watch the 2-minute demo on YouTube](https://www.youtube.com/watch?v=mLsC2tDcdL8)** (recorded against an earlier version — the UI and plugin name differ, but the behaviour is the same).
 
-## How It Works
+## Quick start
 
-The Validation API provides three registries and a coordinator:
+Register a validation check in two steps.
 
-1. **Block Registry** — Validates block attributes (e.g., image alt text, button links)
-2. **Meta Registry** — Validates post meta fields (e.g., required SEO description)
-3. **Editor Registry** — Validates document-level concerns (e.g., heading hierarchy)
-
-Each registered check has a severity level (`error`, `warning`, or `none`) that determines its behavior. The coordinator locks/unlocks publishing based on whether any errors exist.
-
-The plugin ships no built-in checks — it's a framework. Install a companion plugin or write your own checks.
-
-## Demo
-
-> Recorded against the previous version of this plugin — the UI and plugin name differ, but the core validation behaviour demonstrated is the same.
-
-[![Validation API demo video](https://img.youtube.com/vi/mLsC2tDcdL8/maxresdefault.jpg)](https://www.youtube.com/watch?v=mLsC2tDcdL8)
-
-## Severity Model
-
-| Level | Behavior |
-|---|---|
-| `error` | Prevents saving. Shows red indicator. Filter can override. |
-| `warning` | Shows yellow indicator. Allows saving. Filter can override. |
-| `none` | Check is disabled. Skipped entirely. |
-| *(omitted)* | Defaults to `error`. Filter can override. |
-
-Every active check passes through the `wp_validation_check_level` filter, making all checks configurable without the core plugin needing any storage:
+**PHP — declare the check** (in your plugin, on `init`):
 
 ```php
-apply_filters(
-    'wp_validation_check_level',
-    $registered_level,
-    $context // [ 'scope' => 'block', 'block_type' => 'core/image', 'check_name' => 'alt_text' ]
-);
-```
-
-## Quick Start
-
-### Register a Block Check
-
-```php
-add_action( 'init', function() {
+add_action( 'init', function () {
     if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
         return;
     }
@@ -77,7 +31,7 @@ add_action( 'init', function() {
 } );
 ```
 
-### Add JavaScript Validation Logic
+**JS — implement the logic** (in your plugin's editor bundle):
 
 ```javascript
 import { addFilter } from '@wordpress/hooks';
@@ -87,70 +41,113 @@ addFilter(
     'my-plugin/image-alt',
     ( isValid, blockType, attributes, checkName ) => {
         if ( blockType === 'core/image' && checkName === 'alt_text' ) {
-            return !! attributes.alt && attributes.alt.trim().length > 0;
+            return !! attributes.alt?.trim();
         }
         return isValid;
     }
 );
 ```
 
-## Companion Settings Package
+That's it. The editor now shows a red border on images without alt text, adds an entry to the validation sidebar, and blocks the publish button until the issue is resolved.
 
-The **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** companion plugin provides an admin settings page built using a sortable table. It reads all registered checks and lets admins override severity levels globally — no code required.
+See [docs/guide/README.md](docs/guide/README.md) for the full walkthrough and [docs/guide/examples.md](docs/guide/examples.md) for more patterns.
 
-The core plugin has no settings UI and no storage. The companion bridges admin settings to the `wp_validation_check_level` filter via `wp_options`.
+## Three validation scopes
+
+Each registered check falls into one of three scopes, with a matching registration function and JS filter:
+
+| Scope | Validates | PHP | JS filter |
+|---|---|---|---|
+| **Block** | Attributes on a specific block type | `wp_register_block_validation_check()` | `editor.validateBlock` |
+| **Meta** | Post meta fields | `wp_register_meta_validation_check()` | `editor.validateMeta` |
+| **Editor** | Document-level concerns (heading hierarchy, required sections) | `wp_register_editor_validation_check()` | `editor.validateEditor` |
+
+All three route through a single `core/validation` `@wordpress/data` store, so UI components subscribe once and see every issue.
+
+## Severity model
+
+| Level | Behaviour |
+|---|---|
+| `error` | Red indicator. Blocks publishing. |
+| `warning` | Yellow indicator. Allows saving. |
+| `none` | Skipped entirely. |
+
+Every active check passes through the `wp_validation_check_level` filter at runtime. The core plugin has no storage — `wp_options`, admin pages, persistence of any kind are out of scope. Configurability is delegated entirely to the filter:
+
+```php
+add_filter( 'wp_validation_check_level', function ( $level, $context ) {
+    // $context => [ 'scope' => 'block', 'block_type' => 'core/image', 'check_name' => 'alt_text' ]
+    if ( 'block' === $context['scope'] && 'alt_text' === $context['check_name'] ) {
+        return 'warning'; // soften from error to warning
+    }
+    return $level;
+}, 10, 2 );
+```
+
+A companion plugin ([validation-api-settings](https://github.com/troychaplin/validation-api-settings)) hooks this filter and provides an admin UI for the common case — install it if you want a settings page without writing one.
+
+## What you get
+
+- **Real-time editor feedback** — red (error) and yellow (warning) borders on blocks as the user edits
+- **Debounced validation** — 300 ms per-block to avoid thrashing on rapid input
+- **Validation sidebar** — unified list of issues grouped by severity, with click-to-navigate
+- **Publish locking** — errors set `lockPostSaving`; a second gate on `editor.preSavePost` aborts direct save dispatches as a safety net
+- **Body CSS classes** — `has-validation-errors` / `has-validation-warnings` on `<body>` for theme/plugin styling
+- **Per-block CSS classes** — `validation-api-block-error` / `validation-api-block-warning` on block wrappers for targeted styling
+- **Meta-field styling hooks** — `useMetaField` hook returns props to spread onto a `TextControl`, including validation-aware class + help text
+- **REST introspection** — `GET /wp-validation/v1/checks` returns every registered check with plugin attribution, keyed by scope
+- **Editor-settings integration** — PHP-to-JS config flows through the standard `block_editor_settings_all` filter; no `window.*` globals
+- **Extensible** — 20+ PHP actions/filters + 3 JS filters + 1 async pre-save filter for full customisation
+- **Post-editor scoped** — validation only runs in the post/page editor, not the site editor (template validation is out of scope)
 
 ## Requirements
 
 - WordPress 6.7 or higher
 - PHP 7.0 or higher
-- Gutenberg block editor (classic editor not supported)
+- The block editor (classic editor not supported)
+
+## Related plugins
+
+- **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** — Admin UI for overriding check severity. Hooks `wp_validation_check_level` and persists overrides in `wp_options`. Install only if you want a settings screen; the core plugin runs fine without it.
+- **[validation-api-integration-example](https://github.com/troychaplin/validation-api-integration-example)** — Demo plugin that registers 9 checks (4 block, 3 meta, 2 editor) against a "Band" custom post type. Useful as a reference when writing your own integration.
 
 ## Documentation
 
-### Developer Guide
+**For plugin developers**
 
-- **[Getting Started](docs/guide/README.md)** — Register your first check in 30 lines
-- **[Block Checks](docs/guide/block-checks.md)** — Validate block attributes
-- **[Meta Checks](docs/guide/meta-checks.md)** — Validate post meta fields
-- **[Editor Checks](docs/guide/editor-checks.md)** — Validate document-level concerns
-- **[Severity Model](docs/guide/severity.md)** — Error vs. warning vs. none, and runtime overrides
-- **[Examples](docs/guide/examples.md)** — Complete integration examples
+- [Getting started](docs/guide/README.md)
+- [Block checks](docs/guide/block-checks.md)
+- [Meta checks](docs/guide/meta-checks.md)
+- [Editor checks](docs/guide/editor-checks.md)
+- [Severity model](docs/guide/severity.md)
+- [Examples](docs/guide/examples.md)
+- [Troubleshooting](docs/guide/troubleshooting.md)
 
-### Technical Reference
+**For contributors and core reviewers**
 
-- **[Architecture](docs/technical/README.md)** — System design and internals
-- **[Data Flow](docs/technical/data-flow.md)** — PHP → JS pipeline
-- **[Hooks Reference](docs/technical/hooks.md)** — All PHP and JS hooks
-- **[API Reference](docs/technical/api.md)** — Public functions and contracts
-- **[Design Decisions](docs/technical/decisions.md)** — Why the API is shaped this way
+- [Architecture](docs/technical/README.md)
+- [Data flow](docs/technical/data-flow.md)
+- [Hooks reference](docs/technical/hooks.md)
+- [API reference](docs/technical/api.md)
+- [Design decisions](docs/technical/decisions.md)
 
-## Getting Involved
+**For the Gutenberg core-merge effort**
 
-### Get Started
+- [Proposal](docs/PROPOSAL.md)
+- [Integration plan](docs/INTEGRATION.md)
+- [PR readiness](docs/PR-READINESS.md)
 
-- Fork this repo
-- Create a branch off of `main`
-- Clone your fork locally
-- Run the following in the repo root: `pnpm install`
+## Contributing
 
-### Contributing
+1. Fork the repo and create a branch off `main`
+2. `pnpm install`
+3. `pnpm start` for watch-mode development, `pnpm build` for production
+4. `pnpm test` runs the Jest suite, `pnpm lint` runs JS/PHP/CSS linting
+5. Test in a block editor instance before opening a PR
+6. Fill out the PR template with detail
 
-1. Ensure your code follows WordPress coding standards
-2. Run `pnpm build` to build production assets
-3. Test in the post editor
-4. Create a PR from your branch into the primary repo
-5. Provide detailed info in the PR template
-
-## Support
-
-For bug reports, feature requests, or questions:
-
-1. Check the [Documentation](docs/README.md)
-2. Search existing GitHub issues before creating new ones
-3. Provide detailed reproduction steps for bugs
-4. Include WordPress version, PHP version, and block details
+WordPress coding standards are enforced by PHPCS and ESLint. Prettier and phpcbf auto-fix most formatting issues — run `pnpm format` before committing.
 
 ## License
 
-This project is licensed under the GPL v2 or later — see the [LICENSE](LICENSE) file for details.
+GPL v2 or later — see [LICENSE](LICENSE).
