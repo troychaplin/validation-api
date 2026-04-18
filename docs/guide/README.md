@@ -119,7 +119,7 @@ When you register checks, the Validation API automatically handles:
 - **Block indicators** — Red (error) and yellow (warning) borders on blocks with issues
 - **Validation sidebar** — All issues grouped by severity, with click-to-navigate
 - **Publish locking** — Error-level checks prevent publishing via `lockPostSaving`/`unlockPostSaving`
-- **REST API** — Registered checks exposed at `GET /wp/v2/validation-checks`
+- **REST API** — Registered checks exposed at `GET /wp-validation/v1/checks`
 - **Multi-context** — Works in both the post editor and the site editor
 
 You only write the registration and the validation logic. Everything else is handled.

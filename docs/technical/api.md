@@ -116,7 +116,7 @@ get_effective_meta_check_level( string $post_type, string $meta_key, string $che
 
 ## REST API
 
-### GET /wp/v2/validation-checks
+### GET /wp-validation/v1/checks
 
 Returns all registered checks across all three scopes.
 

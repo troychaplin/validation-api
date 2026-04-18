@@ -65,7 +65,7 @@ These items were adapted from plugin conventions to core conventions and are now
 | Function names `wp_register_*_validation_check()` | Done | Renamed from `validation_api_*` prefix |
 | JS filter names `editor.validate*` | Done | Renamed from `validation_api_validate_*` |
 | camelCase-only issue model in JS | Done | Removed dual camelCase/snake_case compatibility layer |
-| REST endpoint `wp/v2/validation-checks` | Done | Renamed from `validation-api/v1/checks` |
+| REST endpoint `wp-validation/v1/checks` | Done | Plugin-owned namespace; core-PR will negotiate final location (`wp/v2/validation-checks` or `wp-block-editor/v1/*`) |
 
 ### New to Gutenberg (No Equivalent)
 
@@ -78,7 +78,7 @@ These items were adapted from plugin conventions to core conventions and are now
 | `ValidationToolbarButton` | Per-block validation toolbar UI |
 | Block/Meta/Editor registries | Declarative check registration |
 | `wp_validation_check_level` filter | Runtime severity override |
-| REST `wp/v2/validation-checks` | Check introspection for admin tooling |
+| REST `wp-validation/v1/checks` | Check introspection for admin tooling |
 
 ## Packages Affected
 
@@ -227,7 +227,7 @@ The following naming changes have been applied throughout the codebase. These re
 
 | Old (Plugin) | Current |
 |---|---|
-| `validation-api/v1/checks` | `wp/v2/validation-checks` |
+| `validation-api/v1/checks` | `wp-validation/v1/checks` |
 
 ### Structural
 

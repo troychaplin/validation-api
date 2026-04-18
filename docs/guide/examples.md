@@ -284,7 +284,7 @@ Use the REST API to see what's registered:
 
 ```javascript
 // In the browser console
-wp.apiFetch( { path: '/wp/v2/validation-checks' } ).then( console.log );
+wp.apiFetch( { path: '/wp-validation/v1/checks' } ).then( console.log );
 ```
 
 This returns all registered checks grouped by scope, including `_namespace` attribution. Requires `manage_options` capability.

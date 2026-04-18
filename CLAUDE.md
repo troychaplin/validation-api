@@ -48,7 +48,7 @@ Store name: `core/validation`
 
 ### REST API
 
-`GET /wp/v2/validation-checks` — Returns all registered checks grouped by scope (block, meta, editor). Requires `manage_options`.
+`GET /wp-validation/v1/checks` — Returns all registered checks grouped by scope (block, meta, editor). Requires `manage_options`.
 
 ## Project Structure
 

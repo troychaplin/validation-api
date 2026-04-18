@@ -296,7 +296,7 @@ The [Validation API](https://github.com/troychaplin/validation-api) plugin demon
 
 ### REST API
 
-A read-only endpoint (`GET /wp/v2/validation-checks`) exposes all registered checks grouped by scope (block, meta, editor). This enables admin tooling and companion packages to read the validation configuration without parsing PHP internals.
+A read-only endpoint exposes all registered checks grouped by scope (block, meta, editor). This enables admin tooling and companion packages to read the validation configuration without parsing PHP internals. The reference plugin currently exposes this at `GET /wp-validation/v1/checks`; the final namespace in core is TBD during PR review (candidates: `wp/v2/validation-checks`, `wp-block-editor/v1/validation-checks`).
 
 ### External Plugin Integration
 
@@ -327,7 +327,7 @@ The proposal is specifically for the **Validation API framework** -- the infrast
 - Editor context scoping (post editor only, content blocks within templates)
 - PHP action hooks for lifecycle events (`wp_validation_initialized`, `wp_validation_ready`, `wp_validation_editor_checks_ready`)
 - PHP filter hooks for check modification (`wp_validation_check_args`, `wp_validation_should_register_check`, `wp_validation_check_level`)
-- REST API endpoint (`GET /wp/v2/validation-checks`) for admin tooling
+- REST API endpoint for admin tooling (plugin exposes at `GET /wp-validation/v1/checks`; final namespace in core TBD)
 
 **Not included (remains in plugin territory):**
 

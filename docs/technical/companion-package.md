@@ -28,7 +28,7 @@ The core plugin has no knowledge of the companion. It fires the filter; the comp
 The companion reads all registered checks via the REST API:
 
 ```
-GET /wp/v2/validation-checks
+GET /wp-validation/v1/checks
 ```
 
 This returns every check across all scopes, including `_namespace` attribution. The companion uses this to build its settings form dynamically — no hardcoded check list.

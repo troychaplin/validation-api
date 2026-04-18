@@ -31,14 +31,14 @@ class ChecksController extends WP_REST_Controller {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'wp/v2';
+	protected $namespace = 'wp-validation/v1';
 
 	/**
 	 * The base for this controller's routes.
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'validation-checks';
+	protected $rest_base = 'checks';
 
 	/**
 	 * Register the routes for this controller.

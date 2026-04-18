@@ -84,7 +84,7 @@ The `ValidationAPI\Core\Assets` class handles:
 
 ### REST API
 
-The `ValidationAPI\Rest\ChecksController` registers `GET /wp/v2/validation-checks`. It requires `manage_options` capability and returns all registered checks across all three scopes, including `_namespace` attribution.
+The `ValidationAPI\Rest\ChecksController` registers `GET /wp-validation/v1/checks`. It requires `manage_options` capability and returns all registered checks across all three scopes, including `_namespace` attribution.
 
 ### Traits
 
