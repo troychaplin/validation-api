@@ -228,18 +228,31 @@ After all five batches ship, run through these end-to-end checks:
 - [ ] PHP debug log shows no warnings/notices under WP_DEBUG
 - [ ] JS console shows no errors or warnings
 
-## Post-batch polish (not required, nice to have)
+## Post-batch polish
 
-Tracked but not part of the five batches:
+Orthogonal to Gutenberg alignment; tracked separately.
 
-- [ ] Add `@example` JSDoc blocks to public-facing hooks and utils (`useMetaField`, `useMetaValidation`, `useInvalidBlocks`, etc.) — matches Gutenberg package style
-- [ ] Start TypeScript migration with `src/store/constants.ts` — matches `packages/editor/src/store/`
-- [ ] Add unit tests for store reducer, selectors, actions (from [docs/TODO.md](../TODO.md))
-- [ ] Add unit tests for `validateBlock`, `validateMeta`, `validateEditor` utility functions
-- [ ] Performance benchmarks with 200+, 500+, 1000+ block posts (from [docs/TODO.md](../TODO.md))
-- [ ] Add integration tests using `@wordpress/env` + `@wordpress/e2e-test-utils`
+### Completed
 
-These polishes are orthogonal to Gutenberg alignment. Do them on your own schedule.
+- [x] **Polish 1** — `@example` JSDoc blocks added to the public API surface (6 store selectors, 5 store actions, `useMetaField`, `useMetaValidation`). Commit `561e32a`.
+- [x] **Polish 2** — TypeScript migration started with `src/store/constants.ts`. Exports `State`, `ValidationIssue`, `BlockValidationResult`, `MetaValidationResult`, `ValidationMode`, `IssueType`, and the action-type constants as narrow literal types. Stale `babel.config.json` deleted in the same change so `@wordpress/scripts`' default preset (which includes `@babel/preset-typescript`) takes effect. Commit `a228e5d`.
+- [x] **Polish 3+4** — Unit tests via `@wordpress/scripts test-unit-js`. Test infrastructure added (`test` / `test:watch` npm scripts; Jest env override in `.eslintrc.json`). 56 tests across 4 suites covering store reducer, actions, selectors, and `issue-helpers`. All pure-function coverage in ~1s. Commit `f78624e`.
+
+### Deferred — pick up before the core PR
+
+- [ ] **Polish 5** — Unit tests for the validation-dispatch functions. Requires `@wordpress/hooks` filter mocking and editor-settings mocking. Targets:
+  - `validateBlock()` — block-type rule lookup, `editor.validateBlock` filter application, mode derivation
+  - `validateMetaField()` / `validateAllMetaChecks()` — per-key rule lookup, `editor.validateMeta` filter, required-field fallback
+  - `validateEditor()` — per-post-type rules, `editor.validateEditor` filter, priority sort
+- [ ] **Polish 5b** — Unit tests for custom hooks. Requires `@testing-library/react` plus `@wordpress/data` store mocking. Targets: `useMetaField`, `useMetaValidation`, `useInvalidBlocks`, `useInvalidMeta`, `useInvalidEditorChecks`, `useValidationIssues`, `useDebouncedValidation`, `useValidationSync`, `useValidationLifecycle`.
+- [ ] **Polish 6** — Performance benchmarks with 200+/500+/1000+ block posts. Measures `useInvalidBlocks` re-computation time, dispatch churn, and memory of the `blockValidation` store slice. Outputs inform whether to add per-block diffing or lazy validation before the PR.
+- [ ] **Polish 7** — Integration / e2e tests via `@wordpress/env` + `@wordpress/e2e-test-utils-playwright`. Full-stack coverage: PHP check registration → editor settings injection → JS validation → store dispatch → save-lock → `editor.preSavePost` gate.
+
+### Also worth doing before core PR (from [docs/TODO.md](../TODO.md))
+
+- [ ] Further TypeScript migration: `src/store/actions.js`, `src/store/selectors.js`, `src/store/reducer.js`, `src/store/index.js`. Constants are typed already; making the consumers typed closes the loop.
+- [ ] Add `.d.ts` or inline JSDoc types for check registration args (the object shape accepted by `wp_register_block_validation_check()` on the JS-filter side).
+- [ ] **Future considerations** (design discussions, not straight tasks): `block.json` declarative validation, async validation via `applyFiltersAsync`, site-editor support. See [docs/TODO.md](../TODO.md) "Future Considerations" for rationale.
 
 ## Deferred — not in these batches
 
