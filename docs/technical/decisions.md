@@ -20,8 +20,7 @@ Namespace structure:
 - `ValidationAPI\Core\*` — Plugin bootstrap, assets, traits
 - `ValidationAPI\Block\*` — Block registry
 - `ValidationAPI\Editor\*` — Editor registry
-- `ValidationAPI\Meta\*` — Meta registry and validator
-- `ValidationAPI\Contracts\*` — Interfaces (CheckProvider)
+- `ValidationAPI\Meta\*` — Meta registry
 - `ValidationAPI\Rest\*` — REST API controllers
 
 ## #3 — Data Export Mechanism
@@ -106,7 +105,6 @@ Benefits:
 - Plugin identity is declared per-check via `namespace`, not inferred
 - No need to know about registry instances
 - The `function_exists` guard is clean and obvious
-- CheckProvider classes can call the same global functions
 
 ## #9 — Category Parameter
 

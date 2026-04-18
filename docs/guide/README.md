@@ -128,5 +128,4 @@ You only write the registration and the validation logic. Everything else is han
 
 - [Block Checks](block-checks.md) — Most common starting point
 - [Severity Model](severity.md) — Understand the filter system
-- [CheckProvider Pattern](check-providers.md) — Scale beyond a few checks
 - [Examples](examples.md) — Complete plugin integration examples

@@ -75,16 +75,6 @@ trait EditorDetection {
 			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		}
 
-		// Fallback - check screen post type if available.
-		if ( function_exists( 'get_current_screen' ) ) {
-			$current_screen = \get_current_screen();
-			if ( $current_screen && isset( $current_screen->post_type ) ) {
-				if ( ! in_array( $current_screen->post_type, $this->get_site_editor_post_types(), true ) ) {
-					return 'post-editor';
-				}
-			}
-		}
-
 		return 'none';
 	}
 

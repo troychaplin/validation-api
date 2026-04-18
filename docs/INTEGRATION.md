@@ -78,7 +78,6 @@ These items were adapted from plugin conventions to core conventions and are now
 | `ValidationToolbarButton` | Per-block validation toolbar UI |
 | Block/Meta/Editor registries | Declarative check registration |
 | `wp_validation_check_level` filter | Runtime severity override |
-| `Validator::required()` helper | Bridge between client and server meta validation |
 | REST `wp/v2/validation-checks` | Check introspection for admin tooling |
 
 ## Packages Affected

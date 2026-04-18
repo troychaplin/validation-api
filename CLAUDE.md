@@ -63,7 +63,6 @@ includes/
   Core/I18n.php               # Script translations
   Core/Traits/EditorDetection.php  # Post editor context detection
   Rest/ChecksController.php   # REST endpoint
-  Contracts/CheckProvider.php # Optional interface for class-based registration
 
 src/
   script.js                   # Entry point

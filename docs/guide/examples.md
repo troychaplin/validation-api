@@ -208,27 +208,38 @@ addFilter(
 
 ## Recipe: Server-Side Meta Validation
 
-Use `Validator::required()` for simultaneous client-side and server-side enforcement:
+The Validation API covers client-side validation. For server-side enforcement (REST writes, non-editor save paths), use WordPress's native `validate_callback` parameter on `register_post_meta()` alongside the client-side check:
 
 ```php
-use ValidationAPI\Meta\Validator;
-
 add_action( 'init', function() {
     if ( ! function_exists( 'wp_register_meta_validation_check' ) ) {
         return;
     }
 
-    // Register the meta field with server-side validation
+    // Client-side validation (editor UX)
+    wp_register_meta_validation_check( 'event', [
+        'namespace' => 'my-events-plugin',
+        'name'      => 'event_date_required',
+        'meta_key'  => 'event_date',
+        'level'     => 'error',
+        'error_msg' => 'Events must have a date.',
+    ] );
+
+    // Server-side validation (REST + save paths)
     register_post_meta( 'event', 'event_date', [
         'show_in_rest'      => true,
         'single'            => true,
         'type'              => 'string',
-        'validate_callback' => Validator::required( 'event', 'event_date', [
-            'error_msg'   => 'Events must have a date.',
-            'warning_msg' => 'Consider setting an event date.',
-            'level'       => 'error',
-            'description' => 'Event date is required',
-        ] ),
+        'validate_callback' => static function ( $value ) {
+            if ( empty( trim( (string) $value ) ) ) {
+                return new WP_Error(
+                    'event_date_required',
+                    'Events must have a date.',
+                    [ 'status' => 400 ]
+                );
+            }
+            return true;
+        },
     ] );
 } );
 ```
@@ -251,38 +262,6 @@ add_filter( 'wp_validation_check_level', function( $level, $context ) {
     }
     return $level;
 }, 10, 2 );
-```
-
-## Recipe: CheckProvider with Shared Configuration
-
-```php
-use ValidationAPI\Contracts\CheckProvider;
-
-class ImageChecks implements CheckProvider {
-    private const BLOCK_TYPE = 'core/image';
-    private const NAMESPACE  = 'my-validation-plugin';
-
-    public function register(): void {
-        $this->register_check( 'alt_text', 'error', [
-            'description' => 'Images must have alt text',
-            'error_msg'   => 'This image is missing alt text.',
-            'warning_msg' => 'Consider adding alt text.',
-        ] );
-
-        $this->register_check( 'dimensions', 'warning', [
-            'description' => 'Images should have explicit dimensions',
-            'error_msg'   => 'This image has no dimensions set.',
-            'warning_msg' => 'Consider setting explicit image dimensions.',
-        ] );
-    }
-
-    private function register_check( string $name, string $level, array $args ): void {
-        wp_register_block_validation_check( self::BLOCK_TYPE, array_merge(
-            $args,
-            [ 'namespace' => self::NAMESPACE, 'name' => $name, 'level' => $level ]
-        ) );
-    }
-}
 ```
 
 ## Recipe: Preventing Check Registration

@@ -9,7 +9,6 @@ For plugin authors integrating with the Validation API.
 - **[Meta Checks](guide/meta-checks.md)** — Validate post meta fields with server-side enforcement
 - **[Editor Checks](guide/editor-checks.md)** — Validate document-level concerns (heading hierarchy, content structure)
 - **[Severity Model](guide/severity.md)** — Error vs. warning vs. none, and how to override levels at runtime
-- **[CheckProvider Pattern](guide/check-providers.md)** — Class-based registration for enterprise-scale plugins
 - **[Examples](guide/examples.md)** — Complete integration examples and common recipes
 
 ## Technical Reference

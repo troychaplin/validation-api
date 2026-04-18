@@ -153,51 +153,6 @@ class Registry {
 	}
 
 	/**
-	 * Unregister a validation check
-	 *
-	 * @param string $block_type Block type.
-	 * @param string $check_name Check name.
-	 * @return bool True on success, false if check not found.
-	 */
-	public function unregister_check( string $block_type, string $check_name ): bool {
-		if ( ! isset( $this->checks[ $block_type ][ $check_name ] ) ) {
-			return false;
-		}
-
-		unset( $this->checks[ $block_type ][ $check_name ] );
-
-		if ( empty( $this->checks[ $block_type ] ) ) {
-			unset( $this->checks[ $block_type ] );
-		}
-
-		// Action hook for developers to know when a validation check is unregistered.
-		\do_action( 'wp_validation_check_unregistered', $block_type, $check_name );
-
-		return true;
-	}
-
-	/**
-	 * Enable or disable a specific validation check
-	 *
-	 * @param string $block_type Block type.
-	 * @param string $check_name Check name.
-	 * @param bool   $enabled Whether to enable or disable the check.
-	 * @return bool True on success, false if check not found.
-	 */
-	public function set_check_enabled( string $block_type, string $check_name, bool $enabled ): bool {
-		if ( ! isset( $this->checks[ $block_type ][ $check_name ] ) ) {
-			return false;
-		}
-
-		$this->checks[ $block_type ][ $check_name ]['enabled'] = (bool) $enabled;
-
-		// Action hook for developers to know when a validation check is enabled/disabled.
-		\do_action( 'wp_validation_check_toggled', $block_type, $check_name, $enabled );
-
-		return true;
-	}
-
-	/**
 	 * Get checks for a specific block type
 	 *
 	 * @param string $block_type Block type.

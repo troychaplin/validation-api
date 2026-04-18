@@ -156,20 +156,24 @@ addFilter(
 );
 ```
 
-For server-side enforcement on save, the API provides a `Validator` helper that registers both the client-side check and a `validate_callback` for `register_post_meta()`:
+For server-side enforcement on save, use WordPress's native `validate_callback` parameter on `register_post_meta()`. The Validation API handles the client-side UX; server-side enforcement is a separate, complementary concern:
 
 ```php
-use ValidationAPI\Meta\Validator;
-
 register_post_meta( 'post', 'seo_description', [
     'single'            => true,
     'type'              => 'string',
     'show_in_rest'      => true,
     'sanitize_callback' => 'sanitize_text_field',
-    'validate_callback' => Validator::required( 'post', 'seo_description', [
-        'error_msg' => __( 'SEO description is required.', 'my-plugin' ),
-        'level'     => 'error',
-    ] ),
+    'validate_callback' => static function ( $value ) {
+        if ( empty( trim( (string) $value ) ) ) {
+            return new WP_Error(
+                'seo_description_required',
+                __( 'SEO description is required.', 'my-plugin' ),
+                [ 'status' => 400 ]
+            );
+        }
+        return true;
+    },
 ] );
 ```
 
@@ -324,7 +328,6 @@ The proposal is specifically for the **Validation API framework** -- the infrast
 - PHP action hooks for lifecycle events (`wp_validation_initialized`, `wp_validation_ready`, `wp_validation_editor_checks_ready`)
 - PHP filter hooks for check modification (`wp_validation_check_args`, `wp_validation_should_register_check`, `wp_validation_check_level`)
 - REST API endpoint (`GET /wp/v2/validation-checks`) for admin tooling
-- Meta validation helper (`Validator::required()`) for server-side enforcement via `register_post_meta()`
 
 **Not included (remains in plugin territory):**
 
