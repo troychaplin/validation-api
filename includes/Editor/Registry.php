@@ -10,16 +10,14 @@
 
 namespace ValidationAPI\Editor;
 
-use ValidationAPI\Core\Traits\Logger;
+use ValidationAPI\AbstractRegistry;
 
 /**
  * Editor Checks Registry Class
  *
  * Manages registration and execution of validation checks for the general editor state.
  */
-class Registry {
-
-	use Logger;
+class Registry extends AbstractRegistry {
 
 	/**
 	 * Registered editor checks
@@ -56,17 +54,6 @@ class Registry {
 	}
 
 	/**
-	 * Sort checks by priority
-	 *
-	 * @param array $a First check.
-	 * @param array $b Second check.
-	 * @return int Comparison result.
-	 */
-	private function sort_checks_by_priority( $a, $b ) {
-		return $a['priority'] - $b['priority'];
-	}
-
-	/**
 	 * Register an editor check
 	 *
 	 * @param string $post_type  Post type (e.g., 'post', 'page').
@@ -87,34 +74,11 @@ class Registry {
 				return false;
 			}
 
-			$defaults = array(
-				'error_msg'    => '',
-				'warning_msg'  => '',
-				'level'        => 'error',
-				'priority'     => 10,
-				'enabled'      => true,
-				'description'  => '',
-				'configurable' => true,
-			);
+			$context_label = "{$post_type}/{$check_name}";
+			$check_args    = $this->normalize_args( $check_args, $context_label );
 
-			$check_args = \wp_parse_args( $check_args, $defaults );
-
-			// Validate required parameters.
-			if ( empty( $check_args['error_msg'] ) ) {
-				$this->log_error( "error_msg is required for {$post_type}/{$check_name}" );
+			if ( false === $check_args ) {
 				return false;
-			}
-
-			// Fallback for warning_msg to error_msg.
-			if ( empty( $check_args['warning_msg'] ) ) {
-				$check_args['warning_msg'] = $check_args['error_msg'];
-			}
-
-			// Validate level parameter.
-			$valid_levels = array( 'error', 'warning', 'none' );
-			if ( ! in_array( $check_args['level'], $valid_levels, true ) ) {
-				$this->log_error( "Invalid level '{$check_args['level']}' for {$post_type}/{$check_name}. Using 'error'." );
-				$check_args['level'] = 'error';
 			}
 
 			// Allow developers to filter check arguments before registration.
@@ -122,7 +86,7 @@ class Registry {
 
 			// Allow developers to prevent specific checks from being registered.
 			if ( ! \apply_filters( 'wp_validation_should_register_editor_check', true, $post_type, $check_name, $check_args ) ) {
-				$this->log_debug( "Editor check registration prevented by filter: {$post_type}/{$check_name}" );
+				$this->log_debug( "Editor check registration prevented by filter: {$context_label}" );
 				return false;
 			}
 
@@ -131,17 +95,12 @@ class Registry {
 				$this->editor_checks[ $post_type ] = array();
 			}
 
-			// Stamp namespace attribution from registration args.
-			if ( ! empty( $check_args['namespace'] ) ) {
-				$check_args['_namespace'] = $check_args['namespace'];
-				unset( $check_args['namespace'] );
-			}
+			$check_args = $this->stamp_namespace( $check_args );
 
 			// Store the check.
 			$this->editor_checks[ $post_type ][ $check_name ] = $check_args;
 
-			// Sort checks by priority.
-			\uasort( $this->editor_checks[ $post_type ], array( $this, 'sort_checks_by_priority' ) );
+			$this->sort_by_priority( $this->editor_checks[ $post_type ] );
 
 			// Action hook for developers to know when a check is registered.
 			\do_action( 'wp_validation_editor_check_registered', $post_type, $check_name, $check_args );
@@ -206,16 +165,10 @@ class Registry {
 			return 'none';
 		}
 
-		$check_type = $editor_checks[ $check_name ]['level'] ?? 'error';
+		$registered_level = $editor_checks[ $check_name ]['level'] ?? 'error';
 
-		// 'none' short-circuits — filter does not fire.
-		if ( 'none' === $check_type ) {
-			return 'none';
-		}
-
-		return \apply_filters(
-			'wp_validation_check_level',
-			$check_type,
+		return $this->apply_level_filter(
+			$registered_level,
 			array(
 				'scope'      => 'editor',
 				'post_type'  => $post_type,

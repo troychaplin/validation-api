@@ -10,16 +10,14 @@
 
 namespace ValidationAPI\Meta;
 
-use ValidationAPI\Core\Traits\Logger;
+use ValidationAPI\AbstractRegistry;
 
 /**
  * Meta Checks Registry Class
  *
  * Manages registration and execution of validation checks for post meta fields.
  */
-class Registry {
-
-	use Logger;
+class Registry extends AbstractRegistry {
 
 	/**
 	 * Registered meta checks
@@ -56,17 +54,6 @@ class Registry {
 	}
 
 	/**
-	 * Sort checks by priority
-	 *
-	 * @param array $a First check.
-	 * @param array $b Second check.
-	 * @return int Comparison result.
-	 */
-	private function sort_checks_by_priority( $a, $b ) {
-		return $a['priority'] - $b['priority'];
-	}
-
-	/**
 	 * Register a meta check
 	 *
 	 * @param string $post_type  Post type (e.g., 'post', 'band').
@@ -93,34 +80,11 @@ class Registry {
 				return false;
 			}
 
-			$defaults = array(
-				'error_msg'    => '',
-				'warning_msg'  => '',
-				'level'        => 'error',
-				'priority'     => 10,
-				'enabled'      => true,
-				'description'  => '',
-				'configurable' => true,
-			);
+			$context_label = "{$post_type}/{$meta_key}/{$check_name}";
+			$check_args    = $this->normalize_args( $check_args, $context_label );
 
-			$check_args = \wp_parse_args( $check_args, $defaults );
-
-			// Validate required parameters.
-			if ( empty( $check_args['error_msg'] ) ) {
-				$this->log_error( "error_msg is required for {$post_type}/{$meta_key}/{$check_name}" );
+			if ( false === $check_args ) {
 				return false;
-			}
-
-			// Fallback for warning_msg to error_msg.
-			if ( empty( $check_args['warning_msg'] ) ) {
-				$check_args['warning_msg'] = $check_args['error_msg'];
-			}
-
-			// Validate level parameter.
-			$valid_levels = array( 'error', 'warning', 'none' );
-			if ( ! in_array( $check_args['level'], $valid_levels, true ) ) {
-				$this->log_error( "Invalid level '{$check_args['level']}' for {$post_type}/{$meta_key}/{$check_name}. Using 'error'." );
-				$check_args['level'] = 'error';
 			}
 
 			// Allow developers to filter check arguments before registration.
@@ -128,7 +92,7 @@ class Registry {
 
 			// Allow developers to prevent specific checks from being registered.
 			if ( ! \apply_filters( 'wp_validation_should_register_meta_check', true, $post_type, $meta_key, $check_name, $check_args ) ) {
-				$this->log_debug( "Meta check registration prevented by filter: {$post_type}/{$meta_key}/{$check_name}" );
+				$this->log_debug( "Meta check registration prevented by filter: {$context_label}" );
 				return false;
 			}
 
@@ -142,17 +106,12 @@ class Registry {
 				$this->meta_checks[ $post_type ][ $meta_key ] = array();
 			}
 
-			// Stamp namespace attribution from registration args.
-			if ( ! empty( $check_args['namespace'] ) ) {
-				$check_args['_namespace'] = $check_args['namespace'];
-				unset( $check_args['namespace'] );
-			}
+			$check_args = $this->stamp_namespace( $check_args );
 
 			// Store the check.
 			$this->meta_checks[ $post_type ][ $meta_key ][ $check_name ] = $check_args;
 
-			// Sort checks by priority.
-			\uasort( $this->meta_checks[ $post_type ][ $meta_key ], array( $this, 'sort_checks_by_priority' ) );
+			$this->sort_by_priority( $this->meta_checks[ $post_type ][ $meta_key ] );
 
 			// Action hook for developers to know when a check is registered.
 			\do_action( 'wp_validation_meta_check_registered', $post_type, $meta_key, $check_name, $check_args );
@@ -219,16 +178,10 @@ class Registry {
 			return 'none';
 		}
 
-		$check_type = $meta_checks[ $meta_key ][ $check_name ]['level'] ?? 'error';
+		$registered_level = $meta_checks[ $meta_key ][ $check_name ]['level'] ?? 'error';
 
-		// 'none' short-circuits — filter does not fire.
-		if ( 'none' === $check_type ) {
-			return 'none';
-		}
-
-		return \apply_filters(
-			'wp_validation_check_level',
-			$check_type,
+		return $this->apply_level_filter(
+			$registered_level,
 			array(
 				'scope'      => 'meta',
 				'post_type'  => $post_type,
