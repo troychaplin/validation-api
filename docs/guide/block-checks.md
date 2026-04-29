@@ -7,7 +7,7 @@ Block checks validate the attributes of individual blocks. If a `core/image` is 
 Register a block check with the `namespace` field to identify your plugin:
 
 ```php
-wp_register_block_validation_check( 'core/image', [
+validation_api_register_block_check( 'core/image', [
     'namespace'   => 'my-plugin',
     'name'        => 'alt_text',
     'level'       => 'error',
@@ -39,14 +39,14 @@ The second argument is an array of check configuration:
 Register as many checks as needed for a single block type:
 
 ```php
-wp_register_block_validation_check( 'core/image', [
+validation_api_register_block_check( 'core/image', [
     'namespace'   => 'my-plugin',
     'name'        => 'alt_text',
     'level'       => 'error',
     'error_msg'   => 'This image is missing alt text.',
 ] );
 
-wp_register_block_validation_check( 'core/image', [
+validation_api_register_block_check( 'core/image', [
     'namespace'   => 'my-plugin',
     'name'        => 'decorative_flag',
     'level'       => 'warning',

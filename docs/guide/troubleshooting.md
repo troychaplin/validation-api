@@ -18,7 +18,7 @@ Most common causes, in order:
 
 2. **The validation hook returns `true` (valid).** The sidebar only lists *invalid* results. If your `editor.validateBlock` / `editor.validateMeta` / `editor.validateEditor` filter callback always returns `true`, nothing surfaces. Add a `console.log` inside your filter to confirm it's being called and returning the expected value.
 
-3. **`check_name` mismatch.** The filter callback's `checkName` parameter must match the `name` field you passed to `wp_register_block_validation_check()`. A typo here silently does nothing.
+3. **`check_name` mismatch.** The filter callback's `checkName` parameter must match the `name` field you passed to `validation_api_register_block_check()`. A typo here silently does nothing.
 
 4. **Wrong scope / post type.** Meta and editor checks register per post type. If you registered for `'post'` but you're editing a `'page'`, the check isn't loaded.
 
@@ -37,7 +37,7 @@ Most common causes, in order:
 
    ```php
    add_action( 'init', function() {
-       if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+       if ( ! function_exists( 'validation_api_register_block_check' ) ) {
            return; // ← if this fires, your check never registers
        }
        // ...
@@ -144,8 +144,8 @@ The settings addon stores overrides in `wp_options['validation_api_settings']`. 
 1. **Key format changed.** The override stored is keyed by scope + identifier + check_name. If you renamed a check, the stored override no longer matches and falls back to the default.
 2. **Another filter is running later with a higher priority.** Debug by adding:
    ```php
-   add_filter( 'wp_validation_check_level', function( $level, $context ) {
-       error_log( 'wp_validation_check_level: ' . print_r( $context, true ) . ' → ' . $level );
+   add_filter( 'validation_api_check_level', function( $level, $context ) {
+       error_log( 'validation_api_check_level: ' . print_r( $context, true ) . ' → ' . $level );
        return $level;
    }, 999, 2 );
    ```

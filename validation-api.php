@@ -59,7 +59,7 @@ add_action( 'init', 'validation_api_init_plugin' );
  * @param array  $args       Check configuration. Required keys: 'namespace' (string), 'name' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function wp_register_block_validation_check( string $block_type, array $args ): bool {
+function validation_api_register_block_check( string $block_type, array $args ): bool {
 	if ( empty( $args['namespace'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -94,7 +94,7 @@ function wp_register_block_validation_check( string $block_type, array $args ): 
  * @param array  $args      Check configuration. Required keys: 'namespace' (string), 'name' (string), 'meta_key' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function wp_register_meta_validation_check( string $post_type, array $args ): bool {
+function validation_api_register_meta_check( string $post_type, array $args ): bool {
 	if ( empty( $args['namespace'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -139,7 +139,7 @@ function wp_register_meta_validation_check( string $post_type, array $args ): bo
  * @param array  $args      Check configuration. Required keys: 'namespace' (string), 'name' (string), 'error_msg' (string).
  * @return bool True on success, false on failure.
  */
-function wp_register_editor_validation_check( string $post_type, array $args ): bool {
+function validation_api_register_editor_check( string $post_type, array $args ): bool {
 	if ( empty( $args['namespace'] ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,

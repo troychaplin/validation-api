@@ -4,7 +4,7 @@
  *
  * Base class extracted from the scope-specific registries (Block, Meta, Editor).
  * Provides shared helpers for check normalization, namespace stamping, priority
- * sorting, and the wp_validation_check_level filter application.
+ * sorting, and the validation_api_check_level filter application.
  *
  * Subclasses retain their own storage shape, public registration signature,
  * and scope-specific filter/action hook names.
@@ -130,7 +130,7 @@ abstract class AbstractRegistry {
 	}
 
 	/**
-	 * Apply the wp_validation_check_level filter with a 'none' short-circuit.
+	 * Apply the validation_api_check_level filter with a 'none' short-circuit.
 	 *
 	 * @param string $registered_level The level as registered.
 	 * @param array  $context          Scope-specific context passed to consumers of the filter.
@@ -141,6 +141,6 @@ abstract class AbstractRegistry {
 			return 'none';
 		}
 
-		return \apply_filters( 'wp_validation_check_level', $registered_level, $context );
+		return \apply_filters( 'validation_api_check_level', $registered_level, $context );
 	}
 }

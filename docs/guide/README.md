@@ -18,11 +18,11 @@ This example registers an image alt text check. If a `core/image` block has no a
 
 ```php
 add_action( 'init', function() {
-    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+    if ( ! function_exists( 'validation_api_register_block_check' ) ) {
         return;
     }
 
-    wp_register_block_validation_check( 'core/image', [
+    validation_api_register_block_check( 'core/image', [
         'namespace'   => 'my-content-rules',
         'name'        => 'alt_text',
         'level'       => 'error',
@@ -59,19 +59,19 @@ That's it. The Validation API handles the sidebar panel, block indicators, and p
 Your plugin must not break when the Validation API is deactivated. Always wrap registration in:
 
 ```php
-if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+if ( ! function_exists( 'validation_api_register_block_check' ) ) {
     return;
 }
 ```
 
-This is the only dependency check you need. If `wp_register_block_validation_check` exists, the entire API is available.
+This is the only dependency check you need. If `validation_api_register_block_check` exists, the entire API is available.
 
 ### The namespace Field
 
 The `namespace` field in the check args declares your plugin identity and scopes your checks:
 
 ```php
-wp_register_block_validation_check( 'core/image', [
+validation_api_register_block_check( 'core/image', [
     'namespace' => 'my-plugin',
     'name'      => 'alt_text',
     'error_msg' => 'Alt text required.',
@@ -88,9 +88,9 @@ The Validation API has three registries, each for a different kind of check:
 
 | Scope | Function | What It Validates |
 |---|---|---|
-| Block | `wp_register_block_validation_check()` | Block attributes (alt text, links, required fields) |
-| Meta | `wp_register_meta_validation_check()` | Post meta fields (SEO description, custom fields) |
-| Editor | `wp_register_editor_validation_check()` | Document-level concerns (heading hierarchy, content structure) |
+| Block | `validation_api_register_block_check()` | Block attributes (alt text, links, required fields) |
+| Meta | `validation_api_register_meta_check()` | Post meta fields (SEO description, custom fields) |
+| Editor | `validation_api_register_editor_check()` | Document-level concerns (heading hierarchy, content structure) |
 
 Each has its own PHP registration function and JS validation filter. See the dedicated guides:
 
@@ -109,7 +109,7 @@ Every check has a `level` that controls its behavior:
 | `none` | Check is disabled. Skipped entirely. |
 | *(omitted)* | Defaults to `error`. |
 
-Every active check passes through the `wp_validation_check_level` filter, so any check's severity can be overridden at runtime — without modifying the registering plugin. See [Severity Model](severity.md) for details.
+Every active check passes through the `validation_api_check_level` filter, so any check's severity can be overridden at runtime — without modifying the registering plugin. See [Severity Model](severity.md) for details.
 
 ## What the API Provides
 

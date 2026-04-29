@@ -25,7 +25,7 @@ Each deferred item either:
 
 ## Migration overview
 
-Five major migrations:
+Six major migrations:
 
 | # | Migration | Blocker until | Est. effort |
 |---|---|---|---|
@@ -34,6 +34,7 @@ Five major migrations:
 | 3 | i18n: `'validation-api'` text domain → `'gutenberg'` (plugin) or `'default'` (core) | PR branch cut | Small (find-replace) |
 | 4 | Versioning: `@since 1.0.0` → target WP version | WP version known | Small |
 | 5 | Naming: CSS classes, namespace keys, tag prefixes | Core review | Small-medium |
+| 6 | API rename back to core prefix: `validation_api_*` → `wp_*` (functions and hooks) | PR branch cut | Small (find-replace) |
 
 ## Target PHP architecture
 
@@ -63,12 +64,24 @@ gutenberg/lib/validation/
 | `ValidationAPI\Core\Traits\Logger` | Inlined (WP core doesn't use traits) |
 | `ValidationAPI\Core\Traits\EditorDetection` | Inlined or moved to a helper function |
 
-### Global function signatures (unchanged)
+### Global function signatures (rename to core prefix)
 
-These stay identical — they're already core-style:
-- `wp_register_block_validation_check( $block_type, $args )`
-- `wp_register_meta_validation_check( $post_type, $args )`
-- `wp_register_editor_validation_check( $post_type, $args )`
+The standalone plugin uses `validation_api_*` for plugin-directory compliance (the `wp_*` prefix is reserved for core, so the plugin-check tool flags any plugin function/hook using it). At core merge, rename back to the core-style prefix. The function signatures themselves are identical; only the names change:
+
+| Standalone plugin | Target at core |
+|---|---|
+| `validation_api_register_block_check( $block_type, $args )` | `wp_register_block_validation_check( $block_type, $args )` |
+| `validation_api_register_meta_check( $post_type, $args )` | `wp_register_meta_validation_check( $post_type, $args )` |
+| `validation_api_register_editor_check( $post_type, $args )` | `wp_register_editor_validation_check( $post_type, $args )` |
+
+Find-and-replace recipe (run from the migrated `lib/validation/` tree):
+```bash
+sed -i '' \
+  -e 's/validation_api_register_block_check/wp_register_block_validation_check/g' \
+  -e 's/validation_api_register_meta_check/wp_register_meta_validation_check/g' \
+  -e 's/validation_api_register_editor_check/wp_register_editor_validation_check/g' \
+  $(grep -rl validation_api_register_ lib/validation/)
+```
 
 ### Autoload change
 
@@ -85,8 +98,8 @@ These stay identical — they're already core-style:
 
 ### Trait migration
 
-- `Logger` trait's `log_error()` and `log_debug()` methods: inline as two standalone functions (likely `_wp_validation_log_error()`, `_wp_validation_log_debug()`) or use the `wp_trigger_error()` / `error_log()` conventions preferred by core. Confirm the current WP core convention at migration time.
-- `EditorDetection` trait: collapse the `get_editor_context()` logic into a helper function in `lib/validation/load.php` (e.g., `_wp_validation_get_editor_context()`).
+- `Logger` trait's `log_error()` and `log_debug()` methods: inline as two standalone functions (likely `_validation_api_log_error()`, `_validation_api_log_debug()`) or use the `wp_trigger_error()` / `error_log()` conventions preferred by core. Confirm the current WP core convention at migration time.
+- `EditorDetection` trait: collapse the `get_editor_context()` logic into a helper function in `lib/validation/load.php` (e.g., `_validation_api_get_editor_context()`).
 
 ### Singleton preservation
 
@@ -226,7 +239,30 @@ Internal `_namespace` field stamped from `namespace` arg. Keep; it's internal im
 
 ### PHP hook names
 
-All `wp_validation_*` prefixed hooks stay — already core-style. No rename.
+The standalone plugin uses `validation_api_*` for plugin-directory compliance. At core merge, rename to `wp_validation_*`:
+
+| Standalone plugin | Target at core |
+|---|---|
+| `validation_api_check_level` | `wp_validation_check_level` |
+| `validation_api_check_args` | `wp_validation_check_args` |
+| `validation_api_meta_check_args` | `wp_validation_meta_check_args` |
+| `validation_api_editor_check_args` | `wp_validation_editor_check_args` |
+| `validation_api_should_register_check` | `wp_validation_should_register_check` |
+| `validation_api_should_register_meta_check` | `wp_validation_should_register_meta_check` |
+| `validation_api_should_register_editor_check` | `wp_validation_should_register_editor_check` |
+| `validation_api_check_registered` | `wp_validation_check_registered` |
+| `validation_api_meta_check_registered` | `wp_validation_meta_check_registered` |
+| `validation_api_editor_check_registered` | `wp_validation_editor_check_registered` |
+| `validation_api_initialized` | `wp_validation_initialized` |
+| `validation_api_ready` | `wp_validation_ready` |
+| `validation_api_editor_checks_ready` | `wp_validation_editor_checks_ready` |
+
+Mechanical find-and-replace (do this **after** the function-name rename above so substring overlap doesn't matter — the hook names don't share prefixes with the function names):
+```bash
+sed -i '' 's/validation_api_/wp_validation_/g' $(grep -rl validation_api_ lib/validation/)
+```
+
+Note the recipe also affects internal helpers like `_validation_api_log_error()`/`_validation_api_get_editor_context()` if they exist — review the diff before committing, since core conventions prefer `_wp_*` underscore-prefixed internals.
 
 ### JS filter names
 
@@ -255,14 +291,16 @@ Suggested procedure for creating the actual PR:
 4. Copy JS tree to `packages/validation/src/` (see JS package section)
 5. Add `packages/validation/package.json` based on a similar package
 6. Run mechanical find-and-replace migrations (text domain, `@since`, CSS prefix, `@package`)
-7. Inline trait methods (Logger, EditorDetection)
-8. Remove `Core/Plugin.php` initialization pattern; replace with functional `lib/validation/load.php`
-9. Wire the new `lib/validation/` loader into Gutenberg's main loader
-10. Register the new `packages/validation/` in `lerna.json` and root `package.json`
-11. Adapt sidebar mount to use `ComplementaryArea` directly instead of `registerPlugin`
-12. Run Gutenberg's `npm run build` and `phpcs`
-13. Fix any core-convention violations caught by lint
-14. Smoke test: activate Gutenberg in a local WP, register a test check, verify it surfaces in the editor
+7. **Rename functions and hooks back to `wp_*` prefix** — run the sed recipes from "Global function signatures" and "PHP hook names" sections above. Update PHP, JS (any `addFilter` calls referencing PHP hook names), and docs.
+8. Inline trait methods (Logger, EditorDetection)
+9. Remove `Core/Plugin.php` initialization pattern; replace with functional `lib/validation/load.php`
+10. Wire the new `lib/validation/` loader into Gutenberg's main loader
+11. Register the new `packages/validation/` in `lerna.json` and root `package.json`
+12. Adapt sidebar mount to use `ComplementaryArea` directly instead of `registerPlugin`
+13. Run Gutenberg's `npm run build` and `phpcs`
+14. Fix any core-convention violations caught by lint
+15. Smoke test: activate Gutenberg in a local WP, register a test check, verify it surfaces in the editor
+16. Update the integration-example and settings companion plugins (in their separate repos) to consume the new `wp_*` names; see each plugin's `docs/CORE-MERGE-REVERT.md` for the full rename map.
 
 ## PR description template
 
@@ -324,10 +362,8 @@ These stay as-is through core merge:
 
 | Item | Reason |
 |---|---|
-| Global PHP function names (`wp_register_*_check`) | Already core-style |
 | JS filter names (`editor.validate*`) | Already core-style |
 | Store name (`core/validation`) | Already core-style |
-| PHP hook prefix (`wp_validation_*`) | Already core-style |
 | Severity model (`error`/`warning`/`none`) | Stable |
 | `block_editor_settings_all` injection | Canonical mechanism |
 | Registry singleton pattern | Matches `WP_Connector_Registry` |

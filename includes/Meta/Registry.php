@@ -88,10 +88,10 @@ class Registry extends AbstractRegistry {
 			}
 
 			// Allow developers to filter check arguments before registration.
-			$check_args = \apply_filters( 'wp_validation_meta_check_args', $check_args, $post_type, $meta_key, $check_name );
+			$check_args = \apply_filters( 'validation_api_meta_check_args', $check_args, $post_type, $meta_key, $check_name );
 
 			// Allow developers to prevent specific checks from being registered.
-			if ( ! \apply_filters( 'wp_validation_should_register_meta_check', true, $post_type, $meta_key, $check_name, $check_args ) ) {
+			if ( ! \apply_filters( 'validation_api_should_register_meta_check', true, $post_type, $meta_key, $check_name, $check_args ) ) {
 				$this->log_debug( "Meta check registration prevented by filter: {$context_label}" );
 				return false;
 			}
@@ -114,7 +114,7 @@ class Registry extends AbstractRegistry {
 			$this->sort_by_priority( $this->meta_checks[ $post_type ][ $meta_key ] );
 
 			// Action hook for developers to know when a check is registered.
-			\do_action( 'wp_validation_meta_check_registered', $post_type, $meta_key, $check_name, $check_args );
+			\do_action( 'validation_api_meta_check_registered', $post_type, $meta_key, $check_name, $check_args );
 
 			return true;
 
@@ -162,7 +162,7 @@ class Registry extends AbstractRegistry {
 	/**
 	 * Get the effective check level for a specific meta check
 	 *
-	 * Passes the registered level through the wp_validation_check_level filter,
+	 * Passes the registered level through the validation_api_check_level filter,
 	 * allowing external plugins (e.g. a settings companion) to override the level
 	 * at runtime. Checks set to 'none' are skipped without firing the filter.
 	 *

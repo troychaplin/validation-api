@@ -4,12 +4,12 @@ All public registration functions, registry methods, and contracts.
 
 ## Global Functions
 
-### wp_register_block_validation_check()
+### validation_api_register_block_check()
 
 Register a validation check for a block type.
 
 ```php
-wp_register_block_validation_check( string $block_type, array $args ): void
+validation_api_register_block_check( string $block_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
@@ -17,12 +17,12 @@ wp_register_block_validation_check( string $block_type, array $args ): void
 | `$block_type` | `string` | Block type name (e.g., `'core/image'`). |
 | `$args` | `array` | Check configuration (see [Check Arguments](#check-arguments)). Must include `'namespace'`. |
 
-### wp_register_meta_validation_check()
+### validation_api_register_meta_check()
 
 Register a validation check for a post meta field.
 
 ```php
-wp_register_meta_validation_check( string $post_type, array $args ): void
+validation_api_register_meta_check( string $post_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
@@ -30,12 +30,12 @@ wp_register_meta_validation_check( string $post_type, array $args ): void
 | `$post_type` | `string` | Post type (e.g., `'post'`, `'page'`). |
 | `$args` | `array` | Check configuration. Must include `'namespace'` and `'meta_key'`. See [Check Arguments](#check-arguments). |
 
-### wp_register_editor_validation_check()
+### validation_api_register_editor_check()
 
 Register a validation check for the editor (document-level).
 
 ```php
-wp_register_editor_validation_check( string $post_type, array $args ): void
+validation_api_register_editor_check( string $post_type, array $args ): void
 ```
 
 | Parameter | Type | Description |
