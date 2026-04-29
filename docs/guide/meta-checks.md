@@ -9,7 +9,7 @@ Meta checks have a unique advantage: they integrate with WordPress's `register_p
 Register a meta check with the `namespace` field to identify your plugin:
 
 ```php
-wp_register_meta_validation_check( 'post', [
+validation_api_register_meta_check( 'post', [
     'namespace'   => 'my-plugin',
     'name'        => 'required',
     'meta_key'    => 'seo_description',
@@ -44,7 +44,7 @@ Register the same check for multiple post types by calling the function for each
 
 ```php
 foreach ( [ 'post', 'page' ] as $post_type ) {
-    wp_register_meta_validation_check( $post_type, [
+    validation_api_register_meta_check( $post_type, [
         'namespace' => 'my-plugin',
         'name'      => 'required',
         'meta_key'  => 'seo_description',
@@ -109,7 +109,7 @@ register_post_meta( 'post', 'seo_description', [
 ] );
 ```
 
-Client-side validation (via `wp_register_meta_validation_check()` + the `editor.validateMeta` JS filter) covers the editor experience. Server-side `validate_callback` covers REST writes and other non-editor save paths. They are independent; register both if you need both.
+Client-side validation (via `validation_api_register_meta_check()` + the `editor.validateMeta` JS filter) covers the editor experience. Server-side `validate_callback` covers REST writes and other non-editor save paths. They are independent; register both if you need both.
 
 ## Meta Validation Data Flow
 

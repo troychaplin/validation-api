@@ -77,7 +77,7 @@ These items were adapted from plugin conventions to core conventions and are now
 | `ValidationSidebar` | Consolidated validation results panel |
 | `ValidationToolbarButton` | Per-block validation toolbar UI |
 | Block/Meta/Editor registries (+ AbstractRegistry base) | Declarative check registration |
-| `wp_validation_check_level` filter | Runtime severity override |
+| `validation_api_check_level` filter | Runtime severity override |
 | `editor.preSavePost` gate | Async save-time safety net layered on `lockPostSaving` |
 | REST `wp-validation/v1/checks` | Check introspection for admin tooling |
 
@@ -111,13 +111,13 @@ This is where the bulk of the integration lives:
 ### PHP Side
 
 - New file (e.g., `wp-includes/validation.php`) or extend `wp-includes/blocks.php`
-- Registration functions: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
+- Registration functions: `validation_api_register_block_check()`, `validation_api_register_meta_check()`, `validation_api_register_editor_check()`
 - Registry classes following the `WP_Block_Type_Registry` singleton pattern
 - Config export integrated into the editor settings bootstrap via `block_editor_settings_all`
 
 ## Current State and Upstream Strategy
 
-The naming alignment refactor is complete. The plugin now uses core-style names for all public API surfaces. The remaining work is the actual Gutenberg contribution, structured as follows:
+The naming alignment refactor is complete. JS filters and the store name are core-style and stay as-is at merge. PHP function/hook names use the `validation_api_*` prefix in the standalone plugin (a `wp_*` standalone plugin would fail WordPress.org plugin-check) and switch to `wp_*` at core merge — see the table at the bottom of this file. The remaining work is the actual Gutenberg contribution, structured as follows:
 
 ### Phase 1: RFC and Data Foundation
 
@@ -140,11 +140,11 @@ The naming alignment refactor is complete. The plugin now uses core-style names 
 **Goal**: Land the server-side check registration system.
 
 **Deliverables**:
-- `wp_register_block_validation_check( $block_type, $args )` -- Register checks for block attributes
-- `wp_register_meta_validation_check( $post_type, $args )` -- Register checks for post meta
-- `wp_register_editor_validation_check( $post_type, $args )` -- Register checks for document state
-- `wp_validation_check_level` filter for runtime severity override
-- `wp_validation_check_args` filter for check modification before registration
+- `validation_api_register_block_check( $block_type, $args )` -- Register checks for block attributes
+- `validation_api_register_meta_check( $post_type, $args )` -- Register checks for post meta
+- `validation_api_register_editor_check( $post_type, $args )` -- Register checks for document state
+- `validation_api_check_level` filter for runtime severity override
+- `validation_api_check_args` filter for check modification before registration
 - Validation config passed to JS via `block_editor_settings_all` filter
 
 **Check args structure**:
@@ -203,30 +203,42 @@ The naming alignment refactor is complete. The plugin now uses core-style names 
 - `block.json` declarative validation rules
 - Default check bundles
 
-## Completed API Alignment
+## Naming — standalone plugin vs. core merge
 
-The following naming changes have been applied throughout the codebase. These reflect the current state of the plugin and the names that will be used in the Gutenberg PR.
+The plugin's PHP API uses `validation_api_*` names. At core-merge time, these are renamed to `wp_*` per [docs/gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md). The JS filters and store name already match what core would use and don't need renaming.
+
+The reason for the dual naming: WordPress.org's plugin directory reserves the `wp_*` prefix for core, so a standalone plugin can't ship under those names without triggering plugin-check warnings. The names below reflect the standalone plugin's current state on the left and the target post-merge names on the right.
 
 ### PHP
 
-| Old (Plugin) | Current |
+| Standalone plugin (current) | Target at core merge |
 |---|---|
-| `validation_api_register_plugin()` | Removed; `namespace` field in check args |
 | `validation_api_register_block_check()` | `wp_register_block_validation_check()` |
 | `validation_api_register_meta_check()` | `wp_register_meta_validation_check()` |
 | `validation_api_register_editor_check()` | `wp_register_editor_validation_check()` |
 | `validation_api_check_level` filter | `wp_validation_check_level` |
 | `validation_api_check_args` filter | `wp_validation_check_args` |
+| `validation_api_meta_check_args` filter | `wp_validation_meta_check_args` |
+| `validation_api_editor_check_args` filter | `wp_validation_editor_check_args` |
+| `validation_api_should_register_check` filter | `wp_validation_should_register_check` |
+| `validation_api_should_register_meta_check` filter | `wp_validation_should_register_meta_check` |
+| `validation_api_should_register_editor_check` filter | `wp_validation_should_register_editor_check` |
+| `validation_api_check_registered` action | `wp_validation_check_registered` |
+| `validation_api_meta_check_registered` action | `wp_validation_meta_check_registered` |
+| `validation_api_editor_check_registered` action | `wp_validation_editor_check_registered` |
+| `validation_api_initialized` action | `wp_validation_initialized` |
+| `validation_api_ready` action | `wp_validation_ready` |
+| `validation_api_editor_checks_ready` action | `wp_validation_editor_checks_ready` |
 
-### JavaScript
+### JavaScript (no rename — already core-style)
 
-| Old (Plugin) | Current |
+| Identifier | Notes |
 |---|---|
-| `validation_api_validate_block` filter | `editor.validateBlock` |
-| `validation_api_validate_meta` filter | `editor.validateMeta` |
-| `validation_api_validate_editor` filter | `editor.validateEditor` |
-| Store: `validation-api` | `core/validation` |
-| `window.ValidationAPI` | Config via `block_editor_settings_all` filter / editor settings |
+| `editor.validateBlock` filter | Stays at core merge |
+| `editor.validateMeta` filter | Stays at core merge |
+| `editor.validateEditor` filter | Stays at core merge |
+| Store: `core/validation` | Stays at core merge |
+| Config via `block_editor_settings_all` filter / editor settings | Stays at core merge |
 
 ### REST API
 
@@ -248,7 +260,7 @@ The following naming changes have been applied throughout the codebase. These re
 
 1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current per-block debouncing (300ms) and single-`useValidationSync` computation pattern help, but core demands higher standards. Polish item 6 (deferred) covers measurement; see [docs/TODO.md](TODO.md).
 
-2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The current naming has been chosen to align with existing core conventions.
+2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The standalone plugin uses `validation_api_*` for plugin-directory compliance; the core-merge translation to `wp_*` is mechanical and tracked in [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md).
 
 3. **Scope creep** -- Discussions may pull in content linting, accessibility auditing, or editorial workflows. The framework/rules boundary must hold.
 

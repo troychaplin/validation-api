@@ -16,11 +16,11 @@ Register a validation check in two steps.
 
 ```php
 add_action( 'init', function () {
-    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+    if ( ! function_exists( 'validation_api_register_block_check' ) ) {
         return;
     }
 
-    wp_register_block_validation_check( 'core/image', [
+    validation_api_register_block_check( 'core/image', [
         'namespace'   => 'my-content-rules',
         'name'        => 'alt_text',
         'level'       => 'error',
@@ -58,9 +58,9 @@ Each registered check falls into one of three scopes, with a matching registrati
 
 | Scope | Validates | PHP | JS filter |
 |---|---|---|---|
-| **Block** | Attributes on a specific block type | `wp_register_block_validation_check()` | `editor.validateBlock` |
-| **Meta** | Post meta fields | `wp_register_meta_validation_check()` | `editor.validateMeta` |
-| **Editor** | Document-level concerns (heading hierarchy, required sections) | `wp_register_editor_validation_check()` | `editor.validateEditor` |
+| **Block** | Attributes on a specific block type | `validation_api_register_block_check()` | `editor.validateBlock` |
+| **Meta** | Post meta fields | `validation_api_register_meta_check()` | `editor.validateMeta` |
+| **Editor** | Document-level concerns (heading hierarchy, required sections) | `validation_api_register_editor_check()` | `editor.validateEditor` |
 
 All three route through a single `core/validation` `@wordpress/data` store, so UI components subscribe once and see every issue.
 
@@ -72,10 +72,10 @@ All three route through a single `core/validation` `@wordpress/data` store, so U
 | `warning` | Yellow indicator. Allows saving. |
 | `none` | Skipped entirely. |
 
-Every active check passes through the `wp_validation_check_level` filter at runtime. The core plugin has no storage — `wp_options`, admin pages, persistence of any kind are out of scope. Configurability is delegated entirely to the filter:
+Every active check passes through the `validation_api_check_level` filter at runtime. The core plugin has no storage — `wp_options`, admin pages, persistence of any kind are out of scope. Configurability is delegated entirely to the filter:
 
 ```php
-add_filter( 'wp_validation_check_level', function ( $level, $context ) {
+add_filter( 'validation_api_check_level', function ( $level, $context ) {
     // $context => [ 'scope' => 'block', 'block_type' => 'core/image', 'check_name' => 'alt_text' ]
     if ( 'block' === $context['scope'] && 'alt_text' === $context['check_name'] ) {
         return 'warning'; // soften from error to warning
@@ -108,7 +108,7 @@ A companion plugin ([validation-api-settings](https://github.com/troychaplin/val
 
 ## Related plugins
 
-- **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** — Admin UI for overriding check severity. Hooks `wp_validation_check_level` and persists overrides in `wp_options`. Install only if you want a settings screen; the core plugin runs fine without it.
+- **[validation-api-settings](https://github.com/troychaplin/validation-api-settings)** — Admin UI for overriding check severity. Hooks `validation_api_check_level` and persists overrides in `wp_options`. Install only if you want a settings screen; the core plugin runs fine without it.
 - **[validation-api-integration-example](https://github.com/troychaplin/validation-api-integration-example)** — Demo plugin that registers 9 checks (4 block, 3 meta, 2 editor) against a "Band" custom post type. Useful as a reference when writing your own integration.
 
 ## Documentation

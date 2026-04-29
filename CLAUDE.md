@@ -8,17 +8,17 @@ Three validation scopes, each with a PHP registry and JS filter:
 
 | Scope | PHP Registry | Registration Function | JS Filter |
 |---|---|---|---|
-| Block attributes | `ValidationAPI\Block\Registry` | `wp_register_block_validation_check()` | `editor.validateBlock` |
-| Post meta fields | `ValidationAPI\Meta\Registry` | `wp_register_meta_validation_check()` | `editor.validateMeta` |
-| Editor / document | `ValidationAPI\Editor\Registry` | `wp_register_editor_validation_check()` | `editor.validateEditor` |
+| Block attributes | `ValidationAPI\Block\Registry` | `validation_api_register_block_check()` | `editor.validateBlock` |
+| Post meta fields | `ValidationAPI\Meta\Registry` | `validation_api_register_meta_check()` | `editor.validateMeta` |
+| Editor / document | `ValidationAPI\Editor\Registry` | `validation_api_register_editor_check()` | `editor.validateEditor` |
 
-All three concrete registries extend `ValidationAPI\AbstractRegistry`, which provides shared defaults, level validation, namespace stamping, priority sort, and `wp_validation_check_level` filter application.
+All three concrete registries extend `ValidationAPI\AbstractRegistry`, which provides shared defaults, level validation, namespace stamping, priority sort, and `validation_api_check_level` filter application.
 
 All registration functions require `namespace`, `name`, and `error_msg` in the `$args` array. Meta checks also require `meta_key`.
 
 ### Severity
 
-Three levels: `error` (blocks save), `warning` (shows feedback), `none` (disabled). Filterable at runtime via `wp_validation_check_level`.
+Three levels: `error` (blocks save), `warning` (shows feedback), `none` (disabled). Filterable at runtime via `validation_api_check_level`.
 
 ### Data flow
 
@@ -39,11 +39,11 @@ PHP registries (Block / Meta / Editor — all extend AbstractRegistry)
 
 ### Key PHP hooks
 
-- `wp_validation_check_level` — Override check severity at runtime (the settings-addon extension point)
-- `wp_validation_check_args` / `wp_validation_meta_check_args` / `wp_validation_editor_check_args` — Modify check config before registration
-- `wp_validation_should_register_check` / `_meta_check` / `_editor_check` — Prevent specific checks from registering
-- `wp_validation_initialized`, `wp_validation_ready`, `wp_validation_editor_checks_ready` — Lifecycle
-- `wp_validation_check_registered`, `wp_validation_meta_check_registered`, `wp_validation_editor_check_registered` — Post-registration notifications
+- `validation_api_check_level` — Override check severity at runtime (the settings-addon extension point)
+- `validation_api_check_args` / `validation_api_meta_check_args` / `validation_api_editor_check_args` — Modify check config before registration
+- `validation_api_should_register_check` / `_meta_check` / `_editor_check` — Prevent specific checks from registering
+- `validation_api_initialized`, `validation_api_ready`, `validation_api_editor_checks_ready` — Lifecycle
+- `validation_api_check_registered`, `validation_api_meta_check_registered`, `validation_api_editor_check_registered` — Post-registration notifications
 
 ### JS filters
 
@@ -137,7 +137,7 @@ TypeScript: `src/store/constants.ts` is the only `.ts` file. Other modules run a
 ## Companion plugins (same local `wp-content/plugins/`)
 
 - **validation-api-integration-example** — Demo plugin with block, meta, and editor checks. Rebuild with `npm run build` in its directory after any JS filter-name changes.
-- **validation-api-settings** — Admin settings page. Reads checks from `GET /wp-validation/v1/checks`, lets admins override severity via `wp_validation_check_level`. Rebuild with `npm run build` in its directory after REST path changes.
+- **validation-api-settings** — Admin settings page. Reads checks from `GET /wp-validation/v1/checks`, lets admins override severity via `validation_api_check_level`. Rebuild with `npm run build` in its directory after REST path changes.
 
 ## Conventions
 
@@ -154,11 +154,11 @@ External plugins register checks like this:
 
 ```php
 add_action( 'init', function() {
-    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+    if ( ! function_exists( 'validation_api_register_block_check' ) ) {
         return;
     }
 
-    wp_register_block_validation_check( 'core/image', [
+    validation_api_register_block_check( 'core/image', [
         'namespace' => 'my-plugin',
         'name'      => 'alt_text',
         'level'     => 'error',

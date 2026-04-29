@@ -4,11 +4,11 @@ All resolved design decisions for the Validation API. This is a new identity and
 
 ## #1 — Hook Prefix
 
-**Decision: `wp_validation_*`**
+**Decision: `validation_api_*` in the standalone plugin; `wp_*` at core merge.**
 
-All PHP actions/filters use the `wp_validation_` prefix. JS filters use `editor.*` namespacing. The old `ba11yc_` prefix tied the plugin to "Block Accessibility Checks", which was too narrow for a general validation framework.
+All PHP actions/filters use the `validation_api_` prefix in the standalone plugin. JS filters use `editor.*` namespacing (already core-style; no rename needed at merge). The old `ba11yc_` prefix tied the plugin to "Block Accessibility Checks", which was too narrow for a general validation framework.
 
-The prefix is descriptive, follows WordPress conventions (`wp_{feature}_*`), and signals that this is a general-purpose validation API — not an accessibility-specific tool.
+The prefix history: originally chosen as `validation_api_*`. During the Gutenberg alignment refactor, hooks were renamed to the core-style `wp_*` prefix so the names would match what core would use post-merge. Submitting to the WordPress.org plugin directory then required reverting to `validation_api_*` because `wp_*` is reserved for core. The `wp_*` names will be restored as a mechanical find-and-replace at core-merge time — see [../gutenberg-alignment/core-pr-migration.md](../gutenberg-alignment/core-pr-migration.md).
 
 ## #2 — PHP Namespace
 
@@ -35,7 +35,7 @@ Check data is exported to the editor via the `block_editor_settings_all` filter,
 
 The old model had four explicit types: `error`, `warning`, `settings`, `none`. The `settings` type existed to mark checks as "configurable via the settings page."
 
-The insight: **every check is inherently configurable** because every check passes through `wp_validation_check_level`. You don't need to declare something as "configurable" — that's just the default behavior. The `settings` type was redundant.
+The insight: **every check is inherently configurable** because every check passes through `validation_api_check_level`. You don't need to declare something as "configurable" — that's just the default behavior. The `settings` type was redundant.
 
 New model:
 
@@ -46,10 +46,10 @@ New model:
 | `none` | Check disabled. Filter does **not** fire. Skipped entirely. |
 | *(omitted)* | Defaults to `error`. Filter fires, can override. |
 
-The `wp_validation_check_level` filter is the settings mechanism:
+The `validation_api_check_level` filter is the settings mechanism:
 
 ```php
-apply_filters( 'wp_validation_check_level', $registered_level, $context );
+apply_filters( 'validation_api_check_level', $registered_level, $context );
 ```
 
 The companion settings package hooks into this filter and reads from `wp_options`. The core plugin has no storage — it just fires the filter. This is the Gutenberg-merge-friendly pattern: zero storage opinions in the framework.
@@ -94,7 +94,7 @@ The new pattern uses flat global functions with a `namespace` field:
 
 ```php
 // New
-wp_register_block_validation_check( 'core/image', [
+validation_api_register_block_check( 'core/image', [
     'namespace' => 'my-plugin',
     'name'      => 'alt_text',
     'error_msg' => 'Alt text required.',
@@ -116,7 +116,7 @@ The old `category` parameter (`'accessibility'`, `'validation'`) was only used f
 
 | # | Question | Decision | Rationale |
 |---|---|---|---|
-| 1 | Hook prefix | `wp_validation_*` (PHP), `editor.*` (JS) | Core-aligned naming |
+| 1 | Hook prefix | `validation_api_*` (PHP, standalone) → `wp_*` at core merge; `editor.*` (JS, no rename) | Plugin-directory compliance now; core naming at merge |
 | 2 | PHP namespace | `ValidationAPI\*` | Matches new identity |
 | 3 | Data export | `block_editor_settings_all` filter | Core-aligned pattern |
 | 4 | Severity model | 3 levels, filter-first | All checks are configurable by default |

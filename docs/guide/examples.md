@@ -16,12 +16,12 @@ A full plugin that registers block, meta, and editor checks with both PHP and Ja
  */
 
 add_action( 'init', function() {
-    if ( ! function_exists( 'wp_register_block_validation_check' ) ) {
+    if ( ! function_exists( 'validation_api_register_block_check' ) ) {
         return;
     }
 
     // Block checks
-    wp_register_block_validation_check( 'core/image', [
+    validation_api_register_block_check( 'core/image', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'alt_text',
         'level'       => 'error',
@@ -30,7 +30,7 @@ add_action( 'init', function() {
         'warning_msg' => 'Consider adding alt text to this image.',
     ] );
 
-    wp_register_block_validation_check( 'core/button', [
+    validation_api_register_block_check( 'core/button', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'has_link',
         'level'       => 'error',
@@ -39,7 +39,7 @@ add_action( 'init', function() {
         'warning_msg' => 'Consider adding a link to this button.',
     ] );
 
-    wp_register_block_validation_check( 'core/button', [
+    validation_api_register_block_check( 'core/button', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'has_text',
         'level'       => 'error',
@@ -48,7 +48,7 @@ add_action( 'init', function() {
     ] );
 
     // Meta checks
-    wp_register_meta_validation_check( 'post', [
+    validation_api_register_meta_check( 'post', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'required',
         'meta_key'    => 'seo_description',
@@ -59,7 +59,7 @@ add_action( 'init', function() {
     ] );
 
     // Editor checks
-    wp_register_editor_validation_check( 'post', [
+    validation_api_register_editor_check( 'post', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'heading_hierarchy',
         'level'       => 'warning',
@@ -68,7 +68,7 @@ add_action( 'init', function() {
         'warning_msg' => 'Headings skip levels — consider fixing the hierarchy.',
     ] );
 
-    wp_register_editor_validation_check( 'post', [
+    validation_api_register_editor_check( 'post', [
         'namespace'   => 'content-quality-rules',
         'name'        => 'has_image',
         'level'       => 'warning',
@@ -184,7 +184,7 @@ function getHeadingLevels( blocks ) {
 Validate attributes on a custom block:
 
 ```php
-wp_register_block_validation_check( 'my-plugin/testimonial', [
+validation_api_register_block_check( 'my-plugin/testimonial', [
     'namespace'   => 'my-plugin',
     'name'        => 'has_author',
     'level'       => 'error',
@@ -212,12 +212,12 @@ The Validation API covers client-side validation. For server-side enforcement (R
 
 ```php
 add_action( 'init', function() {
-    if ( ! function_exists( 'wp_register_meta_validation_check' ) ) {
+    if ( ! function_exists( 'validation_api_register_meta_check' ) ) {
         return;
     }
 
     // Client-side validation (editor UX)
-    wp_register_meta_validation_check( 'event', [
+    validation_api_register_meta_check( 'event', [
         'namespace' => 'my-events-plugin',
         'name'      => 'event_date_required',
         'meta_key'  => 'event_date',
@@ -246,11 +246,11 @@ add_action( 'init', function() {
 
 ## Recipe: Conditional Severity by Post Type
 
-Use the `wp_validation_check_level` filter to vary severity by context:
+Use the `validation_api_check_level` filter to vary severity by context:
 
 ```php
 // Alt text is an error on posts, a warning on pages
-add_filter( 'wp_validation_check_level', function( $level, $context ) {
+add_filter( 'validation_api_check_level', function( $level, $context ) {
     if ( $context['scope'] === 'block'
         && $context['block_type'] === 'core/image'
         && $context['check_name'] === 'alt_text'
@@ -266,11 +266,11 @@ add_filter( 'wp_validation_check_level', function( $level, $context ) {
 
 ## Recipe: Preventing Check Registration
 
-Use the `wp_validation_should_register_check` filter to conditionally prevent checks from registering:
+Use the `validation_api_should_register_check` filter to conditionally prevent checks from registering:
 
 ```php
 // Don't register image checks on the 'attachment' post type screen
-add_filter( 'wp_validation_should_register_check', function( $should, $block_type, $check_name, $args ) {
+add_filter( 'validation_api_should_register_check', function( $should, $block_type, $check_name, $args ) {
     if ( $block_type === 'core/image' && get_post_type() === 'attachment' ) {
         return false;
     }

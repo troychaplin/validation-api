@@ -9,7 +9,7 @@ The Validation API is a pure framework — no settings UI, no storage, no opinio
 - Three registries (Block, Meta, Editor)
 - Registration functions and hooks
 - JS validation runners and UI components
-- `wp_validation_check_level` filter as the configuration extension point
+- `validation_api_check_level` filter as the configuration extension point
 - No `wp_options`, no settings page, no storage
 
 ### Layer 2: Settings Companion (separate plugin)
@@ -17,7 +17,7 @@ The Validation API is a pure framework — no settings UI, no storage, no opinio
 - Admin settings page built on WordPress DataForm
 - Reads registered checks from the REST API
 - Writes severity overrides to `wp_options`
-- Hooks into `wp_validation_check_level` to apply overrides
+- Hooks into `validation_api_check_level` to apply overrides
 
 The core plugin has no knowledge of the companion. It fires the filter; the companion hooks in. Any plugin could replace the companion with a different settings implementation.
 
@@ -67,7 +67,7 @@ update_option( 'validation_api_settings', [
 The companion registers one filter that bridges `wp_options` to the check level system:
 
 ```php
-add_filter( 'wp_validation_check_level', function( $level, $context ) {
+add_filter( 'validation_api_check_level', function( $level, $context ) {
     $options = get_option( 'validation_api_settings', [] );
     $key     = $context['block_type'] . '_' . $context['check_name'];
     return $options[ $key ] ?? $level;

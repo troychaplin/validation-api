@@ -15,17 +15,17 @@ All five shipped to `review/multiple-plugins`. Public API unchanged across every
 | **1** | `16b1dce` | JS source reshape to Gutenberg-package layout. Flat `src/{store, utils, hooks, components}/`. Renderless `ValidationProvider`/`ValidationAPI` converted to `useValidationSync` + `useValidationLifecycle` hooks (invoked from sibling renderless wrappers to avoid render loops). `editor.preSavePost` save gate added. `useValidationIssues()` consolidated hook. `useMetaField` dual `useSelect` collapsed. `getInvalid*` → `useInvalid*`. Webpack aliases dropped. `package.json` `sideEffects` declared. |
 | **2** | `c927184` + `0088bc8` (addon) | REST namespace: `wp/v2/validation-checks` → `wp-validation/v1/checks`. Plugin-owned namespace; final core namespace TBD during PR review. Settings addon updated in lockstep. |
 | **3** | `3d35352` | `includes/Core/I18n.php` deleted; `wp_set_script_translations()` inlined in `Core/Assets.php`. 58 LOC removed. |
-| **4** | `7ab948d` + `826847d` (addon hot-fix) | PHP dead-code deletions (~260 LOC). Removed: `Meta\Validator` class, `Contracts/CheckProvider` interface, `Block\Registry::unregister_check()` + `set_check_enabled()`, `Editor\Registry::register_editor_check_for_post_types()`, `EditorDetection` `get_current_screen()` fallback, two orphan actions (`wp_validation_check_unregistered`, `wp_validation_check_toggled`), one orphan filter (`wp_validation_validate_meta`). Settings addon hot-fix restored meta-field border styling after a prior commit had broken it. |
-| **5** | `c44e389` | `includes/AbstractRegistry.php` extracted. Block/Meta/Editor registries extend it. Shared: defaults merge, required-field check, level validation, `warning_msg` fallback, `namespace` stamping, priority sort, `wp_validation_check_level` filter application. Priority validation now consistent across all three scopes (was only Block). Logger trait methods changed from `private` to `protected` so subclasses inherit. |
+| **4** | `7ab948d` + `826847d` (addon hot-fix) | PHP dead-code deletions (~260 LOC). Removed: `Meta\Validator` class, `Contracts/CheckProvider` interface, `Block\Registry::unregister_check()` + `set_check_enabled()`, `Editor\Registry::register_editor_check_for_post_types()`, `EditorDetection` `get_current_screen()` fallback, two orphan actions (`validation_api_check_unregistered`, `validation_api_check_toggled`), one orphan filter (`validation_api_validate_meta`). Settings addon hot-fix restored meta-field border styling after a prior commit had broken it. |
+| **5** | `c44e389` | `includes/AbstractRegistry.php` extracted. Block/Meta/Editor registries extend it. Shared: defaults merge, required-field check, level validation, `warning_msg` fallback, `namespace` stamping, priority sort, `validation_api_check_level` filter application. Priority validation now consistent across all three scopes (was only Block). Logger trait methods changed from `private` to `protected` so subclasses inherit. |
 
 ### What's unchanged (still true)
 
 Public API surface preserved through every batch:
 
-- Global PHP functions: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
+- Global PHP functions: `validation_api_register_block_check()`, `validation_api_register_meta_check()`, `validation_api_register_editor_check()`
 - JS filter names: `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
 - Store name: `core/validation`
-- PHP hook prefix: `wp_validation_*`
+- PHP hook prefix: `validation_api_*`
 - Registry singleton pattern (`::get_instance()`)
 - `block_editor_settings_all` injection mechanism
 - Severity model (`error` / `warning` / `none`)

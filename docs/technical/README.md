@@ -54,7 +54,7 @@ The entry point is `validation_api_init_plugin()`, called on `init`. This bootst
 2. Resolves the three registry singletons
 3. Registers the REST API controller on `rest_api_init`
 4. Registers `enqueue_block_editor_assets` / `enqueue_block_assets` for script/style loading
-5. Fires `wp_validation_ready` (with Block Registry), `wp_validation_editor_checks_ready` (with Editor Registry), and `wp_validation_initialized` (with the Plugin instance)
+5. Fires `validation_api_ready` (with Block Registry), `validation_api_editor_checks_ready` (with Editor Registry), and `validation_api_initialized` (with the Plugin instance)
 
 ### Registries
 
@@ -63,13 +63,13 @@ Each registry is a singleton (`::get_instance()`) and extends `ValidationAPI\Abs
 - `normalize_args()` — defaults merge, required-field check (`error_msg`), `warning_msg` fallback, level validation, priority coercion
 - `stamp_namespace()` — moves the public `namespace` arg to the internal `_namespace` key
 - `sort_by_priority()` — `uasort` by the `priority` value
-- `apply_level_filter()` — applies `wp_validation_check_level` with a `none` short-circuit
+- `apply_level_filter()` — applies `validation_api_check_level` with a `none` short-circuit
 
 The concrete registries differ in their storage shape and scope-specific hook names:
 
-- **`ValidationAPI\Block\Registry`** — `checks[block_type][check_name] = config`. Filters: `wp_validation_check_args`, `wp_validation_should_register_check`. Action: `wp_validation_check_registered`.
-- **`ValidationAPI\Meta\Registry`** — `meta_checks[post_type][meta_key][check_name] = config` (3-level). Filters: `wp_validation_meta_check_args`, `wp_validation_should_register_meta_check`. Action: `wp_validation_meta_check_registered`.
-- **`ValidationAPI\Editor\Registry`** — `editor_checks[post_type][check_name] = config`. Filters: `wp_validation_editor_check_args`, `wp_validation_should_register_editor_check`. Action: `wp_validation_editor_check_registered`.
+- **`ValidationAPI\Block\Registry`** — `checks[block_type][check_name] = config`. Filters: `validation_api_check_args`, `validation_api_should_register_check`. Action: `validation_api_check_registered`.
+- **`ValidationAPI\Meta\Registry`** — `meta_checks[post_type][meta_key][check_name] = config` (3-level). Filters: `validation_api_meta_check_args`, `validation_api_should_register_meta_check`. Action: `validation_api_meta_check_registered`.
+- **`ValidationAPI\Editor\Registry`** — `editor_checks[post_type][check_name] = config`. Filters: `validation_api_editor_check_args`, `validation_api_should_register_editor_check`. Action: `validation_api_editor_check_registered`.
 
 ### Namespace Field
 
@@ -170,15 +170,15 @@ Exposed for external plugins that build custom UI:
 
 ### No storage
 
-The core plugin has no `wp_options`, no custom tables, no settings pages. Check definitions live in PHP memory (populated on each request), exported to JS via the `block_editor_settings_all` filter. The `wp_validation_check_level` filter is the extension point for runtime configuration — the companion settings package hooks into it and reads from its own `wp_options` key.
+The core plugin has no `wp_options`, no custom tables, no settings pages. Check definitions live in PHP memory (populated on each request), exported to JS via the `block_editor_settings_all` filter. The `validation_api_check_level` filter is the extension point for runtime configuration — the companion settings package hooks into it and reads from its own `wp_options` key.
 
 ### Filter-first architecture
 
 Every significant behavior passes through a filter:
 
-- Check args can be modified before registration (`wp_validation_check_args`)
-- Checks can be prevented from registering (`wp_validation_should_register_check`)
-- Severity is overridable at runtime (`wp_validation_check_level`)
+- Check args can be modified before registration (`validation_api_check_args`)
+- Checks can be prevented from registering (`validation_api_should_register_check`)
+- Severity is overridable at runtime (`validation_api_check_level`)
 - Validation results come from JS filters (`editor.validateBlock`, etc.)
 - Save-time gating runs via `editor.preSavePost` as a safety net
 

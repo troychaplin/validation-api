@@ -8,7 +8,7 @@ This document traces how a registered check moves from PHP registration through 
 
 ```php
 add_action( 'init', function() {
-    wp_register_block_validation_check( 'core/image', [
+    validation_api_register_block_check( 'core/image', [
         'namespace' => 'my-rules',
         'name'      => 'alt_text',
         'level'     => 'error',
@@ -31,8 +31,8 @@ The global function dispatches to `BlockRegistry::get_instance()->register_check
 
 Two filters fire before storage (scope-specific names; block scope shown):
 
-- `wp_validation_check_args` — allows modifying the check config
-- `wp_validation_should_register_check` — allows preventing registration
+- `validation_api_check_args` — allows modifying the check config
+- `validation_api_should_register_check` — allows preventing registration
 
 ### 4. Namespace attribution
 
@@ -60,7 +60,7 @@ The registry calls `sort_by_priority()` to keep the entries in ascending priorit
 
 ### 6. Post-registration action
 
-After storage, the scope-specific action fires (e.g. `wp_validation_check_registered` for blocks). External plugins can hook it if they need to know when checks land.
+After storage, the scope-specific action fires (e.g. `validation_api_check_registered` for blocks). External plugins can hook it if they need to know when checks land.
 
 ## Export Phase (PHP → JS)
 
@@ -70,7 +70,7 @@ When `Assets::inject_editor_settings()` runs on `block_editor_settings_all`, eac
 
 ```php
 $effective_level = apply_filters(
-    'wp_validation_check_level',
+    'validation_api_check_level',
     $registered_level,
     [
         'scope'      => 'block',           // or 'meta' / 'editor'
@@ -223,14 +223,14 @@ Two side-effect modules cooperate for per-block feedback:
 ```
 PHP registration
   → AbstractRegistry::normalize_args (defaults, level validation, required-field check)
-  → wp_validation_check_args filter (scope-specific name)
-  → wp_validation_should_register_check filter (scope-specific name)
+  → validation_api_check_args filter (scope-specific name)
+  → validation_api_should_register_check filter (scope-specific name)
   → AbstractRegistry::stamp_namespace (`namespace` → `_namespace`)
   → Registry storage + sort_by_priority
-  → wp_validation_check_registered action (scope-specific name)
+  → validation_api_check_registered action (scope-specific name)
 
 PHP → JS export (once, on editor load)
-  → AbstractRegistry::apply_level_filter (wp_validation_check_level)
+  → AbstractRegistry::apply_level_filter (validation_api_check_level)
   → block_editor_settings_all → editorSettings.validationApi
 
 JS validation (continuous, in the editor)

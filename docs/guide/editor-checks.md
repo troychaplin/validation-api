@@ -7,7 +7,7 @@ Editor checks validate the document as a whole. Heading hierarchy, minimum conte
 Register an editor check with the `namespace` field to identify your plugin:
 
 ```php
-wp_register_editor_validation_check( 'post', [
+validation_api_register_editor_check( 'post', [
     'namespace'   => 'my-plugin',
     'name'        => 'heading_hierarchy',
     'level'       => 'warning',
@@ -41,7 +41,7 @@ Register the same check for multiple post types:
 ```php
 // Option 1: Loop
 foreach ( [ 'post', 'page' ] as $post_type ) {
-    wp_register_editor_validation_check( $post_type, [
+    validation_api_register_editor_check( $post_type, [
         'namespace' => 'my-plugin',
         'name'      => 'heading_hierarchy',
         'level'     => 'warning',

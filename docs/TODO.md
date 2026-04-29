@@ -12,8 +12,7 @@ Remaining work items to prepare the Validation API plugin for a Gutenberg core p
 - **JS filter hooks renamed** to `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
 - **`window.ValidationAPI` replaced** with `block_editor_settings_all` filter. Config available via `select('core/editor').getEditorSettings().validationApi`
 - **`PluginContext` dropped**. Replaced with required `namespace` field in check registration args
-- **PHP functions renamed** to `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
-- **PHP hooks renamed** from `validation_api_*` to `wp_validation_*`
+- **PHP functions and hooks** currently named `validation_api_*`. Originally renamed to core-style `wp_*` for Gutenberg alignment, then renamed back to `validation_api_*` for WordPress.org plugin directory compliance. The `wp_*` names will be restored at core-merge time per [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md).
 - **REST endpoint** moved to `wp-validation/v1/checks` (plugin-owned namespace; final core namespace TBD during PR)
 - **Issue model standardized** to camelCase only in JS. PHP still uses snake_case; transformation happens at the boundary in `createIssue()`
 - **`window.ValidationAPI.useMetaField` export dropped**. External plugins import directly or consume via the store

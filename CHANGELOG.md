@@ -28,9 +28,10 @@ Prefix the change with one of these keywords:
 
 ### Changed
 
+- **WordPress.org plugin directory compliance:** PHP functions and hooks renamed from the core-style `wp_*` prefix back to `validation_api_*`. The `wp_*` prefix is reserved for WordPress core; the plugin directory's automated checks flag any plugin that uses it. The mapping is mechanical and one-directional: `wp_register_*_validation_check()` → `validation_api_register_*_check()`, and `wp_validation_*` → `validation_api_*`. The names will be restored to `wp_*` at core-merge time per [docs/gutenberg-alignment/core-pr-migration.md](docs/gutenberg-alignment/core-pr-migration.md). Companion plugins (`validation-api-integration-example`, `validation-api-settings`) updated in lockstep.
 - **Gutenberg alignment refactor:** All public API surfaces renamed to core conventions
-- PHP registration functions renamed: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()`
-- PHP hooks renamed from `validation_api_*` to `wp_validation_*` (e.g., `wp_validation_check_level`, `wp_validation_check_args`)
+- PHP registration functions renamed: `wp_register_block_validation_check()`, `wp_register_meta_validation_check()`, `wp_register_editor_validation_check()` (subsequently renamed to `validation_api_register_*_check()` per the plugin-directory compliance entry above)
+- PHP hooks renamed from `validation_api_*` to `wp_validation_*` (e.g., `wp_validation_check_level`, `wp_validation_check_args`) (subsequently renamed back to `validation_api_*` per the plugin-directory compliance entry above)
 - JS filter hooks renamed: `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
 - Data store renamed from `validation-api` to `core/validation`
 - Plugin registration renamed from `registerPlugin('validation-api')` to `registerPlugin('core-validation')`
