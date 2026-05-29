@@ -54,24 +54,24 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
-		"@wordpress/data": "10.44.0",
-		"lint-staged": "^16.4.0",
-		"@wordpress/element": "6.44.0",
-		"@wordpress/env": "11.4.0",
-		"@wordpress/eslint-plugin": "25.0.0",
-		"@wordpress/i18n": "6.17.0",
-		"@wordpress/plugins": "7.44.0",
-		"@wordpress/prettier-config": "4.44.0",
-		"@wordpress/scripts": "32.0.0",
-		"@wordpress/stylelint-config": "23.36.0",
+		"@wordpress/data": "10.47.0",
+		"lint-staged": "^17.0.5",
+		"@wordpress/element": "7.0.0",
+		"@wordpress/env": "11.7.0",
+		"@wordpress/eslint-plugin": "25.3.0",
+		"@wordpress/i18n": "6.20.0",
+		"@wordpress/plugins": "7.47.0",
+		"@wordpress/prettier-config": "4.47.0",
+		"@wordpress/scripts": "32.3.0",
+		"@wordpress/stylelint-config": "23.39.0",
 		"eslint-config-prettier": "10.1.8",
 		"husky": "9.1.7",
-		"stylelint": "17.9.1",
-		"stylelint-scss": "7.0.0"
+		"stylelint": "17.12.0",
+		"stylelint-scss": "7.1.1"
 	},
 	"dependencies": {
-		"@wordpress/api-fetch": "^7.44.0",
-		"@wordpress/components": "^32.6.0",
-		"@wordpress/icons": "^12.2.0"
+		"@wordpress/api-fetch": "^7.47.0",
+		"@wordpress/components": "^34.0.0",
+		"@wordpress/icons": "^13.2.0"
 	}
 }
