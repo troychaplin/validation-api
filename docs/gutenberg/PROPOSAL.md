@@ -295,7 +295,7 @@ The [Validation API](https://github.com/troychaplin/validation-api) plugin demon
 - **Configuration Export** — PHP configuration is passed to JavaScript via the `block_editor_settings_all` filter, delivering validation rules and editor context through editor settings.
 - **Plugin Attribution** — The `namespace` field in check registration args attributes checks to the registering plugin, enabling organized settings and REST API attribution.
 
-> Note on terminology: the two hooks above are called from small renderless sibling wrappers (`ValidationSync`, `ValidationLifecycle`) under the root `ValidationPlugin` component. The sibling arrangement is deliberate — putting both hooks in a single parent component causes an infinite render loop because `useValidationLifecycle` subscribes to the store that `useValidationSync` dispatches to. See [docs/technical/README.md](technical/README.md) for the full explanation.
+> Note on terminology: the two hooks above are called from small renderless sibling wrappers (`ValidationSync`, `ValidationLifecycle`) under the root `ValidationPlugin` component. The sibling arrangement is deliberate — putting both hooks in a single parent component causes an infinite render loop because `useValidationLifecycle` subscribes to the store that `useValidationSync` dispatches to. See [docs/technical/README.md](../technical/README.md) for the full explanation.
 
 ### REST API
 
@@ -358,5 +358,5 @@ The distinction is important: the API provides the *capability* to validate; plu
 - **Plugin:** [Validation API on GitHub](https://github.com/troychaplin/validation-api)
 - **Example Integration:** [validation-api-integration-example](https://github.com/troychaplin/validation-api-integration-example)
 - **Companion Settings:** [validation-api-settings](https://github.com/troychaplin/validation-api-settings)
-- **Developer Documentation:** [docs/guide/README.md](guide/README.md)
-- **Technical Reference:** [docs/technical/README.md](technical/README.md)
+- **Developer Documentation:** [docs/guide/README.md](../guide/README.md)
+- **Technical Reference:** [docs/technical/README.md](../technical/README.md)

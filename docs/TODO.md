@@ -2,7 +2,7 @@
 
 Remaining work items to prepare the Validation API plugin for a Gutenberg core proposal. The five-batch alignment plan is complete; items below cover remaining testing, performance, and future enhancements.
 
-**See also:** [docs/gutenberg-alignment/consolidated-plan.md](gutenberg-alignment/consolidated-plan.md) for the authoritative status of alignment batches and post-batch polish items. This file and the consolidated plan intentionally overlap for the polish/future sections so either doc can orient a reader.
+**See also:** [docs/gutenberg/alignment/consolidated-plan.md](gutenberg/alignment/consolidated-plan.md) for the authoritative status of alignment batches and post-batch polish items. This file and the consolidated plan intentionally overlap for the polish/future sections so either doc can orient a reader.
 
 ## Completed — alignment + polish
 
@@ -12,7 +12,7 @@ Remaining work items to prepare the Validation API plugin for a Gutenberg core p
 - **JS filter hooks renamed** to `editor.validateBlock`, `editor.validateMeta`, `editor.validateEditor`
 - **`window.ValidationAPI` replaced** with `block_editor_settings_all` filter. Config available via `select('core/editor').getEditorSettings().validationApi`
 - **`PluginContext` dropped**. Replaced with required `namespace` field in check registration args
-- **PHP functions and hooks** currently named `validation_api_*`. Originally renamed to core-style `wp_*` for Gutenberg alignment, then renamed back to `validation_api_*` for WordPress.org plugin directory compliance. The `wp_*` names will be restored at core-merge time per [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md).
+- **PHP functions and hooks** currently named `validation_api_*`. Originally renamed to core-style `wp_*` for Gutenberg alignment, then renamed back to `validation_api_*` for WordPress.org plugin directory compliance. The `wp_*` names will be restored at core-merge time per [gutenberg/alignment/core-pr-migration.md](gutenberg/alignment/core-pr-migration.md).
 - **REST endpoint** moved to `wp-validation/v1/checks` (plugin-owned namespace; final core namespace TBD during PR)
 - **Issue model standardized** to camelCase only in JS. PHP still uses snake_case; transformation happens at the boundary in `createIssue()`
 - **`window.ValidationAPI.useMetaField` export dropped**. External plugins import directly or consume via the store

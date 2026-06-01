@@ -13,14 +13,14 @@ The plugin has completed a five-batch alignment pass plus a four-item polish pas
 Three questions answer "what's next?":
 
 1. **Are you drafting the RFC / proposal post?** → You can start anytime. See [PROPOSAL.md](PROPOSAL.md) and [INTEGRATION.md](INTEGRATION.md); those are the inputs.
-2. **Are you cutting code changes into `gutenberg/`?** → Activate [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md). That doc is the checklist for translating the standalone plugin into core-style PHP + JS package.
+2. **Are you cutting code changes into `gutenberg/`?** → Activate [alignment/core-pr-migration.md](alignment/core-pr-migration.md). That doc is the checklist for translating the standalone plugin into core-style PHP + JS package.
 3. **Are you still finishing pre-PR polish on this standalone plugin?** → See the "What's left" section below.
 
 ## What's done
 
 ### Alignment (shipped)
 
-Five batches on `review/multiple-plugins`. See [gutenberg-alignment/consolidated-plan.md](gutenberg-alignment/consolidated-plan.md) for commit hashes and per-batch detail.
+Five batches on `review/multiple-plugins`. See [alignment/consolidated-plan.md](alignment/consolidated-plan.md) for commit hashes and per-batch detail.
 
 - **Batch 1** — JS source reshape to Gutenberg package layout; hook-first lifecycle; `editor.preSavePost` gate; `useValidationIssues` + `useMetaField` consolidations; `getInvalid*` → `useInvalid*`; aliases dropped
 - **Batch 2** — REST namespace → `wp-validation/v1/checks` (plugin-owned; final core namespace TBD in review)
@@ -44,7 +44,7 @@ Five batches on `review/multiple-plugins`. See [gutenberg-alignment/consolidated
 - [technical/api.md](technical/api.md) — Function signatures and arg shapes
 - [technical/decisions.md](technical/decisions.md) — Design-decision rationale
 - [guide/troubleshooting.md](guide/troubleshooting.md) — Common issues + diagnostics
-- [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md) — Dormant checklist for when the PR branch is cut
+- [alignment/core-pr-migration.md](alignment/core-pr-migration.md) — Dormant checklist for when the PR branch is cut
 
 ## What's left
 
@@ -65,7 +65,7 @@ Grouped by whether it blocks RFC-stage vs. code-landing-stage.
    `@wordpress/env` + `@wordpress/e2e-test-utils-playwright`. Full flow: PHP registration → editor settings → JS validation → store dispatch → save-lock → `editor.preSavePost` gate. Gives reviewers a reproducible harness.
 
 5. **Core-PR code translation** (core-pr-migration checklist)
-   PSR-4 → flat `WP_*` classes, text domain, `@since` versions, CSS prefix, sidebar mount swap to `ComplementaryArea`, Composer autoload → `require_once` chain. Activate [core-pr-migration.md](gutenberg-alignment/core-pr-migration.md) when drafting.
+   PSR-4 → flat `WP_*` classes, text domain, `@since` versions, CSS prefix, sidebar mount swap to `ComplementaryArea`, Composer autoload → `require_once` chain. Activate [core-pr-migration.md](alignment/core-pr-migration.md) when drafting.
 
 ### Does NOT block RFC-stage
 
@@ -101,8 +101,8 @@ Kept here as a reminder during drafting:
 3. **Activate the plugin in your local WP** — confirm nothing regressed since the last verification
 4. **Pick one of:**
    - If you want to draft the RFC: re-read [PROPOSAL.md](PROPOSAL.md), [INTEGRATION.md](INTEGRATION.md), post in Gutenberg GitHub discussions or Slack #core-editor
-   - If you want to chip away at pre-PR polish: pick one of Polish 5 / 5b / 6 / 7 from [gutenberg-alignment/consolidated-plan.md](gutenberg-alignment/consolidated-plan.md) deferred list
-   - If you want to draft the code PR: clone `gutenberg/` trunk fresh, create a feature branch, open [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md) as your checklist
+   - If you want to chip away at pre-PR polish: pick one of Polish 5 / 5b / 6 / 7 from [alignment/consolidated-plan.md](alignment/consolidated-plan.md) deferred list
+   - If you want to draft the code PR: clone `gutenberg/` trunk fresh, create a feature branch, open [alignment/core-pr-migration.md](alignment/core-pr-migration.md) as your checklist
 
 ## Quick reference — what shipped, what didn't
 

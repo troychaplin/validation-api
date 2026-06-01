@@ -4,7 +4,7 @@ Changes that only make sense when cutting the actual Gutenberg core pull request
 
 **This document is not active until all five NOW-batches from [consolidated-plan.md](consolidated-plan.md) have shipped.**
 
-For the proposal that sets up this migration, see [docs/PROPOSAL.md](../PROPOSAL.md).
+For the proposal that sets up this migration, see [docs/gutenberg/PROPOSAL.md](../PROPOSAL.md).
 
 ## When to activate this doc
 

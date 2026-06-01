@@ -2,7 +2,7 @@
 
 Execution record of the five-batch alignment plan and the subsequent polish pass. All batches shipped; polish items 1–4 complete, items 5–7 deferred to the pre-PR phase. Detailed per-batch planning documents (pass-a, pass-b, pass-c) were removed after the work shipped — git history preserves them.
 
-For the active to-do list, see [../TODO.md](../TODO.md).
+For the active to-do list, see [../../TODO.md](../../TODO.md).
 For the pre-PR migration checklist (dormant until the core PR is cut), see [core-pr-migration.md](core-pr-migration.md).
 For current PR-readiness status, see [../PR-READINESS.md](../PR-READINESS.md).
 

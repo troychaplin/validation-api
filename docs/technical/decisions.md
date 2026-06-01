@@ -8,7 +8,7 @@ All resolved design decisions for the Validation API. This is a new identity and
 
 All PHP actions/filters use the `validation_api_` prefix in the standalone plugin. JS filters use `editor.*` namespacing (already core-style; no rename needed at merge). The old `ba11yc_` prefix tied the plugin to "Block Accessibility Checks", which was too narrow for a general validation framework.
 
-The prefix history: originally chosen as `validation_api_*`. During the Gutenberg alignment refactor, hooks were renamed to the core-style `wp_*` prefix so the names would match what core would use post-merge. Submitting to the WordPress.org plugin directory then required reverting to `validation_api_*` because `wp_*` is reserved for core. The `wp_*` names will be restored as a mechanical find-and-replace at core-merge time — see [../gutenberg-alignment/core-pr-migration.md](../gutenberg-alignment/core-pr-migration.md).
+The prefix history: originally chosen as `validation_api_*`. During the Gutenberg alignment refactor, hooks were renamed to the core-style `wp_*` prefix so the names would match what core would use post-merge. Submitting to the WordPress.org plugin directory then required reverting to `validation_api_*` because `wp_*` is reserved for core. The `wp_*` names will be restored as a mechanical find-and-replace at core-merge time — see [../gutenberg/alignment/core-pr-migration.md](../gutenberg/alignment/core-pr-migration.md).
 
 ## #2 — PHP Namespace
 

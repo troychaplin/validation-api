@@ -1,9 +1,5 @@
 # Validation API Documentation
 
-## Start here
-
-- **[PR-READINESS.md](PR-READINESS.md)** — Where is this plugin on the road to a Gutenberg core PR? Start here if you're resuming the work or picking it up fresh.
-
 ## Developer Guide
 
 For plugin authors integrating with the Validation API.
@@ -27,13 +23,14 @@ For contributors and the WordPress core team reviewing this plugin.
 - **[Companion Package](technical/companion-package.md)** — Settings companion architecture and the filter bridge
 - **[Design Decisions](technical/decisions.md)** — Why the API is shaped the way it is
 
-## Core-merge proposal
+## Gutenberg Core-merge Proposal
 
-For the Gutenberg core team.
+For the Gutenberg core team. See **[gutenberg/README.md](gutenberg/README.md)** for the full index.
 
-- **[PROPOSAL.md](PROPOSAL.md)** — RFC-style case for adopting this framework into Gutenberg core
-- **[INTEGRATION.md](INTEGRATION.md)** — Gutenberg landscape, component mapping, four-phase contribution plan
-- **[gutenberg-alignment/](gutenberg-alignment/README.md)** — Execution record of the alignment work and checklist for the actual PR
+- **[PR-READINESS.md](gutenberg/PR-READINESS.md)** — Where is this plugin on the road to a core PR? Start here if you're resuming the work.
+- **[PROPOSAL.md](gutenberg/PROPOSAL.md)** — RFC-style case for adopting this framework into Gutenberg core
+- **[INTEGRATION.md](gutenberg/INTEGRATION.md)** — Gutenberg landscape, component mapping, four-phase contribution plan
+- **[gutenberg/alignment/](gutenberg/alignment/README.md)** — Execution record of the alignment work and checklist for the actual PR
 
 ## Working notes
 

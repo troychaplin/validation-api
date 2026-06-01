@@ -205,7 +205,7 @@ The naming alignment refactor is complete. JS filters and the store name are cor
 
 ## Naming — standalone plugin vs. core merge
 
-The plugin's PHP API uses `validation_api_*` names. At core-merge time, these are renamed to `wp_*` per [docs/gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md). The JS filters and store name already match what core would use and don't need renaming.
+The plugin's PHP API uses `validation_api_*` names. At core-merge time, these are renamed to `wp_*` per [docs/alignment/core-pr-migration.md](alignment/core-pr-migration.md). The JS filters and store name already match what core would use and don't need renaming.
 
 The reason for the dual naming: WordPress.org's plugin directory reserves the `wp_*` prefix for core, so a standalone plugin can't ship under those names without triggering plugin-check warnings. The names below reflect the standalone plugin's current state on the left and the target post-merge names on the right.
 
@@ -258,9 +258,9 @@ The reason for the dual naming: WordPress.org's plugin directory reserves the `w
 
 ## Risks
 
-1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current per-block debouncing (300ms) and single-`useValidationSync` computation pattern help, but core demands higher standards. Polish item 6 (deferred) covers measurement; see [docs/TODO.md](TODO.md).
+1. **Performance at scale** -- Validating every block change in posts with hundreds of blocks needs benchmarking. The current per-block debouncing (300ms) and single-`useValidationSync` computation pattern help, but core demands higher standards. Polish item 6 (deferred) covers measurement; see [docs/TODO.md](../TODO.md).
 
-2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The standalone plugin uses `validation_api_*` for plugin-directory compliance; the core-merge translation to `wp_*` is mechanical and tracked in [gutenberg-alignment/core-pr-migration.md](gutenberg-alignment/core-pr-migration.md).
+2. **API permanence** -- Once filter names and function signatures land in core, they cannot change without deprecation cycles. The standalone plugin uses `validation_api_*` for plugin-directory compliance; the core-merge translation to `wp_*` is mechanical and tracked in [alignment/core-pr-migration.md](alignment/core-pr-migration.md).
 
 3. **Scope creep** -- Discussions may pull in content linting, accessibility auditing, or editorial workflows. The framework/rules boundary must hold.
 

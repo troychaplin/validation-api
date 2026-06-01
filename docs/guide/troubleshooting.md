@@ -124,7 +124,7 @@ The Validation API itself doesn't throw JSON-breaking errors on valid input, but
 
 React error, usually a render loop or a null access. Open the browser console and look for the stack trace:
 
-- **Error #185 (Maximum update depth exceeded):** Check that you haven't added a hook that both subscribes to `core/validation` and dispatches to it in the same component — that's an infinite loop. See [consolidated-plan.md](../gutenberg-alignment/consolidated-plan.md) Batch 1 section for the historical fix.
+- **Error #185 (Maximum update depth exceeded):** Check that you haven't added a hook that both subscribes to `core/validation` and dispatches to it in the same component — that's an infinite loop. See [consolidated-plan.md](../gutenberg/alignment/consolidated-plan.md) Batch 1 section for the historical fix.
 - **Cannot read property of undefined:** Usually a missing store (`select( 'core/validation' )` returning `null` because the store isn't registered yet). Confirm the Validation API plugin is active.
 
 ## My integration works locally but not on production

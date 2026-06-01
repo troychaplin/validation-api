@@ -180,11 +180,11 @@ addFilter( 'editor.validateBlock', 'my-plugin/image-alt-text',
 
 ## Key docs
 
-- `docs/PR-READINESS.md` — "Where are we with the Gutenberg PR?" (start here if you're returning to this work)
-- `docs/PROPOSAL.md` — Core-merge proposal (the RFC-style case for landing this in Gutenberg)
-- `docs/gutenberg-alignment/consolidated-plan.md` — Execution record of the 5-batch alignment + polish pass
-- `docs/gutenberg-alignment/core-pr-migration.md` — Checklist for when the core PR is actually cut
+- `docs/gutenberg/PR-READINESS.md` — "Where are we with the Gutenberg PR?" (start here if you're returning to this work)
+- `docs/gutenberg/PROPOSAL.md` — Core-merge proposal (the RFC-style case for landing this in Gutenberg)
+- `docs/gutenberg/INTEGRATION.md` — Gutenberg integration context (what lands where in core)
+- `docs/gutenberg/alignment/consolidated-plan.md` — Execution record of the 5-batch alignment + polish pass
+- `docs/gutenberg/alignment/core-pr-migration.md` — Checklist for when the core PR is actually cut
 - `docs/TODO.md` — Active to-do list (testing gaps, perf benchmarks, future features)
 - `docs/guide/` — Developer integration guides + troubleshooting
 - `docs/technical/` — Architecture, data flow, API reference, hooks reference, decisions
-- `docs/INTEGRATION.md` — Gutenberg integration context (what lands where in core)
